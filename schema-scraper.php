@@ -91,9 +91,11 @@ if (!class_exists("DJ_SchemaScraper"))
 				if ( is_object( $this->schema_data ) ) :
 					$cache_time = $this->get_option( 'cache_time' ) ?: 3600;
 					$this->timestamp = filemtime( $path . $file );
-					
-					if ($this->timestamp && (microtime( true ) - $this->timestamp) <= $cache_time)
-						return;
+														
+					$timestamp_now = microtime( true );
+					if (strtotime( $this->get_validation_date(). " + 1 day") <= $timestamp_now)
+						if ($this->timestamp && ($timestamp_now - $this->timestamp) <= $cache_time)
+							return;
 				endif;
 			endif;
 			
@@ -117,6 +119,214 @@ if (!class_exists("DJ_SchemaScraper"))
 			if ( is_wp_error( $response ) ) 
 				return json_encode( $response );
 			return $response["body"];
+		}
+		
+		/**
+		 * Gets date till witch this schema is valid
+		 */
+		public function get_validation_date() {
+			return isset($this->schema_data->valid) ? $this->schema_data->valid : "today";	
+		}
+		
+		/**
+		 * Get all the schema types
+		 */
+		public function get_schemas() {
+			return $this->schema_data->types;	
+		}
+				
+		/**
+		 * Get the schema for a type
+		 */
+		public function get_schema( $type ) {
+			return isset($this->get_schemas()->$type) ? $this->get_schemas()->$type : NULL;
+		}
+		
+		/**
+		 *	Get all the ancestors of a type
+		 */
+		public function get_schema_ancestors( $type, $recursive = true ) {
+			return $recursive ? $this->get_schema( $type )->ancestors : $this->get_schema( $type )->supertypes;
+		}
+		
+		/**
+		 * Get schema descendants
+		 */
+		public function get_schema_descendants( $type, $recursive = true ) {
+			$result = $this->get_schema( $type )->subtypes;
+			
+			if ($recursive) :
+				$results = array();
+				foreach( $result as $descendant )
+					 $results[$descendant] = $this->get_schema_descendants( $descendant, $recursive );
+				return $results;
+			endif;
+			
+			return $result;
+		}
+		
+		/**
+		 * Get all the properties of a type
+		 */
+		public function get_schema_properties( $type, $recursive = true, $flat = false ) {
+			$result = $this->get_schema( $type )->specific_properties;
+			
+			// Parent properties
+			if ($recursive) :
+				$result = array( $type => $result );
+				
+				if ($flat) :
+					return $this->get_schema( $type )->properties;
+				else :
+					foreach( $this->get_schema_ancestors( $type ) as $ancestor )
+						$result = $this->get_schema_properties( $ancestor, $recursive ) + $result;
+				endif;
+			endif;
+					
+			return $result;
+		}
+				
+		/**
+		 * Get the schema comment for a type
+		 */
+		public function get_schema_comment( $type, $html = true ) {
+			return $html ? $this->get_schema( $type )->comment : $this->get_schema( $type )->comment_plain;
+		}
+		
+		/**
+		 * Get the URL of the schema
+		 */
+		public function get_schema_url( $type ) {
+			return 	$this->get_schema( $type )->url;
+		}
+		
+		/**
+		 * Gets the properties data
+		 */
+		public function get_properties() {
+			return $this->schema_data->properties;	
+		}
+		
+		/**
+		 * Gets a property object
+		 */
+		public function get_property( $property ) {
+			return isset($this->get_properties()->$property) ? $this->get_properties()->$property : NULL;	
+		}
+		
+		/**
+		 * Gets the property id
+		 */
+		public function get_property_id( $property ) {
+			return $this->get_property( $property )->id;	
+		}
+		
+		/**
+		 * Gets a property english display label
+		 */
+		public function get_property_label( $property ) {
+			return $this->get_property( $property )->label;	
+		}
+		
+		/**
+		 * Gets a property description
+		 */
+		public function get_property_comment( $property, $html = true ) {
+			return $html ? $this->get_property( $property )->comment :
+				 $this->get_property( $property )->comment_plain;	
+		}
+		
+		/**
+		 * Get property ranges (what is valid contents)
+		 */
+		public function get_property_ranges( $property ) {
+			return $this->get_property( $property )->ranges;	
+		}
+		
+		/**
+		 * Get property domains (where is this used)
+		 */
+		public function get_property_domains( $property ) {
+			return $this->get_property( $property )->domains;	
+		}
+		
+		/**
+		 * Returns true if property is defined
+		 */
+		public function is_property( $property ) {
+			return !is_null( $this->get_property( $property ) );	
+		}
+		
+		/**
+		 * Get datatypes
+		 */
+		public function get_datatypes() {
+			return $this->schema_data->datatypes;	
+		}
+		
+		/**
+		 * Gets a single datatype
+		 */
+		public function get_datatype( $type ) {
+			return isset($this->get_datatypes()->$type) ? $this->get_datatypes()->$type : NULL;
+		}
+		
+		/**
+		 *
+		 */
+		public function get_datatype_id( $type ) {
+			return $this->get_datatype( $type )->id;
+		}
+		
+		/**
+		 *
+		 */
+		public function get_datatype_label( $type ) {
+			return $this->get_datatype( $type )->label;
+		}
+		
+		/**
+		 *	Get all the ancestors of a datatype
+		 */
+		public function get_datatype_ancestors( $type, $recursive = true ) {
+			return $recursive ? $this->get_datatype( $type )->ancestors : $this->get_datatype( $type )->supertypes;
+		}
+		
+		/**
+		 * Get datatype descendants
+		 */
+		public function get_datatype_descendants( $type, $recursive = true ) {
+			$result = $this->get_datatype( $type )->subtypes;
+			
+			if ($recursive) :
+				$results = array();
+				foreach( $result as $descendant )
+					 $results[$descendant] = $this->get_datatype_descendants( $descendant, $recursive );
+				return $results;
+			endif;
+			
+			return $result;
+		}
+		
+		/**
+		 * Gets a datatype comment
+		 */
+		public function get_datatype_comment( $type, $html = true ) {
+			return $html ? $this->get_datatype( $type )->comment : $this->get_datatype( $type )->comment_plain;
+		}
+		
+		/**
+		 *
+		 */
+		public function get_datatype_url( $type ) {
+			return $this->get_datatype( $type )->url;
+		}
+		
+		/**
+		 * Returns true if type is defined
+		 */
+		public function is_datatype( $type ) {
+			return !is_null( $this->get_datatype( $type ) );
 		}
 		
 		/**
