@@ -29,6 +29,8 @@ License: GPL v2
 	http://www.google.com/webmasters/tools/richsnippets
 	
 Actions Hooks:
+	raven_sc_register_settings	: runs when the settings are registered
+	raven_sc_options_validate	: runs when the settings are saved ( &array )
 	raven_sc_metabox			: runs when the metabox is outputted
 	raven_sc_save_metabox		: runs when the metabox is saved
 	
@@ -58,8 +60,8 @@ if ( !class_exists( "RavenSchema" ) ) :
 		 */
 		public function __construct() {		
 			add_action( 'plugins_loaded', array( $this, 'plugin_textdomain' ) );
-			add_action( 'admin_menu', array( $this, 'schema_settings' )	);
-			add_action( 'admin_init', array( $this, 'reg_settings' ) );
+			add_action( 'admin_menu', array( $this, 'add_pages' )	);
+			add_action( 'admin_init', array( $this, 'register_settings' ) );
 			add_action( 'admin_enqueue_scripts', array( $this, 'admin_scripts' ) );
 			add_action( 'admin_footer',	array( $this, 'schema_form'	) );
 			add_action( 'the_posts', array( $this, 'schema_loader' ) );
@@ -240,19 +242,35 @@ if ( !class_exists( "RavenSchema" ) ) :
 			
 			do_action( 'raven_sc_save_metabox' );
 		}
+		
+		/**
+		 * Gets the options value for a key
+		 */
+		function get_option( $key ) {
+			$schema_options	= get_option( 'schema_options' );	
+			return isset($schema_options[$key]) ? $schema_options[$key] : NULL;
+		}
+		
+		/**
+		 * Gets the tooltip value for a key
+		 */
+		function get_tooltip( $key ) {
+			$tooltips = apply_filters( 'raven_sc_admin_tooltip', array() );
+			return isset($tooltips[ $key ]) ? $tooltips[ $key ] : NULL;
+		}
 	
 		/**
 		 * build out settings page
 		 *
 		 * @return ravenSchema
 		 */
-		public function schema_settings() {
+		public function add_pages() {
 			add_submenu_page('options-general.php',
 				 __('Schema Creator', 'schema'),
 				 __('Schema Creator', 'schema'), 
 				'manage_options', 
 				'schema-creator', 
-				array( $this, 'schema_creator_display' )
+				array( $this, 'do_page' )
 			);
 		}
 	
@@ -261,8 +279,143 @@ if ( !class_exists( "RavenSchema" ) ) :
 		 *
 		 * @return ravenSchema
 		 */
-		public function reg_settings() {
-			register_setting( 'schema_options', 'schema_options');
+		public function register_settings() {
+			register_setting( 'schema_options', 'schema_options', array(&$this, 'options_validate' ) );
+			
+			// Information
+			add_settings_section('info_section', __('Information', 'schema'), array(&$this, 'options_info_section'), 'schema_options');
+			add_settings_field( 'info_version', __('Plugin Version', 'schema'), array(&$this, 'options_info_version'), 'schema_options', 'info_section');
+			
+			// CSS output
+			add_settings_section( 'display_section', __('Display', 'schema'), array( &$this, 'options_display_section' ), 'schema_options' );
+			add_settings_field( 'css', __( 'CSS output', 'schema' ), array( &$this, 'options_display_css' ), 'schema_options', 'display_section' );
+			
+			// HTML data applying
+			add_settings_section( 'data_section', __('Data', 'schema'), array( &$this, 'options_data_section' ), 'schema_options' );
+			add_settings_field( 'body', __( 'Body Tag', 'schema' ), array( &$this, 'options_data_body' ), 'schema_options', 'data_section' );
+			add_settings_field( 'post', __( 'Content Wrapper', 'schema' ), array( &$this, 'options_data_post' ), 'schema_options', 'data_section' );
+
+			do_action( 'raven_sc_register_settings' );
+		}
+		
+		/**
+		 * Outputs the info section HTML 
+		 */
+		function options_info_section() { 
+		?>
+            <div id='info_section'>
+                <p>
+				<?php 
+					printf(
+						__( 'By default, the %s plugin by %s includes unique CSS IDs and classes. You can reference the CSS to control 
+							the style of the HTML that the Schema Creator plugin outputs.' , 'schema' ).'<br>',
+						
+						// the plugin 
+						'<a target="_blank" 
+							href="'. esc_url( _x( 'http://schema-creator.org/?utm_source=wp&utm_medium=plugin&utm_campaign=schema', 'plugin uri', 'schema' ) ) .'" 
+							title="' . esc_attr( _x( 'Schema Creator', 'plugin name', 'schema' ) ) . '">'. _x( 'Schema Creator' , 'plugin name', 'schema') . '</a>', 
+						
+						// the author
+						'<a target="_blank" 
+							href="' . esc_url( _x( 'http://raventools.com/?utm_source=wp&utm_medium=plugin&utm_campaign=schema', 'author uri', 'schema' ) ) . '" 
+							title="' . esc_attr( _x('Raven Internet Marketing Tools', 'author', 'schema' ) ) . '"> ' . _x( 'Raven Internet Marketing Tools' , 'author', 'schema') . '</a>'
+					); 
+					_e('The plugin can also automatically include <code>http://schema.org/Blog</code> and <code>http://schema.org/BlogPosting</code> schemas to your pages and posts.', 'schema'); echo "<br>";			
+					printf(
+						__( 'Google also offers a %s to review and test the schemas in your pages and posts.', 'schema'),
+						
+						// Rich Snippet Testing Tool link
+						'<a target="_blank" 
+							href="' . esc_url( __( 'http://www.google.com/webmasters/tools/richsnippets/', 'schema' ) ) . '" 
+							title="' . esc_attr__( 'Rich Snippet Testing tool', 'schema' ) . '"> '. __( 'Rich Snippet Testing tool' , 'schema'). '</a>'
+					)
+				?>
+                </p>
+	
+			</div> <!-- end #info_section -->
+            <?php
+		}
+		
+		/**
+		 * Outputs the info version field
+		 */
+		function options_info_version() 
+		{ 
+			echo "<code id='info_version'>".SC_VER."</code>";
+		}
+					
+		/**
+		 * Outputs the display section HTML
+		 */
+		function options_display_section() { }
+		
+		/**
+		 * Outputs the display css field
+		 */
+		function options_display_css() { 
+			$css_hide = $this->get_option( 'css' );
+			$css_hide = isset( $css_hide ) && ($css_hide === true || $css_hide == 'true');
+
+			echo '<label for="schema_css">
+					<input type="checkbox" id="schema_css" name="schema_options[css]" class="schema_checkbox" value="true" '.checked($css_hide, true, false).'/>
+					 '.__('Exclude default CSS for schema output', 'schema').'
+				</label>
+				<span class="ap_tooltip" tooltip="'.$this->get_tooltip( 'default_css' ).'">'._x('(?)', 'tooltip button', 'schema').'</span>
+			';
+		}
+		
+		/**
+		 * Outputs the data section HTML
+		 */
+		function options_data_section() { }
+		
+		/**
+		 * Outputs data body field
+		 */
+		function options_data_body() { 
+			$body_tag = $this->get_option( 'body' );
+			$body_tag = isset( $body_tag ) && ($body_tag === true || $body_tag == 'true');
+			
+			echo '<label for="schema_body">
+					<input type="checkbox" id="schema_body" name="schema_options[body]" class="schema_checkbox" value="true" '.checked($body_tag, true, false).'/>
+					 '.__('Apply itemprop &amp; itemtype to main body tag', 'schema').'
+				</label>
+				<span class="ap_tooltip" tooltip="'.$this->get_tooltip( 'body_class' ).'">'._x('(?)', 'tooltip button', 'schema').'</span>
+			';
+			
+		}
+		
+		/** 
+		 * Outputs data post field
+		 */
+		function options_data_post() { 
+			$post_tag = $this->get_option( 'post' );
+			$post_tag = isset( $post_tag ) && ($post_tag === true || $post_tag == 'true');
+			
+			echo '<label for="schema_post">
+					<input type="checkbox" id="schema_post" name="schema_options[post]" class="schema_checkbox" value="true" '.checked($post_tag, true, false).'/>
+					 '.__('Apply itemscope &amp; itemtype to content wrapper', 'schema').'
+				</label>
+				<span class="ap_tooltip" tooltip="'.$this->get_tooltip( 'post_class' ).'">'._x('(?)', 'tooltip button', 'schema').'</span>
+			';
+		}
+		
+		/**
+		 * Validates input
+		 */
+		function options_validate( $input ) {
+			do_action_ref_array( 'raven_sc_options_validate', array( &$input ) );
+			
+			/* example: 
+			 * $input['some_value'] =  wp_filter_nohtml_kses($input['some_value']);	
+			 * $input['maps_zoom'] = min(21, max(0, intval($input['maps_zoom'])));
+			 * */
+			 
+			$input['css'] = isset( $input['css'] );
+			$input['body'] = isset( $input['body'] );
+			$input['post'] = isset( $input['post'] );
+			
+			return $input; // return validated input
 		}
 	
 		/**
@@ -317,88 +470,22 @@ if ( !class_exists( "RavenSchema" ) ) :
 		 *
 		 * @return ravenSchema
 		 */
-		public function schema_creator_display() {
+		public function do_page() {
 	
 			if (!current_user_can('manage_options') )
 				return;
-			?>
-	
+			?> 	
 			<div class="wrap">
 				<div class="icon32" id="icon-schema"><br></div>
 				<h2><?php _e('Schema Creator Settings', 'schema'); ?></h2>
-	
-				<div class="schema_options">
-					<div class="schema_form_text">
-						<p><?php printf(
-							__( 'By default, the %s plugin by %s includes unique CSS IDs and classes. You can reference the CSS to control 
-								the style of the HTML that the Schema Creator plugin outputs.' , 'schema' ),
-							
-							// the plugin 
-							'<a target="_blank" 
-								href="'. esc_url( _x( 'http://schema-creator.org/?utm_source=wp&utm_medium=plugin&utm_campaign=schema', 'plugin uri', 'schema' ) ) .'" 
-								title="' . esc_attr( _x( 'Schema Creator', 'plugin name', 'schema' ) ) . '">'. _x( 'Schema Creator' , 'plugin name', 'schema') . '</a>', 
-							
-							// the author
-							'<a target="_blank" 
-								href="' . esc_url( _x( 'http://raventools.com/?utm_source=wp&utm_medium=plugin&utm_campaign=schema', 'author uri', 'schema' ) ) . '" 
-								title="' . esc_attr( _x('Raven Internet Marketing Tools', 'author', 'schema' ) ) . '"> ' . _x( 'Raven Internet Marketing Tools' , 'author', 'schema') . '</a>'
-						); ?></p>
-		
-						<p><?php _e('The plugin can also automatically include <code>http://schema.org/Blog</code> and <code>http://schema.org/BlogPosting</code> schemas to your pages and posts.', 'schema'); ?></p>
-		
-						<p><?php printf(
-							__( 'Google also offers a %s to review and test the schemas in your pages and posts.', 'schema'),
-							
-							// Rich Snippet Testing Tool link
-							'<a target="_blank" 
-								href="' . esc_url( __( 'http://www.google.com/webmasters/tools/richsnippets/', 'schema' ) ) . '" 
-								title="' . esc_attr__( 'Rich Snippet Testing tool', 'schema' ) . '"> '. __( 'Rich Snippet Testing tool' , 'schema'). '</a>'
-						)?>
-						</p>
-	
-					</div> <!-- end .schema_form_text -->
-	
-					<div class="schema_form_options">
-						<form method="post" action="options.php">
-							<?php
-							settings_fields( 'schema_options' );
-							$schema_options	= get_option('schema_options');
-			
-							$css_hide	= (isset($schema_options['css']) && ($schema_options['css'] === true || $schema_options['css'] == 'true') ? 'checked="checked"' : '');
-							$body_tag	= (isset($schema_options['body']) && ($schema_options['body'] === true || $schema_options['body'] == 'true' ) ? 'checked="checked"' : '');
-							$post_tag	= (isset($schema_options['post']) && ($schema_options['post'] === true || $schema_options['post'] == 'true' ) ? 'checked="checked"' : '');
-			
-							$tooltips	= apply_filters( 'raven_sc_admin_tooltip', array() );
-			
-							?>
-			
-							<p>
-								<label for="schema_options[css]">
-									<input type="checkbox" id="schema_css" name="schema_options[css]" class="schema_checkbox" value="true" <?php echo $css_hide; ?>/> 
-									<?php _e('Exclude default CSS for schema output', 'schema'); ?>
-								</label>
-								<span class="ap_tooltip" tooltip="<?php echo $tooltips['default_css']; ?>"><?php _ex('(?)', 'tooltip button', 'schema'); ?></span>
-							</p>
-			
-							<p>
-								<label for="schema_options[body]">
-									<input type="checkbox" id="schema_body" name="schema_options[body]" class="schema_checkbox" value="true" <?php echo $body_tag; ?> /> 
-									<?php _e('Apply itemprop &amp; itemtype to main body tag', 'schema'); ?>
-								</label>
-								<span class="ap_tooltip" tooltip="<?php echo $tooltips['body_class']; ?>"><?php _ex('(?)', 'tooltip button', 'schema'); ?></span>
-							</p>
-	
-							<p>
-								<label for="schema_options[post]">
-									<input type="checkbox" id="schema_post" name="schema_options[post]" class="schema_checkbox" value="true" <?php echo $post_tag; ?> /> 
-									<?php _e('Apply itemscope &amp; itemtype to content wrapper', 'schema'); ?>
-								</label>
-								<span class="ap_tooltip" tooltip="<?php echo $tooltips['post_class']; ?>"><?php _ex('(?)', 'tooltip button', 'schema'); ?></span>
-							</p>
-	
-							<p class="submit"><input type="submit" class="button-primary" value="<?php _e('Save Changes', 'schema') ?>" /></p>
-						</form>
-					</div> <!-- end .schema_form_options -->
+                <div class="schema_options">
+                	<form action="options.php" method="post">
+						<?php settings_fields( 'schema_options' ); ?>		
+	 					<?php do_settings_sections('schema_options'); ?>
+	                    <p class="submit">
+                        	<input name="Submit" type="submit" class="button-primary" value="<?php esc_attr_e('Save Changes'); ?>" />
+                    	</p>	
+                	</form>
 				</div> <!-- end .schema_options -->
 			</div> <!-- end .wrap -->
 		<?php }
