@@ -30,6 +30,8 @@ License: GPL v2
 
 */
 
+include_once "schema-scraper.php";
+
 if(!defined('SC_BASE'))
 	define('SC_BASE', plugin_basename(__FILE__) );
 
