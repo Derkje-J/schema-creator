@@ -40,6 +40,23 @@ if (!class_exists("DJ_SchemaScraper"))
 		}
 		
 		/**
+		 * Creates a new instance of DJ_SchemaScraper
+		 *
+		 * @remarks use DJ_SchemaScraper::singleton() outside the class hieracrchy
+		 */
+		protected function __construct() 
+		{	
+			add_filter( 'dj_schemascraper_scrapeurl', array( &$this, 'get_scrapeurl' ) );
+			add_filter( 'dj_schemascraper_cachepath', array( &$this, 'get_cachepath' ) );			
+			//add_filter( 'raven_sc_admin_tooltip', array( $this, 'get_tooltips' ) );
+			add_filter( 'dj_scraper_default_settings', array( $this, 'get_default_settings' ) );
+			
+			add_action( 'raven_sc_default_settings', array( $this, 'default_settings' ) );
+			add_action( 'raven_sc_register_settings', array( $this, 'register_settings' ) );
+			add_action( 'raven_sc_options_form', create_function( '', 'settings_fields(\'dj_schemascraper\'); do_settings_sections(\'dj_schemascraper\');' ) );
+		}
+		
+		/**
 		 * Gets an option value by key
 		 */
 		public function get_option( $key ) {
@@ -49,25 +66,12 @@ if (!class_exists("DJ_SchemaScraper"))
 		}
 		
 		/**
-		 * Creates a new instance of DJ_SchemaScraper
-		 *
-		 * @remarks use DJ_SchemaScraper::singleton() outside the class hieracrchy
-		 */
-		protected function __construct() 
-		{	
-			add_filter( 'dj_schemascraper_scrapeurl', array( &$this, 'get_scrapeurl' ) );
-			add_filter( 'dj_schemascraper_cachepath', array( &$this, 'get_cachepath' ) );
-			
-			add_action( 'admin_init', array( &$this, 'retrieve_schema_data' ) );
-		}
-		
-		/**
 		 * Runs when the admin initializes
 		 */
 		public function retrieve_schema_data() 
 		{
 			$url  =	$this->get_option( 'scrape_url' );
-			$path = $this->get_option( 'cache_path' );
+			$path = WP_CONTENT_DIR . $this->get_option( 'cache_path' );
 			
 			// Nope, we need to set options first
 			if ( empty( $url ) || empty( $path ) )
@@ -95,6 +99,79 @@ if (!class_exists("DJ_SchemaScraper"))
 				 $this->schema_data->dj_fecth->timestamp = microtime( true );
 				 
 			print_r( $this->schema_data );
+		}
+		
+		/**
+		 * Registers new option group
+		 */
+		function register_settings() {
+			register_setting( 'dj_schemascraper', 'dj_schemascraper', array(&$this, 'options_validate' ) );	
+			
+			// Scraper section
+			add_settings_section( 'scraper_section', __('Schema Scraper', 'schema'), array( &$this, 'options_scraper_section' ), 'dj_schemascraper' );
+			add_settings_field( 'scrape_url', __( 'Scrape URL', 'schema' ), array( &$this, 'options_scraper_scrapeurl' ), 'dj_schemascraper', 'scraper_section' );
+			add_settings_field( 'cache_path', __( 'Cache Path', 'schema' ), array( &$this, 'options_scraper_cachepath' ), 'dj_schemascraper', 'scraper_section' );
+		}
+		
+		/**
+		 * Outputs the scraper section HTML
+		 */
+		function options_scraper_section() {
+			echo '<p id="scraper_section">';
+			_e( 'The scraper module tries to retrieve any arbitrary schema in JSON format. In the end, the schema creator should be able to parse this data and provide functionality for any schema on the scrape url.', 'schema' );
+			echo '</p>';
+		}
+		
+		/**
+		 * Outputs the scraper url field
+		 */
+		function options_scraper_scrapeurl() {
+			echo '<input type="textfield" size="60" id="scraper_scrape_url" name="dj_schemascraper[scrape_url]" class="schema_textfield"
+				value="'.$this->get_option('scrape_url').'"/>';
+		}
+		
+		/**
+		 * Outputs the scraper cache path field
+		 */
+		function options_scraper_cachepath() {
+			echo 'WP_CONTENT_DIR <input type="textfield" size="60" id="scraper_cache_path" name="dj_schemascraper[cache_path]" class="schema_textfield" 
+				value="'.$this->get_option('cache_path').'"/>';
+		}
+		
+		/**
+		 * Validates the options
+		 */
+		function options_validate( $input ) {
+			//$input["scrape_url"]
+			//$input["cache_path"] 
+			return $input;
+		}
+		
+		/**
+		 * Sets default settings
+		 */
+		public function default_settings( ) {
+			
+			$options_check	= get_option('dj_schemascraper');
+			if(empty( $options_check ))
+				$options_check = array();
+	
+			// Fetch defaults.
+			$default = array();
+			$default = apply_filters( 'dj_scraper_default_settings', &$default );
+			
+			// Existing optons will override defaults
+			update_option('dj_schemascraper', $default + $options_check);
+		}
+		
+		/**
+		 * Gets the default settings
+		 */
+		public function get_default_settings( $default ) {
+			
+			$default["scrape_url"] = "http://schema.rdfs.org/all.json";
+			$default["cache_path"] = '/cache/';
+			return $default;	
 		}
 			
 	}
