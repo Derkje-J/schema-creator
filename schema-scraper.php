@@ -18,11 +18,15 @@ if (!class_exists("DJ_SchemaScraper"))
 	define("DJ_SCRAPE_BASE", plugin_basename(__FILE__));
 	define("DJ_SCRAPE_VERSION", '1.0');
 	
+    if( !class_exists( 'WP_Http' ) )
+        include_once( ABSPATH . WPINC. '/class-http.php' );
+	
 	class DJ_SchemaScraper {
 		
 		private static $singleton;
 		private $options;
 		private $schema_data;
+		private $timestamp;
 		
 		/**
 		 * Gets a singleton of this class
@@ -48,12 +52,13 @@ if (!class_exists("DJ_SchemaScraper"))
 		{	
 			add_filter( 'dj_schemascraper_scrapeurl', array( &$this, 'get_scrapeurl' ) );
 			add_filter( 'dj_schemascraper_cachepath', array( &$this, 'get_cachepath' ) );			
-			//add_filter( 'raven_sc_admin_tooltip', array( $this, 'get_tooltips' ) );
-			add_filter( 'dj_scraper_default_settings', array( $this, 'get_default_settings' ) );
+			//add_filter( 'raven_sc_admin_tooltip', array( &$this, 'get_tooltips' ) );
+			add_filter( 'dj_scraper_default_settings', array( &$this, 'get_default_settings' ) );
 			
-			add_action( 'raven_sc_default_settings', array( $this, 'default_settings' ) );
-			add_action( 'raven_sc_register_settings', array( $this, 'register_settings' ) );
+			add_action( 'raven_sc_default_settings', array( &$this, 'default_settings' ) );
+			add_action( 'raven_sc_register_settings', array( &$this, 'register_settings' ) );
 			add_action( 'raven_sc_options_form', create_function( '', 'settings_fields(\'dj_schemascraper\'); do_settings_sections(\'dj_schemascraper\');' ) );
+			add_action( 'admin_init', array( &$this, 'retrieve_schema_data' ) );
 		}
 		
 		/**
@@ -84,21 +89,34 @@ if (!class_exists("DJ_SchemaScraper"))
 				$this->schema_data = @json_decode( file_get_contents( $path . $file ) );
 				
 				if ( is_object( $this->schema_data ) ) :
-					$cache_time = $this->get_option( 'cache_time' );
-					$timestamp  = $this->schema_data->dj_fecth->timestamp;
+					$cache_time = $this->get_option( 'cache_time' ) ?: 3600;
+					$this->timestamp = filemtime( $path . $file );
 					
-					if ($timestamp && microtime( true ) - $timestamp <= $cache_time)
+					if ($this->timestamp && (microtime( true ) - $this->timestamp) <= $cache_time)
 						return;
 				endif;
 			endif;
 			
 			// Nope, we still need to fetch it
-			$this->schema_data = @json_decode( file_get_contents( $url ) );
-			
-			if ( is_object( $this->schema_data ) )
-				 $this->schema_data->dj_fecth->timestamp = microtime( true );
+			$this->schema_data = @json_decode( $this->get_document( $url ) );
+			if( is_object( $this->schema_data ) ) :
+				 $this->timestamp = microtime( true );
 				 
-			print_r( $this->schema_data );
+				// We got it, so try to write it
+				if ( !is_wp_error( $this->schema_data ) )
+					@file_put_contents( $path . $file, json_encode( $this->schema_data ) );	
+			endif;
+		}
+		
+		/**
+		 *	Gets a document over an HTTP request
+		 */
+		public function get_document( $url ) {
+			$response = wp_remote_get( $url );
+
+			if ( is_wp_error( $response ) ) 
+				return json_encode( $response );
+			return $response["body"];
 		}
 		
 		/**
@@ -111,6 +129,8 @@ if (!class_exists("DJ_SchemaScraper"))
 			add_settings_section( 'scraper_section', __('Schema Scraper', 'schema'), array( &$this, 'options_scraper_section' ), 'dj_schemascraper' );
 			add_settings_field( 'scrape_url', __( 'Scrape URL', 'schema' ), array( &$this, 'options_scraper_scrapeurl' ), 'dj_schemascraper', 'scraper_section' );
 			add_settings_field( 'cache_path', __( 'Cache Path', 'schema' ), array( &$this, 'options_scraper_cachepath' ), 'dj_schemascraper', 'scraper_section' );
+			add_settings_field( 'cache_time', __( 'Cache Time', 'schema' ), array( &$this, 'options_scraper_cachetime' ), 'dj_schemascraper', 'scraper_section' );
+
 		}
 		
 		/**
@@ -126,7 +146,7 @@ if (!class_exists("DJ_SchemaScraper"))
 		 * Outputs the scraper url field
 		 */
 		function options_scraper_scrapeurl() {
-			echo '<input type="textfield" size="60" id="scraper_scrape_url" name="dj_schemascraper[scrape_url]" class="schema_textfield"
+			echo '<input type="textfield" size="60" id="scraper_scrape_url" name="dj_schemascraper[scrape_url]" class="schema_textfield options-big"
 				value="'.$this->get_option('scrape_url').'"/>';
 		}
 		
@@ -134,8 +154,17 @@ if (!class_exists("DJ_SchemaScraper"))
 		 * Outputs the scraper cache path field
 		 */
 		function options_scraper_cachepath() {
-			echo 'WP_CONTENT_DIR <input type="textfield" size="60" id="scraper_cache_path" name="dj_schemascraper[cache_path]" class="schema_textfield" 
+			echo '<label for="scraper_cache_path">WP_CONTENT_DIR</labe> <input type="textfield" size="60" id="scraper_cache_path" 
+				name="dj_schemascraper[cache_path]" class="schema_textfield options-big" 
 				value="'.$this->get_option('cache_path').'"/>';
+		}
+		
+		/**
+		 *
+		 */
+		function options_scraper_cachetime() {
+			echo '<input type="textfield" size="5" id="scraper_cache_time" name="dj_schemascraper[cache_time]" class="schema_textfield options-big" 
+				value="'.$this->get_option('cache_time').'"/> <label for="scraper_cache_time">'._x( 'seconds', 'cache time', 'schema' ).'</label>';
 		}
 		
 		/**
@@ -144,6 +173,7 @@ if (!class_exists("DJ_SchemaScraper"))
 		function options_validate( $input ) {
 			//$input["scrape_url"]
 			//$input["cache_path"] 
+			$input["cache_time"] = max( array(0, intval( $input["cache_time"] ) ) );
 			return $input;
 		}
 		
