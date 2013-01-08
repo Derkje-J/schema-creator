@@ -192,15 +192,15 @@ if ( !class_exists( "RavenSchema" ) ) :
 			
 			// Add downwards compatability
 			$disable_body = get_post_meta($post->ID, '_schema_disable_body', true);
-			$disable_body = $disable_body === true || $disable_body == 'true';
+			$disable_body = $disable_body === true || $disable_body == 'true' || $disable_body == '1';
 			$disable_post = get_post_meta($post->ID, '_schema_disable_post', true);
-			$disable_post = $disable_post === true || $disable_post == 'true';
+			$disable_post = $disable_post === true || $disable_post == 'true' || $disable_post == '1';
 	
 			// use nonce for security
 			wp_nonce_field( SC_BASE, 'schema_nonce' );
 			?>
 			
-			<p class="schema-post-option">';
+			<p class="schema-post-option">
 				<input type="checkbox" name="schema_disable_body" id="schema_disable_body" value="true" <?php echo checked( $disable_body, true, false ); ?>>
 				<label for="schema_disable_body"><?php _e('Disable body itemscopes on this post.', 'schema'); ?></label>
 			</p>
@@ -569,7 +569,7 @@ if ( !class_exists( "RavenSchema" ) ) :
 				return $classes;
 	
 			$disable_body = get_post_meta($post->ID, '_schema_disable_body', true);
-			if ( $disable_body === true || $disable_body == 'true' )
+			if ( $disable_body === true || $disable_body == 'true' || $disable_body == '1' )
 				return $classes;
 	
 			$backtrace = debug_backtrace();
@@ -643,7 +643,7 @@ if ( !class_exists( "RavenSchema" ) ) :
 			// check for single post disable
 			global $post;
 			$disable_post = get_post_meta( $post->ID, '_schema_disable_post', true );
-			if( $disable_post === true || $disable_post == 'true' )
+			if( $disable_post === true || $disable_post == 'true' || $disable_post == '1' )
 				return $content;
 	
 			// updated content filter to wrap the itemscope

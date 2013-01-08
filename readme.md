@@ -29,8 +29,11 @@ The Schema Creator plugin places an icon above the Post/Page rich text editor (n
 ### Can I test the output to see how the search engine will view it?
 Yes, although there is no guarantee that it will indeed show up that way. Google offers a [Rich Snippet Testing tool](http://www.google.com/webmasters/tools/richsnippets/ "Google Rich Snippet Test") to review.
 
-###I have a problem. Where do I go?
+### I have a problem. Where do I go?
 This plugin is also maintained on [GitHub](https://github.com/norcross/schema-creator/ "Schema Creator on GitHub"). The best place to post questions / issues / bugs / enhancement requests is on the [issues page](https://github.com/norcross/schema-creator/issues "Issues page for Schema Creator on GitHub") there.
+
+### How can I use this in my own language?
+If your `locale` is not provided in the `/languages/` subfolder, you have to either wait or create your own language file. For example, you could use POEdit to open default.po and save it as your own locale and translate it.
 
 Screenshots
 --------------------------
@@ -41,6 +44,18 @@ Screenshots
 4. This is an example of schema being rendered on a post. [link](https://github.com/norcross/schema-creator/blob/master/screenshot-4.png)
 5. Schema Creator also has a Settings page. [link](https://github.com/norcross/schema-creator/blob/master/screenshot-5.png)
 6. The Settings page allows you to turn on and off CSS, and to also include or exclude certain microdata attributes. [link](https://github.com/norcross/schema-creator/blob/master/screenshot-6.png)
+
+Action Hooks
+--------------
+- `raven_sc_register_settings` runs when the settings are registered. Use this hook to register more settings in the same options namespace.
+- `raven_sc_options_validate` runs when the settings are saved ( &array ). Use this hook to save the settings. Accepts one referenced array as parameter.
+- `raven_sc_metabox` runs when the metabox is outputted. Use this hook to add to the metabox.
+- `raven_sc_save_metabox` runs when the metabox is saved. Use this hook to save added options from the metabox.
+
+Filters
+--------------
+- `raven_sc_default_settings` gets default settings values. Add filters to add more default settings. In conjunction with `raven_sc_register_settings`.
+- `raven_sc_admin_tooltip` gets the tooltips for admin pages. Add filters to add more tooltips. In conjunction with `raven_sc_register_settings`.
 
 Upgrade Notice
 --------------
