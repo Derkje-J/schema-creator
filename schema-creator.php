@@ -30,15 +30,15 @@ License: GPL v2
 	
 Actions Hooks:
 	raven_sc_register_settings	: runs when the settings are registered
+	raven_sc_default_settings	: runs when plugin is activated
 	raven_sc_options_validate	: runs when the settings are saved ( &array )
+	raven_sc_options_form		: runs when the settings form is outputted
 	raven_sc_metabox			: runs when the metabox is outputted
 	raven_sc_save_metabox		: runs when the metabox is saved
 	
 Filters:
 	raven_sc_default_settings	: gets default settings values
 	raven_sc_admin_tooltip		: gets the tooltips for admin pages
-	
-
 */
 
 include_once "schema-scraper.php";
@@ -307,8 +307,7 @@ if ( !class_exists( "RavenSchema" ) ) :
                 <p>
 				<?php 
 					printf(
-						__( 'By default, the %s plugin by %s includes unique CSS IDs and classes. You can reference the CSS to control 
-							the style of the HTML that the Schema Creator plugin outputs.' , 'schema' ).'<br>',
+						__( 'By default, the %s plugin by %s includes unique CSS IDs and classes. You can reference the CSS to control the style of the HTML that the Schema Creator plugin outputs.' , 'schema' ).'<br>',
 						
 						// the plugin 
 						'<a target="_blank" 
@@ -320,7 +319,7 @@ if ( !class_exists( "RavenSchema" ) ) :
 							href="' . esc_url( _x( 'http://raventools.com/?utm_source=wp&utm_medium=plugin&utm_campaign=schema', 'author uri', 'schema' ) ) . '" 
 							title="' . esc_attr( _x('Raven Internet Marketing Tools', 'author', 'schema' ) ) . '"> ' . _x( 'Raven Internet Marketing Tools' , 'author', 'schema') . '</a>'
 					); 
-					_e('The plugin can also automatically include <code>http://schema.org/Blog</code> and <code>http://schema.org/BlogPosting</code> schemas to your pages and posts.', 'schema'); echo "<br>";			
+					_e( 'The plugin can also automatically include <code>http://schema.org/Blog</code> and <code>http://schema.org/BlogPosting</code> schemas to your pages and posts.', 'schema'); echo "<br>";			
 					printf(
 						__( 'Google also offers a %s to review and test the schemas in your pages and posts.', 'schema'),
 						
@@ -382,7 +381,6 @@ if ( !class_exists( "RavenSchema" ) ) :
 				</label>
 				<span class="ap_tooltip" tooltip="'.$this->get_tooltip( 'body_class' ).'">'._x('(?)', 'tooltip button', 'schema').'</span>
 			';
-			
 		}
 		
 		/** 
@@ -429,10 +427,13 @@ if ( !class_exists( "RavenSchema" ) ) :
 				$options_check = array();
 	
 			// Fetch defaults.
-			$default = apply_filters( 'raven_sc_default_settings', array() );
-
+			$default = array();
+			$default = apply_filters( 'raven_sc_default_settings', &$default );
+			
 			// Existing optons will override defaults
 			update_option('schema_options', $default + $options_check);
+			
+			do_action( 'raven_sc_default_settings' );
 		}
 		
 		/**
@@ -481,7 +482,8 @@ if ( !class_exists( "RavenSchema" ) ) :
                 <div class="schema_options">
                 	<form action="options.php" method="post">
 						<?php settings_fields( 'schema_options' ); ?>		
-	 					<?php do_settings_sections('schema_options'); ?>
+	 					<?php do_settings_sections( 'schema_options' ); ?>
+                        <?php do_action( 'raven_sc_options_form' ); ?>
 	                    <p class="submit">
                         	<input name="Submit" type="submit" class="button-primary" value="<?php esc_attr_e('Save Changes'); ?>" />
                     	</p>	
