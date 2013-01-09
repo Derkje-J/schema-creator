@@ -653,727 +653,341 @@ if ( !class_exists( "RavenSchema" ) ) :
 		return $content;
 	
 		}
+		
+		/**
+		 * Gets the countries and their translated counterparts
+		 */
+		public function get_countries() {
+			$countries = array (
+				'US' => __('United States', 'schema'),
+				'CA' => __('Canada', 'schema'),
+				'MX' => __('Mexico', 'schema'),
+				'GB' => __('United Kingdom', 'schema'),
+			
+				'AF' => __('Afghanistan', 'schema'),
+				'AX' => __('Aland Islands', 'schema'),
+				'AL' => __('Albania', 'schema'),
+				'DZ' => __('Algeria', 'schema'),
+				'AS' => __('American Samoa', 'schema'),
+				'AD' => __('Andorra', 'schema'),
+				'AO' => __('Angola', 'schema'),
+				'AI' => __('Anguilla', 'schema'),
+				'AQ' => __('Antarctica', 'schema'),
+				'AG' => __('Antigua And Barbuda', 'schema'),
+				'AR' => __('Argentina', 'schema'),
+				'AM' => __('Armenia', 'schema'),
+				'AW' => __('Aruba', 'schema'),
+				'AU' => __('Australia', 'schema'),
+				'AT' => __('Austria', 'schema'),
+				'AZ' => __('Azerbaijan', 'schema'),
+				'BS' => __('Bahamas', 'schema'),
+				'BH' => __('Bahrain', 'schema'),
+				'BD' => __('Bangladesh', 'schema'),
+				'BB' => __('Barbados', 'schema'),
+				'BY' => __('Belarus', 'schema'),
+				'BE' => __('Belgium', 'schema'),
+				'BZ' => __('Belize', 'schema'),
+				'BJ' => __('Benin', 'schema'),
+				'BM' => __('Bermuda', 'schema'),
+				'BT' => __('Bhutan', 'schema'),
+				'BO' => __('Bolivia, Plurinational State Of', 'schema'),
+				'BQ' => __('Bonaire, Sint Eustatius And Saba', 'schema'),
+				'BA' => __('Bosnia And Herzegovina', 'schema'),
+				'BW' => __('Botswana', 'schema'),
+				'BV' => __('Bouvet Island', 'schema'),
+				'BR' => __('Brazil', 'schema'),
+				'IO' => __('British Indian Ocean Territory', 'schema'),
+				'BN' => __('Brunei Darussalam', 'schema'),
+				'BG' => __('Bulgaria', 'schema'),
+				'BF' => __('Burkina Faso', 'schema'),
+				'BI' => __('Burundi', 'schema'),
+				'KH' => __('Cambodia', 'schema'),
+				'CM' => __('Cameroon', 'schema'),
+				'CV' => __('Cape Verde', 'schema'),
+				'KY' => __('Cayman Islands', 'schema'),
+				'CF' => __('Central African Republic', 'schema'),
+				'TD' => __('Chad', 'schema'),
+				'CL' => __('Chile', 'schema'),
+				'CN' => __('China', 'schema'),
+				'CX' => __('Christmas Island', 'schema'),
+				'CC' => __('Cocos (Keeling) Islands', 'schema'),
+				'CO' => __('Colombia', 'schema'),
+				'KM' => __('Comoros', 'schema'),
+				'CG' => __('Congo', 'schema'),
+				'CD' => __('Congo, The Democratic Republic Of The', 'schema'),
+				'CK' => __('Cook Islands', 'schema'),
+				'CR' => __('Costa Rica', 'schema'),
+				'CI' => __('Cote D\'Ivoire', 'schema'),
+				'HR' => __('Croatia', 'schema'),
+				'CU' => __('Cuba', 'schema'),
+				'CW' => __('Curacao', 'schema'),
+				'CY' => __('Cyprus', 'schema'),
+				'CZ' => __('Czech Republic', 'schema'),
+				'DK' => __('Denmark', 'schema'),
+				'DJ' => __('Djibouti', 'schema'),
+				'DM' => __('Dominica', 'schema'),
+				'DO' => __('Dominican Republic', 'schema'),
+				'EC' => __('Ecuador', 'schema'),
+				'EG' => __('Egypt', 'schema'),
+				'SV' => __('El Salvador', 'schema'),
+				'GQ' => __('Equatorial Guinea', 'schema'),
+				'ER' => __('Eritrea', 'schema'),
+				'EE' => __('Estonia', 'schema'),
+				'ET' => __('Ethiopia', 'schema'),
+				'FK' => __('Falkland Islands (Malvinas)', 'schema'),
+				'FO' => __('Faroe Islands', 'schema'),
+				'FJ' => __('Fiji', 'schema'),
+				'FI' => __('Finland', 'schema'),
+				'FR' => __('France', 'schema'),
+				'GF' => __('French Guiana', 'schema'),
+				'PF' => __('French Polynesia', 'schema'),
+				'TF' => __('French Southern Territories', 'schema'),
+				'GA' => __('Gabon', 'schema'),
+				'GM' => __('Gambia', 'schema'),
+				'GE' => __('Georgia', 'schema'),
+				'DE' => __('Germany', 'schema'),
+				'GH' => __('Ghana', 'schema'),
+				'GI' => __('Gibraltar', 'schema'),
+				'GR' => __('Greece', 'schema'),
+				'GL' => __('Greenland', 'schema'),
+				'GD' => __('Grenada', 'schema'),
+				'GP' => __('Guadeloupe', 'schema'),
+				'GU' => __('Guam', 'schema'),
+				'GT' => __('Guatemala', 'schema'),
+				'GG' => __('Guernsey', 'schema'),
+				'GN' => __('Guinea', 'schema'),
+				'GW' => __('Guinea-Bissau', 'schema'),
+				'GY' => __('Guyana', 'schema'),
+				'HT' => __('Haiti', 'schema'),
+				'HM' => __('Heard Island And Mcdonald Islands', 'schema'),
+				'VA' => __('Vatican City', 'schema'),
+				'HN' => __('Honduras', 'schema'),
+				'HK' => __('Hong Kong', 'schema'),
+				'HU' => __('Hungary', 'schema'),
+				'IS' => __('Iceland', 'schema'),
+				'IN' => __('India', 'schema'),
+				'ID' => __('Indonesia', 'schema'),
+				'IR' => __('Iran', 'schema'),
+				'IQ' => __('Iraq', 'schema'),
+				'IE' => __('Ireland', 'schema'),
+				'IM' => __('Isle Of Man', 'schema'),
+				'IL' => __('Israel', 'schema'),
+				'IT' => __('Italy', 'schema'),
+				'JM' => __('Jamaica', 'schema'),
+				'JP' => __('Japan', 'schema'),
+				'JE' => __('Jersey', 'schema'),
+				'JO' => __('Jordan', 'schema'),
+				'KZ' => __('Kazakhstan', 'schema'),
+				'KE' => __('Kenya', 'schema'),
+				'KI' => __('Kiribati', 'schema'),
+				'KP' => __('North Korea', 'schema'),
+				'KR' => __('South Korea', 'schema'),
+				'KW' => __('Kuwait', 'schema'),
+				'KG' => __('Kyrgyzstan', 'schema'),
+				'LA' => __('Laos', 'schema'),
+				'LV' => __('Latvia', 'schema'),
+				'LB' => __('Lebanon', 'schema'),
+				'LS' => __('Lesotho', 'schema'),
+				'LR' => __('Liberia', 'schema'),
+				'LY' => __('Libya', 'schema'),
+				'LI' => __('Liechtenstein', 'schema'),
+				'LT' => __('Lithuania', 'schema'),
+				'LU' => __('Luxembourg', 'schema'),
+				'MO' => __('Macao', 'schema'),
+				'MK' => __('Macedonia', 'schema'),
+				'MG' => __('Madagascar', 'schema'),
+				'MW' => __('Malawi', 'schema'),
+				'MY' => __('Malaysia', 'schema'),
+				'MV' => __('Maldives', 'schema'),
+				'ML' => __('Mali', 'schema'),
+				'MT' => __('Malta', 'schema'),
+				'MH' => __('Marshall Islands', 'schema'),
+				'MQ' => __('Martinique', 'schema'),
+				'MR' => __('Mauritania', 'schema'),
+				'MU' => __('Mauritius', 'schema'),
+				'YT' => __('Mayotte', 'schema'),
+				'FM' => __('Micronesia', 'schema'),
+				'MD' => __('Moldova', 'schema'),
+				'MC' => __('Monaco', 'schema'),
+				'MN' => __('Mongolia', 'schema'),
+				'ME' => __('Montenegro', 'schema'),
+				'MS' => __('Montserrat', 'schema'),
+				'MA' => __('Morocco', 'schema'),
+				'MZ' => __('Mozambique', 'schema'),
+				'MM' => __('Myanmar', 'schema'),
+				'NA' => __('Namibia', 'schema'),
+				'NR' => __('Nauru', 'schema'),
+				'NP' => __('Nepal', 'schema'),
+				'NL' => __('Netherlands', 'schema'),
+				'NC' => __('New Caledonia', 'schema'),
+				'NZ' => __('New Zealand', 'schema'),
+				'NI' => __('Nicaragua', 'schema'),
+				'NE' => __('Niger', 'schema'),
+				'NG' => __('Nigeria', 'schema'),
+				'NU' => __('Niue', 'schema'),
+				'NF' => __('Norfolk Island', 'schema'),
+				'MP' => __('Northern Mariana Islands', 'schema'),
+				'NO' => __('Norway', 'schema'),
+				'OM' => __('Oman', 'schema'),
+				'PK' => __('Pakistan', 'schema'),
+				'PW' => __('Palau', 'schema'),
+				'PS' => __('Palestine', 'schema'),
+				'PA' => __('Panama', 'schema'),
+				'PG' => __('Papua New Guinea', 'schema'),
+				'PY' => __('Paraguay', 'schema'),
+				'PE' => __('Peru', 'schema'),
+				'PH' => __('Philippines', 'schema'),
+				'PN' => __('Pitcairn', 'schema'),
+				'PL' => __('Poland', 'schema'),
+				'PT' => __('Portugal', 'schema'),
+				'PR' => __('Puerto Rico', 'schema'),
+				'QA' => __('Qatar', 'schema'),
+				'RE' => __('Reunion', 'schema'),
+				'RO' => __('Romania', 'schema'),
+				'RU' => __('Russian Federation', 'schema'),
+				'RW' => __('Rwanda', 'schema'),
+				'BL' => __('St. Barthelemy', 'schema'),
+				'SH' => __('St. Helena', 'schema'),
+				'KN' => __('St. Kitts And Nevis', 'schema'),
+				'LC' => __('St. Lucia', 'schema'),
+				'MF' => __('St. Martin (French Part)', 'schema'),
+				'PM' => __('St. Pierre And Miquelon', 'schema'),
+				'VC' => __('St. Vincent And The Grenadines', 'schema'),
+				'WS' => __('Samoa', 'schema'),
+				'SM' => __('San Marino', 'schema'),
+				'ST' => __('Sao Tome And Principe', 'schema'),
+				'SA' => __('Saudi Arabia', 'schema'),
+				'SN' => __('Senegal', 'schema'),
+				'RS' => __('Serbia', 'schema'),
+				'SC' => __('Seychelles', 'schema'),
+				'SL' => __('Sierra Leone', 'schema'),
+				'SG' => __('Singapore', 'schema'),
+				'SX' => __('Sint Maarten (Dutch Part)', 'schema'),
+				'SK' => __('Slovakia', 'schema'),
+				'SI' => __('Slovenia', 'schema'),
+				'SB' => __('Solomon Islands', 'schema'),
+				'SO' => __('Somalia', 'schema'),
+				'ZA' => __('South Africa', 'schema'),
+				'GS' => __('South Georgia', 'schema'),
+				'SS' => __('South Sudan', 'schema'),
+				'ES' => __('Spain', 'schema'),
+				'LK' => __('Sri Lanka', 'schema'),
+				'SD' => __('Sudan', 'schema'),
+				'SR' => __('Suriname', 'schema'),
+				'SJ' => __('Svalbard', 'schema'),
+				'SZ' => __('Swaziland', 'schema'),
+				'SE' => __('Sweden', 'schema'),
+				'CH' => __('Switzerland', 'schema'),
+				'SY' => __('Syria', 'schema'),
+				'TW' => __('Taiwan', 'schema'),
+				'TJ' => __('Tajikistan', 'schema'),
+				'TZ' => __('Tanzania', 'schema'),
+				'TH' => __('Thailand', 'schema'),
+				'TL' => __('Timor-Leste', 'schema'),
+				'TG' => __('Togo', 'schema'),
+				'TK' => __('Tokelau', 'schema'),
+				'TO' => __('Tonga', 'schema'),
+				'TT' => __('Trinidad And Tobago', 'schema'),
+				'TN' => __('Tunisia', 'schema'),
+				'TR' => __('Turkey', 'schema'),
+				'TM' => __('Turkmenistan', 'schema'),
+				'TC' => __('Turks And Caicos Islands', 'schema'),
+				'TV' => __('Tuvalu', 'schema'),
+				'UG' => __('Uganda', 'schema'),
+				'UA' => __('Ukraine', 'schema'),
+				'AE' => __('United Arab Emirates', 'schema'),
+				'UM' => __('United States Minor Outlying Islands', 'schema'),
+				'UY' => __('Uruguay', 'schema'),
+				'UZ' => __('Uzbekistan', 'schema'),
+				'VU' => __('Vanuatu', 'schema'),
+				'VE' => __('Venezuela', 'schema'),
+				'VN' => __('Vietnam', 'schema'),
+				'VG' => __('British Virgin Islands ', 'schema'),
+				'VI' => __('U.S. Virgin Islands ', 'schema'),
+				'WF' => __('Wallis And Futuna', 'schema'),
+				'EH' => __('Western Sahara', 'schema'),
+				'YE' => __('Yemen', 'schema'),
+				'ZM' => __('Zambia', 'schema'),
+				'ZW' => __('Zimbabwe', 'schema')
+			);
+			// sort alphabetical with translated names
+			asort($countries);
+			return $coutries;
+		}
+		
+		/** 
+		 * Gets the scraper class
+		 *
+		 * @returns the scraper singleton instance
+		 */
+		public function get_scraper() {
+			return DJ_SchemaScraper::singleton();	
+		}
+		
+		/**
+		 * Gets an array of shortcode properties
+		 *
+		 * @returns an array of available shortcode properties, all set with default to NULL
+		 */
+		public function get_shortcode_properties() {
+			$scraper = $this->get_scraper();
+			$properties = $scraper->get_property_keys();
+			
+			$results = array();
+			foreach($properties as $property)
+				$results[ $scraper->get_property_id( $property ) ] = NULL;
+			return $results;
+		}
 	
+		/**
+		 * Gets the output for a schema
+		 *
+		 * @returns schema output for that type and data
+		 */
+		public function get_schema_output( $type, $data ) 
+		{
+			// Get the scraper, schema and its properties
+			$scraper = $this->get_scraper();
+			$schema = $scraper->get_schema( $type );
+			$properties = $scraper->get_schema_properties( $type, true, true );
+			
+			$sc_build = '<div class="'.esc_attr( strtolower( 'schema-'.$type ) ).'" itemscope itemtype="'.esc_url( $scraper->get_schema_url( $schema ) ).'">';
+			while ( $property_key = array_shift( $properties ) ) :
+				// go through props
+				$property = $scraper->get_property( $property_key );
+				$property_id = $scraper->get_property_id( $property );
+				if ( !isset( $data[$property_id] ) || empty( $data[$property_id] ) )
+					continue;
+					
+				// TODO: per property formatting
+				$sc_build .= sprintf("%s: %s<br>", $property_id, $data[$property_id]);
+			endwhile;
+			
+			$sc_build .= '</div>';
+			return $sc_build;
+		}
+		
 		/**
 		 * Build out shortcode with variable array of options
 		 *
-		 * @return ravenSchema
+		 * @return the replacement
 		 */
-		public function shortcode( $atts, $content = null ) {
-			extract( shortcode_atts( array(
-				'type'				=> '',
-				'evtype'			=> '',
-				'orgtype'			=> '',
-				'name'				=> '',
-				'orgname'			=> '',
-				'jobtitle'			=> '',
-				'url'				=> '',
-				'description'		=> '',
-				'bday'				=> '',
-				'street'			=> '',
-				'pobox'				=> '',
-				'city'				=> '',
-				'state'				=> '',
-				'postalcode'		=> '',
-				'country'			=> '',
-				'email'				=> '',
-				'phone'				=> '',
-				'fax'				=> '',
-				'brand'				=> '',
-				'manfu'				=> '',
-				'model'				=> '',
-				'single_rating'		=> '',
-				'agg_rating'		=> '',
-				'prod_id'			=> '',
-				'price'				=> '',
-				'condition'			=> '',
-				'sdate'				=> '',
-				'stime'				=> '',
-				'edate'				=> '',
-				'duration'			=> '',
-				'director'			=> '',
-				'producer'			=> '',
-				'actor_1'			=> '',
-				'author'			=> '',
-				'publisher'			=> '',
-				'pubdate'			=> '',
-				'edition'			=> '',
-				'isbn'				=> '',
-				'ebook'				=> '',
-				'paperback'			=> '',
-				'hardcover'			=> '',
-				'rev_name'			=> '',
-				'rev_body'			=> '',
-				'user_review'		=> '',
-				'min_review'		=> '',
-				'max_review'		=> '',
-				'ingrt_1'			=> '',
-				'image'				=> '',
-				'instructions'		=> '',
-				'prephours'			=> '',
-				'prepmins'			=> '',
-				'cookhours'			=> '',
-				'cookmins'			=> '',
-				'yield'				=> '',
-				'calories'			=> '',
-				'fatcount'			=> '',
-				'sugarcount'		=> '',
-				'saltcount'			=> '',
-	
-			), $atts ) );
-	
-			// create array of actor fields
-			$actors = array();
-			foreach ( $atts as $key => $value ) {
-				if ( strpos( $key , 'actor' ) === 0 )
-					$actors[] = $value;
-			}
-	
-			// create array of actor fields
-			$ingrts = array();
-			foreach ( $atts as $key => $value ) {
-				if ( strpos( $key , 'ingrt' ) === 0 )
-					$ingrts[] = $value;
-			}
-	
-			// wrap schema build out
-			$sc_build = '<div id="schema_block" class="schema_'.$type.'">';
-	
-			// person
-			if(isset($type) && $type == 'person') {
-	
-				$sc_build .= '<div itemscope itemtype="http://schema.org/Person">';
-	
-				if(!empty($name) && !empty($url) ) {
-					$sc_build .= '<a class="schema_url" target="_blank" itemprop="url" href="'.esc_url($url).'">';
-					$sc_build .= '<div class="schema_name" itemprop="name">'.$name.'</div>';
-					$sc_build .= '</a>';
-				}
-	
-				if(!empty($name) && empty($url) )
-					$sc_build .= '<div class="schema_name" itemprop="name">'.$name.'</div>';
-	
-				if(!empty($orgname)) {
-					$sc_build .= '<div itemscope itemtype="http://schema.org/Organization">';
-					$sc_build .= '<span class="schema_orgname" itemprop="name">'.$orgname.'</span>';
-					$sc_build .= '</div>';
-				}
-	
-				if(!empty($jobtitle))
-					$sc_build .= '<div class="schema_jobtitle" itemprop="jobtitle">'.$jobtitle.'</div>';
-	
-				if(!empty($description))
-					$sc_build .= '<div class="schema_description" itemprop="description">'.esc_attr($description).'</div>';
-	
-				if(	!empty($street) ||
-					!empty($pobox) ||
-					!empty($city) ||
-					!empty($state) ||
-					!empty($postalcode) ||
-					!empty($country)
-					)
-					$sc_build .= '<div itemprop="address" itemscope itemtype="http://schema.org/PostalAddress">';
-	
-				if(!empty($street))
-					$sc_build .= '<div class="street" itemprop="streetAddress">'.$street.'</div>';
-	
-				if(!empty($pobox))
-					$sc_build .= '<div class="pobox">'.__('P.O. Box:', 'schema' ).' <span itemprop="postOfficeBoxNumber">'.$pobox.'</span></div>';
-	
-				if(!empty($city) && !empty($state)) :
-					$sc_build .= '<div class="city_state">';
-					$sc_build .= '<span class="locale" itemprop="addressLocality">'.$city.'</span>,';
-					$sc_build .= '<span class="region" itemprop="addressRegion">'.$state.'</span>';
-					$sc_build .= '</div>';
-				// secondary check if one part of city / state is missing to keep markup consistent
-				elseif(empty($state) && !empty($city) ) :
-					$sc_build .= '<div class="city_state"><span class="locale" itemprop="addressLocality">'.$city.'</span></div>';
-				elseif(empty($city) && !empty($state) ) :
-					$sc_build .= '<div class="city_state"><span class="region" itemprop="addressRegion">'.$state.'</span></div>';
-				endif;
-	
-				if(!empty($postalcode))
-					$sc_build .= '<div class="postalcode" itemprop="postalCode">'.$postalcode.'</div>';
-	
-				if(!empty($country))
-					$sc_build .= '<div class="country" itemprop="addressCountry">'.$country.'</div>';
-	
-				if(	!empty($street) ||
-					!empty($pobox) ||
-					!empty($city) ||
-					!empty($state) ||
-					!empty($postalcode) ||
-					!empty($country)
-					)
-					$sc_build .= '</div>';
-	
-				if(!empty($email))
-					$sc_build .= '<div class="email" itemprop="email">'.antispambot($email).'</div>';
-	
-				if(!empty($phone))
-					$sc_build .= '<div class="phone" itemprop="telephone">'.__('Phone:', 'schema' ).' '.$phone.'</div>';
-	
-				if(!empty($bday))
-					$sc_build .= '<div class="bday"><meta itemprop="birthDate" content="'.$bday.'">'._x('DOB:', 'person', 'schema' ).' '.date('m/d/Y', strtotime($bday)).'</div>';
-	
-				// close it up
-				$sc_build .= '</div>';
-	
-			}
-	
-			// product
-			if(isset($type) && $type == 'product') {
-	
-				$sc_build .= '<div itemscope itemtype="http://schema.org/Product">';
-	
-				if(!empty($name) && !empty($url) ) {
-					$sc_build .= '<a class="schema_url" target="_blank" itemprop="url" href="'.esc_url($url).'">';
-					$sc_build .= '<div class="schema_name" itemprop="name">'.$name.'</div>';
-					$sc_build .= '</a>';
-				}
-	
-				if(!empty($name) && empty($url) )
-					$sc_build .= '<div class="schema_name" itemprop="name">'.$name.'</div>';
-	
-				if(!empty($description))
-					$sc_build .= '<div class="schema_description" itemprop="description">'.esc_attr($description).'</div>';
-	
-				if(!empty($brand))
-					$sc_build .= '<div class="brand" itemprop="brand" itemscope itemtype="http://schema.org/Organization">
-						<span class="desc_type">'._x('Brand:', 'product', 'schema' ).'</span> <span itemprop="name">'.$brand.'</span>
-					</div>';
-	
-				if(!empty($manfu))
-					$sc_build .= '<div class="manufacturer" itemprop="manufacturer" itemscope itemtype="http://schema.org/Organization">
-						<span class="desc_type">'._x('Manufacturer:', 'product', 'schema' ).'</span> <span itemprop="name">'.$manfu.'</span>
-					</div>';
-	
-				if(!empty($model))
-					$sc_build .= '<div class="model"><span class="desc_type">'._x('Model:', 'product', 'schema' ).'</span> <span itemprop="model">'.$model.'</span></div>';
-	
-				if(!empty($prod_id))
-					$sc_build .= '<div class="prod_id"><span class="desc_type">'.__('Product ID:', 'schema' ).'</span> <span itemprop="productID">'.$prod_id.'</span></div>';
-	
-				// Have both rating fields
-				if(!empty($single_rating) && !empty($agg_rating)) :
-					$sc_build .= '<div itemprop="aggregateRating" itemscope itemtype="http://schema.org/AggregateRating">';
-					$sc_build .= '<span itemprop="ratingValue">'.$single_rating.'</span> '._x('based on', 'product rating based on', 'schema' ).' ';
-					$sc_build .= '<span itemprop="reviewCount">'.$agg_rating.'</span> '._x('reviews', 'product rating based on', 'schema' ).'';
-					$sc_build .= '</div>';
+		public function shortcode( $atts, $content = NULL ) 
+		{
+			$attributes = shortcode_atts( $this->get_shortcode_properties() + array( 'type' => '' ), $atts );
 				
-				// Secondary check if one part of review is missing to keep markup consistent
-				elseif(empty($agg_rating) && !empty($single_rating) ) :
-					$sc_build .= '<div itemprop="aggregateRating" itemscope itemtype="http://schema.org/AggregateRating">
-						<span itemprop="ratingValue"><span class="desc_type">'._x('Review:', 'single product rating', 'schema' ).'</span> '.$single_rating.'</span>
-					</div>';
-	
-				// Tertiary check if the other part of review is missing
-				elseif(empty($single_rating) && !empty($agg_rating) ) :
-						$sc_build .= '<div itemprop="aggregateRating" itemscope itemtype="http://schema.org/AggregateRating">
-							<span itemprop="reviewCount">'.$agg_rating.'</span> '._x('total reviews', 'aggregated product rating count', 'schema' ).'
-						</div>';
-				endif;
-	
-				if(!empty($price) && !empty($condition)) {
-					$sc_build .= '<div class="offers" itemprop="offers" itemscope itemtype="http://schema.org/Offer">';
-					$sc_build .= '<span class="price" itemprop="price">'.$price.'</span>';
-					$sc_build .= '<link itemprop="itemCondition" href="http://schema.org/'.$condition.'Condition" /> '.$condition.'';
-					$sc_build .= '</div>';
-				}
-	
-				if(empty($condition) && !empty ($price))
-					$sc_build .= '<div class="offers" itemprop="offers" itemscope itemtype="http://schema.org/Offer"><span class="price" itemprop="price">'.$price.'</span></div>';
-	
-	
-				// close it up
-				$sc_build .= '</div>';
-	
-			}
-	
-			// event
-			if(isset($type) && $type == 'event') {
-	
-				$default   = (!empty($evtype) ? $evtype : 'Event');
-				$sc_build .= '<div itemscope itemtype="http://schema.org/'.$default.'">';
-	
-				if(!empty($name) && !empty($url) ) {
-					$sc_build .= '<a class="schema_url" target="_blank" itemprop="url" href="'.esc_url($url).'">';
-					$sc_build .= '<div class="schema_name" itemprop="name">'.$name.'</div>';
-					$sc_build .= '</a>';
-				}
-	
-				if(!empty($name) && empty($url) )
-					$sc_build .= '<div class="schema_name" itemprop="name">'.$name.'</div>';
-	
-				if(!empty($description))
-					$sc_build .= '<div class="schema_description" itemprop="description">'.esc_attr($description).'</div>';
-	
-				if(!empty($sdate) && !empty($stime) ) :
-					$metatime = $sdate.'T'.date('G:i', strtotime($sdate.$stime));
-					$sc_build .= '<div><meta itemprop="startDate" content="'.$metatime.'">'._x('Starts:', 'event', 'schema' ).' '.date('m/d/Y', strtotime($sdate)).' '.$stime.'</div>';
-	
-				// secondary check for missing start time
-				elseif(empty($stime) && !empty($sdate) ) :
-					$sc_build .= '<div><meta itemprop="startDate" content="'.$sdate.'">'._x('Starts:', 'event', 'schema' ).' '.date('m/d/Y', strtotime($sdate)).'</div>';
-				endif;
-	
-				if(!empty($edate))
-					$sc_build .= '<div><meta itemprop="endDate" content="'.$edate.':00.000">'._x('Ends:', 'event', 'schema' ).' '.date('m/d/Y', strtotime($edate)).'</div>';
-	
-				if(!empty($duration)) {
-	
-					$hour_cnv	= date('G', strtotime($duration));
-					$mins_cnv	= date('i', strtotime($duration));
-	
-					$hours		= (!empty($hour_cnv) && $hour_cnv > 0 ? $hour_cnv.' '.__('hours:', 'schema' ) : '');
-					$minutes	= (!empty($mins_cnv) && $mins_cnv > 0 ? ' '.__('and', 'schema' ).' '.$mins_cnv.' '.__('minutes', 'schema' ) : '');
-	
-					$sc_build .= '<div><meta itemprop="duration" content="0000-00-00T'.$duration.'">'._x('Duration:', 'event', 'schema' ).' '.$hours.$minutes.'</div>';
-				}
-	
-				// close actual event portion
-				$sc_build .= '</div>';
-	
-				if(	!empty($street) ||
-					!empty($pobox) ||
-					!empty($city) ||
-					!empty($state) ||
-					!empty($postalcode) ||
-					!empty($country)
-					)
-					$sc_build .= '<div itemprop="address" itemscope itemtype="http://schema.org/PostalAddress">';
-	
-				if(!empty($street))
-					$sc_build .= '<div class="street" itemprop="streetAddress">'.$street.'</div>';
-	
-				if(!empty($pobox))
-					$sc_build .= '<div class="pobox">'.__('P.O. Box:', 'schema' ).' <span itemprop="postOfficeBoxNumber">'.$pobox.'</span></div>';
-	
-				if(!empty($city) && !empty($state)) {
-					$sc_build .= '<div class="city_state">';
-					$sc_build .= '<span class="locale" itemprop="addressLocality">'.$city.'</span>,';
-					$sc_build .= '<span class="region" itemprop="addressRegion"> '.$state.'</span>';
-					$sc_build .= '</div>';
-				}
-	
-					// secondary check if one part of city / state is missing to keep markup consistent
-					if(empty($state) && !empty($city) )
-						$sc_build .= '<div class="city_state"><span class="locale" itemprop="addressLocality">'.$city.'</span></div>';
-	
-					if(empty($city) && !empty($state) )
-						$sc_build .= '<div class="city_state"><span class="region" itemprop="addressRegion">'.$state.'</span></div>';
-	
-				if(!empty($postalcode))
-					$sc_build .= '<div class="postalcode" itemprop="postalCode">'.$postalcode.'</div>';
-	
-				if(!empty($country))
-					$sc_build .= '<div class="country" itemprop="addressCountry">'.$country.'</div>';
-	
-				if(	!empty($street) ||
-					!empty($pobox) ||
-					!empty($city) ||
-					!empty($state) ||
-					!empty($postalcode) ||
-					!empty($country)
-					)
-					$sc_build .= '</div>';
-	
-			}
-	
-			// organization
-			if(isset($type) && $type == 'organization') {
-	
-				$default   = (!empty($orgtype) ? $orgtype : 'Organization');
-				$sc_build .= '<div itemscope itemtype="http://schema.org/'.$default.'">';
-	
-				if(!empty($name) && !empty($url) ) {
-					$sc_build .= '<a class="schema_url" target="_blank" itemprop="url" href="'.esc_url($url).'">';
-					$sc_build .= '<div class="schema_name" itemprop="name">'.$name.'</div>';
-					$sc_build .= '</a>';
-				}
-	
-				if(!empty($name) && empty($url) )
-					$sc_build .= '<div class="schema_name" itemprop="name">'.$name.'</div>';
-	
-				if(!empty($description))
-					$sc_build .= '<div class="schema_description" itemprop="description">'.esc_attr($description).'</div>';
-	
-				if(	!empty($street) ||
-					!empty($pobox) ||
-					!empty($city) ||
-					!empty($state) ||
-					!empty($postalcode) ||
-					!empty($country)
-					)
-					$sc_build .= '<div itemprop="address" itemscope itemtype="http://schema.org/PostalAddress">';
-	
-				if(!empty($street))
-					$sc_build .= '<div class="street" itemprop="streetAddress">'.$street.'</div>';
-	
-				if(!empty($pobox))
-					$sc_build .= '<div class="pobox">'.__('P.O. Box:', 'schema' ).' <span itemprop="postOfficeBoxNumber">'.$pobox.'</span></div>';
-	
-				if(!empty($city) && !empty($state)) {
-					$sc_build .= '<div class="city_state">';
-					$sc_build .= '<span class="locale" itemprop="addressLocality">'.$city.'</span>,';
-					$sc_build .= '<span class="region" itemprop="addressRegion"> '.$state.'</span>';
-					$sc_build .= '</div>';
-				}
-	
-					// secondary check if one part of city / state is missing to keep markup consistent
-					if(empty($state) && !empty($city) )
-						$sc_build .= '<div class="city_state"><span class="locale" itemprop="addressLocality">'.$city.'</span></div>';
-	
-					if(empty($city) && !empty($state) )
-						$sc_build .= '<div class="city_state"><span class="region" itemprop="addressRegion">'.$state.'</span></div>';
-	
-				if(!empty($postalcode))
-					$sc_build .= '<div class="postalcode" itemprop="postalCode">'.$postalcode.'</div>';
-	
-				if(!empty($country))
-					$sc_build .= '<div class="country" itemprop="addressCountry">'.$country.'</div>';
-	
-				if(	!empty($street) ||
-					!empty($pobox) ||
-					!empty($city) ||
-					!empty($state) ||
-					!empty($postalcode) ||
-					!empty($country)
-					)
-					$sc_build .= '</div>';
-	
-				if(!empty($email))
-					$sc_build .= '<div class="email" itemprop="email">'.antispambot($email).'</div>';
-	
-				if(!empty($phone))
-					$sc_build .= '<div class="phone" itemprop="telephone">'.__('Phone:', 'schema' ).' '.$phone.'</div>';
-	
-				if(!empty($fax))
-					$sc_build .= '<div class="fax" itemprop="faxNumber">'.__('Fax:', 'schema' ).' '.$fax.'</div>';
-	
-				// close it up
-				$sc_build .= '</div>';
-	
-			}
-	
-			// movie
-			if(isset($type) && $type == 'movie') {
-	
-				$sc_build .= '<div itemscope itemtype="http://schema.org/Movie">';
-	
-				if(!empty($name) && !empty($url) ) {
-					$sc_build .= '<a class="schema_url" target="_blank" itemprop="url" href="'.esc_url($url).'">';
-					$sc_build .= '<div class="schema_name" itemprop="name">'.$name.'</div>';
-					$sc_build .= '</a>';
-				}
-	
-				if(!empty($name) && empty($url) )
-					$sc_build .= '<div class="schema_name" itemprop="name">'.$name.'</div>';
-	
-				if(!empty($description))
-					$sc_build .= '<div class="schema_description" itemprop="description">'.esc_attr($description).'</div>';
-	
-	
-				if(!empty($director))
-					$sc_build .= '<div itemprop="director" itemscope itemtype="http://schema.org/Person">'.__('Directed by:', 'schema' ).' <span itemprop="name">'.$director.'</span></div>';
-	
-				if(!empty($producer))
-					$sc_build .= '<div itemprop="producer" itemscope itemtype="http://schema.org/Person">'.__('Produced by:', 'schema' ).' <span itemprop="name">'.$producer.'</span></div>';
-	
-				if(!empty($actor_1)) {
-					$sc_build .= '<div>'.__('Starring:', 'schema' ).'';
-						foreach ($actors as $actor) {
-							$sc_build .= '<div itemprop="actors" itemscope itemtype="http://schema.org/Person">';
-							$sc_build .= '<span itemprop="name">'.$actor.'</span>';
-							$sc_build .= '</div>';
-						}
-					$sc_build .= '</div>';
-				}
-	
-	
-				// close it up
-				$sc_build .= '</div>';
-	
-			}
-	
-			// book
-			if(isset($type) && $type == 'book') {
-	
-				$sc_build .= '<div itemscope itemtype="http://schema.org/Book">';
-	
-				if(!empty($name) && !empty($url) ) {
-					$sc_build .= '<a class="schema_url" target="_blank" itemprop="url" href="'.esc_url($url).'">';
-					$sc_build .= '<div class="schema_name" itemprop="name">'.$name.'</div>';
-					$sc_build .= '</a>';
-				}
-	
-				if(!empty($name) && empty($url) )
-					$sc_build .= '<div class="schema_name" itemprop="name">'.$name.'</div>';
-	
-				if(!empty($description))
-					$sc_build .= '<div class="schema_description" itemprop="description">'.esc_attr($description).'</div>';
-	
-				if(!empty($author))
-					$sc_build .= '<div itemprop="author" itemscope itemtype="http://schema.org/Person">'.__('Written by:', 'schema' ).' <span itemprop="name">'.$author.'</span></div>';
-	
-				if(!empty($publisher))
-					$sc_build .= '<div itemprop="publisher" itemscope itemtype="http://schema.org/Organization">'.__('Published by:', 'schema' ).' <span itemprop="name">'.$publisher.'</span></div>';
-	
-				if(!empty($pubdate))
-					$sc_build .= '<div class="bday"><meta itemprop="datePublished" content="'.$pubdate.'">'.__('Date Published:', 'schema' ).' '.date('m/d/Y', strtotime($pubdate)).'</div>';
-	
-				if(!empty($edition))
-					$sc_build .= '<div>'.__('Edition:', 'schema' ).' <span itemprop="bookEdition">'.$edition.'</span></div>';
-	
-				if(!empty($isbn))
-					$sc_build .= '<div>'.__('ISBN:', 'schema' ).' <span itemprop="isbn">'.$isbn.'</span></div>';
-	
-				if( !empty($ebook) || !empty($paperback) || !empty($hardcover) ) {
-					$sc_build .= '<div>'.__('Available in:', 'schema' ).' ';
-	
-						if(!empty($ebook))
-							$sc_build .= '<link itemprop="bookFormat" href="http://schema.org/Ebook">'.__('Ebook', 'schema' ).' ';
-	
-						if(!empty($paperback))
-							$sc_build .= '<link itemprop="bookFormat" href="http://schema.org/Paperback">'.__('Paperback', 'schema' ).' ';
-	
-						if(!empty($hardcover))
-							$sc_build .= '<link itemprop="bookFormat" href="http://schema.org/Hardcover">'.__('Hardcover', 'schema' ).' ';
-	
-					$sc_build .= '</div>';
-				}
-	
-	
-				// close it up
-				$sc_build .= '</div>';
-	
-			}
-	
-			// review
-			if(isset($type) && $type == 'review') {
-	
-				$sc_build .= '<div itemscope itemtype="http://schema.org/Review">';
-	
-				if(!empty($name) && !empty($url) ) {
-					$sc_build .= '<a class="schema_url" target="_blank" itemprop="url" href="'.esc_url($url).'">';
-					$sc_build .= '<div class="schema_name" itemprop="name">'.$name.'</div>';
-					$sc_build .= '</a>';
-				}
-	
-				if(!empty($name) && empty($url) )
-					$sc_build .= '<div class="schema_name" itemprop="name">'.$name.'</div>';
-	
-				if(!empty($description))
-					$sc_build .= '<div class="schema_description" itemprop="description">'.esc_attr($description).'</div>';
-	
-				if(!empty($rev_name))
-					$sc_build .= '<div class="schema_review_name" itemprop="itemReviewed" itemscope itemtype="http://schema.org/Thing"><span itemprop="name">'.$rev_name.'</span></div>';
-	
-				if(!empty($author))
-					$sc_build .= '<div itemprop="author" itemscope itemtype="http://schema.org/Person">'.__('Written by:', 'schema').' <span itemprop="name">'.$author.'</span></div>';
-	
-				if(!empty($pubdate))
-					$sc_build .= '<div class="pubdate"><meta itemprop="datePublished" content="'.$pubdate.'">'.__('Date Published:', 'schema').' '.date('m/d/Y', strtotime($pubdate)).'</div>';
-	
-				if(!empty($rev_body))
-					$sc_build .= '<div class="schema_review_body" itemprop="reviewBody">'.esc_textarea($rev_body).'</div>';
-	
-				if(!empty($user_review) ) {
-					$sc_build .= '<div itemprop="reviewRating" itemscope itemtype="http://schema.org/Rating">';
-	
-					// minimum review scale
-					if(!empty($min_review))
-						$sc_build .= '<meta itemprop="worstRating" content="'.$min_review.'">';
-	
-					$sc_build .= '<span itemprop="ratingValue">'.$user_review.'</span>';
-	
-					// max review scale
-					if(!empty($max_review))
-						$sc_build .= ' / <span itemprop="bestRating">'.$max_review.'</span> '.__('stars', 'schema' ).'';
-	
-	
-					$sc_build .= '</div>';
-				}
-	
-				// close it up
-				$sc_build .= '</div>';
-	
-			}
-	
-			// recipe
-			if(isset($type) && $type == 'recipe') {
-	
-				$sc_build .= '<div itemscope itemtype="http://schema.org/Recipe">';
-	
-				$imgalt = isset($name) ? $name : __('Recipe Image', 'schema' );
-	
-				if(!empty($image)) // put image first so it can lay out better
-					$sc_build .= '<img class="schema_image" itemprop="image" src="'.esc_url($image).'" alt="'.$imgalt.'" />';
-	
-				if(!empty($name) )
-					$sc_build .= '<div class="schema_name header_type" itemprop="name">'.$name.'</div>';
-	
-				if(!empty($author) && !empty($pubdate) ) {
-					$sc_build .= '<div class="schema_byline">';
-					$sc_build .= ''.__('By', 'schema' ).' <span class="schema_strong" itemprop="author">'.$author.'</span>';
-					$sc_build .= ' '.__('on', 'schema' ).' <span class="schema_pubdate"><meta itemprop="datePublished" content="'.$pubdate.'">'.date('m/d/Y', strtotime($pubdate)).'</span>';
-					$sc_build .= '</div>';
-				}
-	
-				if(!empty($author) && empty($pubdate) )
-					$sc_build .= '<div class="schema_author"> '.__('by', 'schema' ).' <span class="schema_strong" itemprop="author">'.$author.'<span></div>';
-	
-				if(!empty($description))
-					$sc_build .= '<div class="schema_description" itemprop="description">'.esc_attr($description).'</div>';
-	
-				if(!empty($yield) || !empty($prephours) || !empty($prepmins) || !empty($cookhours) || !empty($cookmins) ) {
-					$sc_build .= '<div>';
-	
-					// PREP: both variables present
-					if( !empty($prephours) && !empty($prepmins) ) {
-	
-						$prephours_f = sprintf( _nx('%d hour', '%d hours', $prephours, 'recipe time', 'schema'), $prephours);	
-						$prepmins_f  = sprintf( _nx('%d minute', '%d minutes', $prepmins, 'recipe time', 'schema'), $prepmins);
-						
-						$sc_build .= '<p class="stacked">';
-						$sc_build .= '<span class="schema_strong">'._x('Prep Time:', 'recipe', 'schema' ).'</span> ';
-						$sc_build .= '<meta itemprop="prepTime" content="PT'.$prephours.'H'.$prepmins.'M">';
-						$sc_build .= sprintf( _x( '%s, %s', 'x hours, y minutes', 'schema'), $prephours_f, $prepmins_f );
-						$sc_build .= '</p>';
-					}
-					// PREP: no minutes
-					elseif( !empty($prephours) && empty($prepmins) ) {
-	
-						$prephours_f = sprintf( _nx('%d hour', '%d hours', $prephours, 'recipe time', 'schema'), $prephours );	
-	
-						$sc_build .= '<p class="stacked">';
-						$sc_build .= '<span class="schema_strong">'.__('Prep Time:', 'schema' ).'</span> ';
-						$sc_build .= '<meta itemprop="prepTime" content="PT'.$prephours.'H">';
-						$sc_build .= $prephours_f;
-						$sc_build .= '</p>';
-					}
-					// PREP: no hours
-					elseif( !empty($prepmins) && empty($prephours) ) {
-	
-						$prepmins_f = sprintf( _nx('%d minute', '%d minutes', $prepmins, 'recipe time', 'schema'), $prepmins );	
-	
-						$sc_build .= '<p class="stacked">';
-						$sc_build .= '<span class="schema_strong">'.__('Prep Time:', 'schema' ).'</span> ';
-						$sc_build .= '<meta itemprop="prepTime" content="PT'.$prepmins.'M">';
-						$sc_build .= $prepmins_f;
-						$sc_build .= '</p>';
-					}
-	
-					// COOK: both variables present
-					if( !empty($cookhours) && !empty($cookmins) ) {
-	
-						$cookhours_f = sprintf( _nx('%d hour', '%d hours', $cookhours, 'recipe time', 'schema'), $cookhours );	
-						$cookmins_f =  sprintf( _nx('%d minute', '%d minutes', $cookmins, 'recipe time', 'schema'), $cookmins );	
-	
-						$sc_build .= '<p class="stacked">';
-						$sc_build .= '<span class="schema_strong">'.__('Cook Time:', 'schema' ).'</span> ';
-						$sc_build .= '<meta itemprop="cookTime" content="PT'.$cookhours.'H'.$cookmins.'M">';
-						$sc_build .= sprintf( _x( '%s, %s', 'x hours, y minutes', 'schema'), $cookhours_f, $cookmins_f );
-						$sc_build .= '</p>';
-					}
-					// COOK: no minutes
-					elseif( !empty($cookhours) && empty($cookmins) ) {
-	
-						$cookhours_f = sprintf( _nx('%d hour', '%d hours', $cookhours, 'recipe time', 'schema'), $cookhours );	
-						
-						$sc_build .= '<p class="stacked">';
-						$sc_build .= '<span class="schema_strong">'.__('Cook Time:', 'schema' ).'</span> ';
-						$sc_build .= '<meta itemprop="cookTime" content="PT'.$cookhours.'H">';
-						$sc_build .= $cookhours_f;
-						$sc_build .= '</p>';
-					}
-					// COOK: no hours
-					elseif( !empty($cookmins) && empty($cookhours) ) {
-	
-						$cookmins_f =  sprintf( _nx('%d minute', '%d minutes', $cookmins, 'recipe time', 'schema'), $cookmins );	
-	
-						$sc_build .= '<p class="stacked">';
-						$sc_build .= '<span class="schema_strong">'.__('Cook Time:', 'schema' ).'</span> ';
-						$sc_build .= '<meta itemprop="cookTime" content="PT'.$cookmins.'M">';
-						$sc_build .= $cookmins_f;
-						$sc_build .= '</p>';
-					}
-	
-					// YIELD
-					if( !empty($yield) ) {
-	
-						$sc_build .= '<p class="stacked">';
-						$sc_build .= '<span class="schema_strong">'._x('Yield:', 'recipe', 'schema' ).'</span> ';
-						$sc_build .= '<meta itemprop="recipeYield">';
-						$sc_build .= $yield;
-						$sc_build .= '</p>';
-					}
-	
-					$sc_build .= '</div>';
-				}
-	
-				if( !empty($calories) || !empty($fatcount) || !empty($sugarcount) || !empty($saltcount) ) {
-					$sc_build .= '<div itemprop="nutrition" itemscope itemtype="http://schema.org/NutritionInformation">';
-					$sc_build .= '<span class="schema_strong">'.__('Nutrition Information:', 'schema' ).'</span><ul>';
-	
-					if(!empty($calories))
-						$sc_build .= '<li><span itemprop="calories">'.
-							sprintf( _n('%d calorie', '%d calories', $calories, 'schema'), $calories ) .
-						'</span></li>';
-	
-					if(!empty($fatcount))
-						$sc_build .= '<li><span itemprop="fatContent">'.
-							sprintf( _n('%d gram of fat', '%d grams of fat', $fatcount, 'schema'), $fatcount ) .
-						'</span></li>';
-						
-					if(!empty($sugarcount))
-						$sc_build .= '<li><span itemprop="sugarContent">'.
-							sprintf( _n('%d gram of sugar', '%d grams of sugar', $sugarcount, 'schema'), $sugarcount ) .
-						'</span></li>';
-						
-					if(!empty($saltcount))
-						$sc_build .= '<li><span itemprop="sodiumContent">'.
-							sprintf( _n('%d milligram of sodium', '%d milligrams of sodium', $saltcount, 'schema'), $saltcount ) .
-						'</span></li>';
-							
-					$sc_build .= '</ul></div>';
-				}
-	
-				if(!empty($ingrt_1)) {
-					$sc_build .= '<div><span class="schema_strong">'.__('Ingredients:', 'schema' ).'</span>';
-					$sc_build .= '<ul>';
-					foreach ($ingrts as $ingrt) {
-						$sc_build .= '<li><span itemprop="ingredients">'.$ingrt.'</span></li>';
-					}
-					$sc_build .= '</ul>';
-					$sc_build .= '</div>';
-				}
-	
-				if(!empty($instructions))
-					$sc_build .= '<div class="schema_instructions" itemprop="recipeInstructions">
-						<span class="schema_strong">'.__('Instructions:', 'schema' ).'</span><br />'.esc_attr($instructions).'
-					</div>';
-					
-				// close it up
-				$sc_build .= '</div>';
-	
-			}
-	
-	
-			// close schema wrap
+			// wrap schema build out
+			$sc_build  = '<div id="schema_block">';
+			$sc_build .= $this->get_schema_output( $attributes["type"], $attributes );
 			$sc_build .= '</div>';
 	
 			// return entire build array
 			return $sc_build;
-	
 		}
 	
 		/**
 		 * Add button to top level media row
-		 *
-		 * @return ravenSchema
 		 */
-	
 		public function media_button() {
 	
 			// don't show on dashboard (QuickPress)
@@ -1405,10 +1019,7 @@ if ( !class_exists( "RavenSchema" ) ) :
 	
 		/**
 		 * Build form and add into footer
-		 *
-		 * @return ravenSchema
 		 */
-	
 		public function schema_form() {
 	
 			// don't load form on non-editing pages
@@ -1418,314 +1029,20 @@ if ( !class_exists( "RavenSchema" ) ) :
 	
 			// don't display form for users who don't have access
 			if ( ! current_user_can('edit_posts') && ! current_user_can('edit_pages') )
-			return;
-	
+				return;
+			
+			// Get the scraper, schema and its properties
+			$scraper = $this->get_scraper();
 			?>
 	
 			<script type="text/javascript">
 				function InsertSchema() {
 					//select field options
 					var type			= jQuery('#schema_builder select#schema_type').val();
-					var evtype			= jQuery('#schema_builder select#schema_evtype').val();
-					var orgtype			= jQuery('#schema_builder select#schema_orgtype').val();
-					var country			= jQuery('#schema_builder select#schema_country').val();
-					var condition		= jQuery('#schema_builder select#schema_condition').val();
 					
-					//text field options
-					var name			= jQuery('#schema_builder input#schema_name').val();
-					var orgname			= jQuery('#schema_builder input#schema_orgname').val();
-					var jobtitle		= jQuery('#schema_builder input#schema_jobtitle').val();
-					var url				= jQuery('#schema_builder input#schema_url').val();
-					var bday			= jQuery('#schema_builder input#schema_bday-format').val();
-					var street			= jQuery('#schema_builder input#schema_street').val();
-					var pobox			= jQuery('#schema_builder input#schema_pobox').val();
-					var city			= jQuery('#schema_builder input#schema_city').val();
-					var state			= jQuery('#schema_builder input#schema_state').val();
-					var postalcode		= jQuery('#schema_builder input#schema_postalcode').val();
-					var email			= jQuery('#schema_builder input#schema_email').val();
-					var phone			= jQuery('#schema_builder input#schema_phone').val();
-					var fax				= jQuery('#schema_builder input#schema_fax').val();
-					var brand			= jQuery('#schema_builder input#schema_brand').val();
-					var manfu			= jQuery('#schema_builder input#schema_manfu').val();
-					var model			= jQuery('#schema_builder input#schema_model').val();
-					var prod_id			= jQuery('#schema_builder input#schema_prod_id').val();
-					var single_rating	= jQuery('#schema_builder input#schema_single_rating').val();
-					var agg_rating		= jQuery('#schema_builder input#schema_agg_rating').val();
-					var price			= jQuery('#schema_builder input#schema_price').val();
-					var sdate			= jQuery('#schema_builder input#schema_sdate-format').val();
-					var stime			= jQuery('#schema_builder input#schema_stime').val();
-					var edate			= jQuery('#schema_builder input#schema_edate-format').val();
-					var duration		= jQuery('#schema_builder input#schema_duration').val();
-					var actor_group		= jQuery('#schema_builder input#schema_actor_1').val();
-					var director		= jQuery('#schema_builder input#schema_director').val();
-					var producer		= jQuery('#schema_builder input#schema_producer').val();
-					var author			= jQuery('#schema_builder input#schema_author').val();
-					var publisher		= jQuery('#schema_builder input#schema_publisher').val();
-					var edition			= jQuery('#schema_builder input#schema_edition').val();
-					var isbn			= jQuery('#schema_builder input#schema_isbn').val();
-					var pubdate			= jQuery('#schema_builder input#schema_pubdate-format').val();
-					var ebook			= jQuery('#schema_builder input#schema_ebook').is(':checked');
-					var paperback		= jQuery('#schema_builder input#schema_paperback').is(':checked');
-					var hardcover		= jQuery('#schema_builder input#schema_hardcover').is(':checked');
-					var rev_name		= jQuery('#schema_builder input#schema_rev_name').val();
-					var user_review		= jQuery('#schema_builder input#schema_user_review').val();
-					var min_review		= jQuery('#schema_builder input#schema_min_review').val();
-					var max_review		= jQuery('#schema_builder input#schema_max_review').val();
-					var ingrt_group		= jQuery('#schema_builder input#schema_ingrt_1').val();
-					var image			= jQuery('#schema_builder input#schema_image').val();
-					var prephours		= jQuery('#schema_builder input#schema_prep_hours').val();
-					var prepmins		= jQuery('#schema_builder input#schema_prep_mins').val();
-					var cookhours		= jQuery('#schema_builder input#schema_cook_hours').val();
-					var cookmins		= jQuery('#schema_builder input#schema_cook_mins').val();
-					var yield			= jQuery('#schema_builder input#schema_yield').val();
-					var calories		= jQuery('#schema_builder input#schema_calories').val();
-					var fatcount		= jQuery('#schema_builder input#schema_fatcount').val();
-					var sugarcount		= jQuery('#schema_builder input#schema_sugarcount').val();
-					var saltcount		= jQuery('#schema_builder input#schema_saltcount').val();
-					
-					// textfield options
-					var description		= jQuery('#schema_builder textarea#schema_description').val();
-					var rev_body		= jQuery('#schema_builder textarea#schema_rev_body').val();
-					var instructions	= jQuery('#schema_builder textarea#schema_instructions').val();
-	
 					// output setups
 					output = '[schema ';
 					output += 'type="' + type + '" ';
-	
-					// person
-					if(type == 'person' ) {
-						if(name)
-							output += 'name="' + name + '" ';
-						if(orgname)
-							output += 'orgname="' + orgname + '" ';
-						if(jobtitle)
-							output += 'jobtitle="' + jobtitle + '" ';
-						if(url)
-							output += 'url="' + url + '" ';
-						if(description)
-							output += 'description="' + description + '" ';
-						if(bday)
-							output += 'bday="' + bday + '" ';
-						if(street)
-							output += 'street="' + street + '" ';
-						if(pobox)
-							output += 'pobox="' + pobox + '" ';
-						if(city)
-							output += 'city="' + city + '" ';
-						if(state)
-							output += 'state="' + state + '" ';
-						if(postalcode)
-							output += 'postalcode="' + postalcode + '" ';
-						if(country && country !== 'none')
-							output += 'country="' + country + '" ';
-						if(email)
-							output += 'email="' + email + '" ';
-						if(phone)
-							output += 'phone="' + phone + '" ';
-					}
-	
-					// product
-					if(type == 'product' ) {
-						if(url)
-							output += 'url="' + url + '" ';
-						if(name)
-							output += 'name="' + name + '" ';
-						if(description)
-							output += 'description="' + description + '" ';
-						if(brand)
-							output += 'brand="' + brand + '" ';
-						if(manfu)
-							output += 'manfu="' + manfu + '" ';
-						if(model)
-							output += 'model="' + model + '" ';
-						if(prod_id)
-							output += 'prod_id="' + prod_id + '" ';
-						if(single_rating)
-							output += 'single_rating="' + single_rating + '" ';
-						if(agg_rating)
-							output += 'agg_rating="' + agg_rating + '" ';
-						if(price)
-							output += 'price="' + price + '" ';
-						if(condition && condition !=='none')
-							output += 'condition="' + condition + '" ';
-					}
-	
-					// event
-					if(type == 'event' ) {
-						if(evtype && evtype !== 'none')
-							output += 'evtype="' + evtype + '" ';
-						if(url)
-							output += 'url="' + url + '" ';
-						if(name)
-							output += 'name="' + name + '" ';
-						if(description)
-							output += 'description="' + description + '" ';
-						if(sdate)
-							output += 'sdate="' + sdate + '" ';
-						if(stime)
-							output += 'stime="' + stime + '" ';
-						if(edate)
-							output += 'edate="' + edate + '" ';
-						if(duration)
-							output += 'duration="' + duration + '" ';
-						if(street)
-							output += 'street="' + street + '" ';
-						if(pobox)
-							output += 'pobox="' + pobox + '" ';
-						if(city)
-							output += 'city="' + city + '" ';
-						if(state)
-							output += 'state="' + state + '" ';
-						if(postalcode)
-							output += 'postalcode="' + postalcode + '" ';
-						if(country && country !== 'none')
-							output += 'country="' + country + '" ';
-					}
-	
-					// organization
-					if(type == 'organization' ) {
-						if(orgtype)
-							output += 'orgtype="' + orgtype + '" ';
-						if(url)
-							output += 'url="' + url + '" ';
-						if(name)
-							output += 'name="' + name + '" ';
-						if(description)
-							output += 'description="' + description + '" ';
-						if(street)
-							output += 'street="' + street + '" ';
-						if(pobox)
-							output += 'pobox="' + pobox + '" ';
-						if(city)
-							output += 'city="' + city + '" ';
-						if(state)
-							output += 'state="' + state + '" ';
-						if(postalcode)
-							output += 'postalcode="' + postalcode + '" ';
-						if(country && country !== 'none')
-							output += 'country="' + country + '" ';
-						if(email)
-							output += 'email="' + email + '" ';
-						if(phone)
-							output += 'phone="' + phone + '" ';
-						if(fax)
-							output += 'fax="' + fax + '" ';
-					}
-	
-					// movie
-					if(type == 'movie' ) {
-						if(url)
-							output += 'url="' + url + '" ';
-						if(name)
-							output += 'name="' + name + '" ';
-						if(description)
-							output += 'description="' + description + '" ';
-						if(director)
-							output += 'director="' + director + '" ';
-						if(producer)
-							output += 'producer="' + producer + '" ';
-						if(actor_group) {
-							var count = 0;
-							jQuery('div.sc_actor').each(function(){
-								count++;
-								var actor = jQuery(this).find('input').val();
-								output += 'actor_' + count + '="' + actor + '" ';
-							});
-						}
-					}
-	
-					// book
-					if(type == 'book' ) {
-						if(url)
-							output += 'url="' + url + '" ';
-						if(name)
-							output += 'name="' + name + '" ';
-						if(description)
-							output += 'description="' + description + '" ';
-						if(author)
-							output += 'author="' + author + '" ';
-						if(publisher)
-							output += 'publisher="' + publisher + '" ';
-						if(pubdate)
-							output += 'pubdate="' + pubdate + '" ';
-						if(edition)
-							output += 'edition="' + edition + '" ';
-						if(isbn)
-							output += 'isbn="' + isbn + '" ';
-						if(ebook === true )
-							output += 'ebook="yes" ';
-						if(paperback === true )
-							output += 'paperback="yes" ';
-						if(hardcover === true )
-							output += 'hardcover="yes" ';
-					}
-	
-					// review
-					if(type == 'review' ) {
-						if(url)
-							output += 'url="' + url + '" ';
-						if(name)
-							output += 'name="' + name + '" ';
-						if(description)
-							output += 'description="' + description + '" ';
-						if(rev_name)
-							output += 'rev_name="' + rev_name + '" ';
-						if(rev_body)
-							output += 'rev_body="' + rev_body + '" ';
-						if(author)
-							output += 'author="' + author + '" ';
-						if(pubdate)
-							output += 'pubdate="' + pubdate + '" ';
-						if(user_review)
-							output += 'user_review="' + user_review + '" ';
-						if(min_review)
-							output += 'min_review="' + min_review + '" ';
-						if(max_review)
-							output += 'max_review="' + max_review + '" ';
-					}
-	
-					// recipe
-					if(type == 'recipe' ) {
-						if(name)
-							output += 'name="' + name + '" ';
-						if(author)
-							output += 'author="' + author + '" ';
-						if(pubdate)
-							output += 'pubdate="' + pubdate + '" ';
-						if(image)
-							output += 'image="' + image + '" ';
-						if(description)
-							output += 'description="' + description + '" ';
-						if(prephours)
-							output += 'prephours="' + prephours + '" ';
-						if(prepmins)
-							output += 'prepmins="' + prepmins + '" ';
-						if(cookhours)
-							output += 'cookhours="' + cookhours + '" ';
-						if(cookmins)
-							output += 'cookmins="' + cookmins + '" ';
-						if(yield)
-							output += 'yield="' + yield + '" ';
-						if(calories)
-							output += 'calories="' + calories + '" ';
-						if(fatcount)
-							output += 'fatcount="' + fatcount + '" ';
-						if(sugarcount)
-							output += 'sugarcount="' + sugarcount + '" ';
-						if(saltcount)
-							output += 'saltcount="' + saltcount + '" ';
-						if(ingrt_group) {
-							var count = 0;
-							jQuery('div.sc_ingrt').each(function(){
-								count++;
-								var ingrt = jQuery(this).find('input').val();
-								output += 'ingrt_' + count + '="' + ingrt + '" ';
-							});
-						}
-						if(instructions)
-							output += 'instructions="' + instructions + '" ';
-					}
-	
 					output += ']';
 	
 					window.send_to_editor(output);
@@ -1736,425 +1053,34 @@ if ( !class_exists( "RavenSchema" ) ) :
 				<div id="schema_builder" class="schema_wrap">
 					<!-- schema type dropdown -->
 					<div id="sc_type">
+                    	<?php 
+							$current_type = "Thing";
+							$chain_tracker = array();
+							$need_optgroup  = false;
+						?>
+						
 						<label for="schema_type"><?php _e('Schema Type', 'schema'); ?></label>
 						<select name="schema_type" id="schema_type" class="schema_drop schema_thindrop">
-							<option class="holder" value="none">(<?php _e('Select A Type', 'schema'); ?>)</option>
-							<option value="person"><?php _e('Person', 'schema'); ?></option>
-							<option value="product"><?php _e('Product', 'schema'); ?></option>
-							<option value="event"><?php _e('Event', 'schema'); ?></option>
-							<option value="organization"><?php _e('Organization', 'schema'); ?></option>
-							<option value="movie"><?php _e('Movie', 'schema'); ?></option>
-							<option value="book"><?php _e('Book', 'schema'); ?></option>
-							<option value="review"><?php _e('Review', 'schema'); ?></option>
-							<option value="recipe"><?php _e('Recipe', 'schema'); ?></option>
+							<option class="holder" value="">(<?php _e('Select a Type', 'schema'); ?>)</option>    
+                            
 						</select>
 					</div>
 					<!-- end schema type dropdown -->
-			
-					<div id="sc_evtype" class="sc_option" style="display:none">
-						<label for="schema_evtype"><?php _e('Event Type', 'schema'); ?></label>
-						<select name="schema_evtype" id="schema_evtype" class="schema_drop schema_thindrop">
-							<option value="Event"><?php _e('General', 'schema'); ?></option>
-							<option value="BusinessEvent"><?php _e('Business', 'schema'); ?></option>
-							<option value="ChildrensEvent"><?php _e('Childrens', 'schema'); ?></option>
-							<option value="ComedyEvent"><?php _e('Comedy', 'schema'); ?></option>
-							<option value="DanceEvent"><?php _e('Dance', 'schema'); ?></option>
-							<option value="EducationEvent"><?php _e('Education', 'schema'); ?></option>
-							<option value="Festival"><?php _e('Festival', 'schema'); ?></option>
-							<option value="FoodEvent"><?php _e('Food', 'schema'); ?></option>
-							<option value="LiteraryEvent"><?php _e('Literary', 'schema'); ?></option>
-							<option value="MusicEvent"><?php _e('Music', 'schema'); ?></option>
-							<option value="SaleEvent"><?php _e('Sale', 'schema'); ?></option>
-							<option value="SocialEvent"><?php _e('Social', 'schema'); ?></option>
-							<option value="SportsEvent"><?php _e('Sports', 'schema'); ?></option>
-							<option value="TheaterEvent"><?php _e('Theater', 'schema'); ?></option>
-							<option value="UserInteraction"><?php _e('User Interaction', 'schema'); ?></option>
-							<option value="VisualArtsEvent"><?php _e('Visual Arts', 'schema'); ?></option>
-						</select>
-					</div>
-			
-					<div id="sc_orgtype" class="sc_option" style="display:none">
-						<label for="schema_orgtype"><?php _e('Organziation Type', 'schema'); ?></label>
-						<select name="schema_orgtype" id="schema_orgtype" class="schema_drop schema_thindrop">
-							<option value="Organization"><?php _e('General', 'schema'); ?></option>
-							<option value="Corporation"><?php _e('Corporation', 'schema'); ?></option>
-							<option value="EducationalOrganization"><?php _e('School', 'schema'); ?></option>
-							<option value="GovernmentOrganization"><?php _e('Government', 'schema'); ?></option>
-							<option value="LocalBusiness"><?php _e('Local Business', 'schema'); ?></option>
-							<option value="NGO"><?php _e('NGO', 'schema'); ?></option>
-							<option value="PerformingGroup"><?php _e('Performing Group', 'schema'); ?></option>
-							<option value="SportsTeam"><?php _e('Sports Team', 'schema'); ?></option>
-						</select>
-					</div>
-			
-					<div id="sc_name" class="sc_option" style="display:none">
-						<label for="schema_name"><?php _e('Name', 'schema'); ?></label>
-						<input type="text" name="schema_name" class="form_full" value="" id="schema_name" />
-					</div>
-			
-					<div id="sc_image" class="sc_option" style="display:none">
-						<label for="schema_image">Image URL</label>
-						<input type="text" name="schema_image" class="form_full" value="" id="schema_image" />
-					</div>
-			
-					<div id="sc_orgname" class="sc_option" style="display:none">
-						<label for="schema_orgname"><?php _e('Organization', 'schema'); ?></label>
-						<input type="text" name="schema_orgname" class="form_full" value="" id="schema_orgname" />
-					</div>
-			
-					<div id="sc_jobtitle" class="sc_option" style="display:none">
-						<label for="schema_jobtitle"><?php _e('Job Title', 'schema'); ?></label>
-						<input type="text" name="schema_jobtitle" class="form_full" value="" id="schema_jobtitle" />
-					</div>
-			
-					<div id="sc_url" class="sc_option" style="display:none">
-						<label for="schema_url"><?php _e('Website', 'schema'); ?></label>
-						<input type="text" name="schema_url" class="form_full" value="" id="schema_url" />
-					</div>
-			
-					<div id="sc_description" class="sc_option" style="display:none">
-						<label for="schema_description"><?php _e('Description', 'schema'); ?></label>
-						<textarea name="schema_description" id="schema_description"></textarea>
-					</div>
-			
-					<div id="sc_rev_name" class="sc_option" style="display:none">
-						<label for="schema_rev_name"><?php _e('Item Name', 'schema'); ?></label>
-						<input type="text" name="schema_rev_name" class="form_full" value="" id="schema_rev_name" />
-					</div>
-			
-					<div id="sc_rev_body" class="sc_option" style="display:none">
-						<label for="schema_rev_body"><?php _e('Item Review', 'schema'); ?></label>
-						<textarea name="schema_rev_body" id="schema_rev_body"></textarea>
-					</div>
-			
-					<div id="sc_director" class="sc_option" style="display:none">
-						<label for="schema_director"><?php _e('Director', 'schema'); ?></label>
-						<input type="text" name="schema_director" class="form_full" value="" id="schema_director" />
-					</div>
-			
-					<div id="sc_producer" class="sc_option" style="display:none">
-						<label for="schema_producer"><?php _e('Producer', 'schema'); ?></label>
-						<input type="text" name="schema_producer" class="form_full" value="" id="schema_producer" />
-					</div>
-			
-					<div id="sc_actor_1" class="sc_option sc_actor sc_repeater" style="display:none">
-						<label for="schema_actor_1"><?php _e('Actor', 'schema'); ?></label>
-						<input type="text" name="schema_actor_1" class="form_full actor_input" value="" id="schema_actor_1" />
-					</div>
-			
-					<input type="button" id="clone_actor" value="<?php _e('Add Another Actor', 'schema'); ?>" style="display:none;" />
-			
-					<div id="sc_sdate" class="sc_option" style="display:none">
-						<label for="schema_sdate"><?php _e('Start Date', 'schema'); ?></label>
-						<input type="text" id="schema_sdate" name="schema_sdate" class="schema_datepicker timepicker form_third" value="" />
-						<input type="hidden" id="schema_sdate-format" class="schema_datepicker-format" value="" />
-					</div>
-			
-					<div id="sc_stime" class="sc_option" style="display:none">
-						<label for="schema_stime"><?php _e('Start Time', 'schema'); ?></label>
-						<input type="text" id="schema_stime" name="schema_stime" class="schema_timepicker form_third" value="" />
-					</div>
-			
-					<div id="sc_edate" class="sc_option" style="display:none">
-						<label for="schema_edate"><?php _e('End Date', 'schema'); ?></label>
-						<input type="text" id="schema_edate" name="schema_edate" class="schema_datepicker form_third" value="" />
-						<input type="hidden" id="schema_edate-format" class="schema_datepicker-format" value="" />
-					</div>
-			
-					<div id="sc_duration" class="sc_option" style="display:none">
-						<label for="schema_duration"><?php _e('Duration', 'schema'); ?></label>
-						<input type="text" id="schema_duration" name="schema_duration" class="schema_timepicker form_third" value="" />
-					</div>
-			
-					<div id="sc_bday" class="sc_option" style="display:none">
-						<label for="schema_bday"><?php _e('Birthday', 'schema'); ?></label>
-						<input type="text" id="schema_bday" name="schema_bday" class="schema_datepicker form_third" value="" />
-						<input type="hidden" id="schema_bday-format" class="schema_datepicker-format" value="" />
-					</div>
-			
-					<div id="sc_street" class="sc_option" style="display:none">
-						<label for="schema_street"><?php _e('Address', 'schema'); ?></label>
-						<input type="text" name="schema_street" class="form_full" value="" id="schema_street" />
-					</div>
-			
-					<div id="sc_pobox" class="sc_option" style="display:none">
-						<label for="schema_pobox"><?php _e('P.O. Box', 'schema'); ?></label>
-						<input type="text" name="schema_pobox" class="form_third schema_numeric" value="" id="schema_pobox" />
-					</div>
-			
-					<div id="sc_city" class="sc_option" style="display:none">
-						<label for="schema_city"><?php _e('City', 'schema'); ?></label>
-						<input type="text" name="schema_city" class="form_full" value="" id="schema_city" />
-					</div>
-			
-					<div id="sc_state" class="sc_option" style="display:none">
-						<label for="schema_state"><?php _e('State / Region', 'schema'); ?></label>
-						<input type="text" name="schema_state" class="form_third" value="" id="schema_state" />
-					</div>
-			
-					<div id="sc_postalcode" class="sc_option" style="display:none">
-						<label for="schema_postalcode"><?php _e('Postal Code', 'schema'); ?></label>
-						<input type="text" name="schema_postalcode" class="form_third" value="" id="schema_postalcode" />
-					</div>
-			
+                    
 					<div id="sc_country" class="sc_option" style="display:none">
 						<label for="schema_country"><?php _e('Country', 'schema'); ?></label>
 						<select name="schema_country" id="schema_country" class="schema_drop schema_thindrop">
-							<option class="holder" value="none">(<?php _e('Select A Country', 'schema'); ?>)</option>
+							<option class="holder" value="none">(<?php _e('Select a Country', 'schema'); ?>)</option>
 							<option value="US"><?php _e('United States', 'schema'); ?></option>
 							<option value="CA"><?php _e('Canada', 'schema'); ?></option>
 							<option value="MX"><?php _e('Mexico', 'schema'); ?></option>
 							<option value="GB"><?php _e('United Kingdom', 'schema'); ?></option>
 							<?php
-							$countries = array(
-								'AF' => __('Afghanistan', 'schema'),
-								'AX' => __('Aland Islands', 'schema'),
-								'AL' => __('Albania', 'schema'),
-								'DZ' => __('Algeria', 'schema'),
-								'AS' => __('American Samoa', 'schema'),
-								'AD' => __('Andorra', 'schema'),
-								'AO' => __('Angola', 'schema'),
-								'AI' => __('Anguilla', 'schema'),
-								'AQ' => __('Antarctica', 'schema'),
-								'AG' => __('Antigua And Barbuda', 'schema'),
-								'AR' => __('Argentina', 'schema'),
-								'AM' => __('Armenia', 'schema'),
-								'AW' => __('Aruba', 'schema'),
-								'AU' => __('Australia', 'schema'),
-								'AT' => __('Austria', 'schema'),
-								'AZ' => __('Azerbaijan', 'schema'),
-								'BS' => __('Bahamas', 'schema'),
-								'BH' => __('Bahrain', 'schema'),
-								'BD' => __('Bangladesh', 'schema'),
-								'BB' => __('Barbados', 'schema'),
-								'BY' => __('Belarus', 'schema'),
-								'BE' => __('Belgium', 'schema'),
-								'BZ' => __('Belize', 'schema'),
-								'BJ' => __('Benin', 'schema'),
-								'BM' => __('Bermuda', 'schema'),
-								'BT' => __('Bhutan', 'schema'),
-								'BO' => __('Bolivia, Plurinational State Of', 'schema'),
-								'BQ' => __('Bonaire, Sint Eustatius And Saba', 'schema'),
-								'BA' => __('Bosnia And Herzegovina', 'schema'),
-								'BW' => __('Botswana', 'schema'),
-								'BV' => __('Bouvet Island', 'schema'),
-								'BR' => __('Brazil', 'schema'),
-								'IO' => __('British Indian Ocean Territory', 'schema'),
-								'BN' => __('Brunei Darussalam', 'schema'),
-								'BG' => __('Bulgaria', 'schema'),
-								'BF' => __('Burkina Faso', 'schema'),
-								'BI' => __('Burundi', 'schema'),
-								'KH' => __('Cambodia', 'schema'),
-								'CM' => __('Cameroon', 'schema'),
-								'CV' => __('Cape Verde', 'schema'),
-								'KY' => __('Cayman Islands', 'schema'),
-								'CF' => __('Central African Republic', 'schema'),
-								'TD' => __('Chad', 'schema'),
-								'CL' => __('Chile', 'schema'),
-								'CN' => __('China', 'schema'),
-								'CX' => __('Christmas Island', 'schema'),
-								'CC' => __('Cocos (Keeling) Islands', 'schema'),
-								'CO' => __('Colombia', 'schema'),
-								'KM' => __('Comoros', 'schema'),
-								'CG' => __('Congo', 'schema'),
-								'CD' => __('Congo, The Democratic Republic Of The', 'schema'),
-								'CK' => __('Cook Islands', 'schema'),
-								'CR' => __('Costa Rica', 'schema'),
-								'CI' => __('Cote D\'Ivoire', 'schema'),
-								'HR' => __('Croatia', 'schema'),
-								'CU' => __('Cuba', 'schema'),
-								'CW' => __('Curacao', 'schema'),
-								'CY' => __('Cyprus', 'schema'),
-								'CZ' => __('Czech Republic', 'schema'),
-								'DK' => __('Denmark', 'schema'),
-								'DJ' => __('Djibouti', 'schema'),
-								'DM' => __('Dominica', 'schema'),
-								'DO' => __('Dominican Republic', 'schema'),
-								'EC' => __('Ecuador', 'schema'),
-								'EG' => __('Egypt', 'schema'),
-								'SV' => __('El Salvador', 'schema'),
-								'GQ' => __('Equatorial Guinea', 'schema'),
-								'ER' => __('Eritrea', 'schema'),
-								'EE' => __('Estonia', 'schema'),
-								'ET' => __('Ethiopia', 'schema'),
-								'FK' => __('Falkland Islands (Malvinas)', 'schema'),
-								'FO' => __('Faroe Islands', 'schema'),
-								'FJ' => __('Fiji', 'schema'),
-								'FI' => __('Finland', 'schema'),
-								'FR' => __('France', 'schema'),
-								'GF' => __('French Guiana', 'schema'),
-								'PF' => __('French Polynesia', 'schema'),
-								'TF' => __('French Southern Territories', 'schema'),
-								'GA' => __('Gabon', 'schema'),
-								'GM' => __('Gambia', 'schema'),
-								'GE' => __('Georgia', 'schema'),
-								'DE' => __('Germany', 'schema'),
-								'GH' => __('Ghana', 'schema'),
-								'GI' => __('Gibraltar', 'schema'),
-								'GR' => __('Greece', 'schema'),
-								'GL' => __('Greenland', 'schema'),
-								'GD' => __('Grenada', 'schema'),
-								'GP' => __('Guadeloupe', 'schema'),
-								'GU' => __('Guam', 'schema'),
-								'GT' => __('Guatemala', 'schema'),
-								'GG' => __('Guernsey', 'schema'),
-								'GN' => __('Guinea', 'schema'),
-								'GW' => __('Guinea-Bissau', 'schema'),
-								'GY' => __('Guyana', 'schema'),
-								'HT' => __('Haiti', 'schema'),
-								'HM' => __('Heard Island And Mcdonald Islands', 'schema'),
-								'VA' => __('Vatican City', 'schema'),
-								'HN' => __('Honduras', 'schema'),
-								'HK' => __('Hong Kong', 'schema'),
-								'HU' => __('Hungary', 'schema'),
-								'IS' => __('Iceland', 'schema'),
-								'IN' => __('India', 'schema'),
-								'ID' => __('Indonesia', 'schema'),
-								'IR' => __('Iran', 'schema'),
-								'IQ' => __('Iraq', 'schema'),
-								'IE' => __('Ireland', 'schema'),
-								'IM' => __('Isle Of Man', 'schema'),
-								'IL' => __('Israel', 'schema'),
-								'IT' => __('Italy', 'schema'),
-								'JM' => __('Jamaica', 'schema'),
-								'JP' => __('Japan', 'schema'),
-								'JE' => __('Jersey', 'schema'),
-								'JO' => __('Jordan', 'schema'),
-								'KZ' => __('Kazakhstan', 'schema'),
-								'KE' => __('Kenya', 'schema'),
-								'KI' => __('Kiribati', 'schema'),
-								'KP' => __('North Korea', 'schema'),
-								'KR' => __('South Korea', 'schema'),
-								'KW' => __('Kuwait', 'schema'),
-								'KG' => __('Kyrgyzstan', 'schema'),
-								'LA' => __('Laos', 'schema'),
-								'LV' => __('Latvia', 'schema'),
-								'LB' => __('Lebanon', 'schema'),
-								'LS' => __('Lesotho', 'schema'),
-								'LR' => __('Liberia', 'schema'),
-								'LY' => __('Libya', 'schema'),
-								'LI' => __('Liechtenstein', 'schema'),
-								'LT' => __('Lithuania', 'schema'),
-								'LU' => __('Luxembourg', 'schema'),
-								'MO' => __('Macao', 'schema'),
-								'MK' => __('Macedonia', 'schema'),
-								'MG' => __('Madagascar', 'schema'),
-								'MW' => __('Malawi', 'schema'),
-								'MY' => __('Malaysia', 'schema'),
-								'MV' => __('Maldives', 'schema'),
-								'ML' => __('Mali', 'schema'),
-								'MT' => __('Malta', 'schema'),
-								'MH' => __('Marshall Islands', 'schema'),
-								'MQ' => __('Martinique', 'schema'),
-								'MR' => __('Mauritania', 'schema'),
-								'MU' => __('Mauritius', 'schema'),
-								'YT' => __('Mayotte', 'schema'),
-								'FM' => __('Micronesia', 'schema'),
-								'MD' => __('Moldova', 'schema'),
-								'MC' => __('Monaco', 'schema'),
-								'MN' => __('Mongolia', 'schema'),
-								'ME' => __('Montenegro', 'schema'),
-								'MS' => __('Montserrat', 'schema'),
-								'MA' => __('Morocco', 'schema'),
-								'MZ' => __('Mozambique', 'schema'),
-								'MM' => __('Myanmar', 'schema'),
-								'NA' => __('Namibia', 'schema'),
-								'NR' => __('Nauru', 'schema'),
-								'NP' => __('Nepal', 'schema'),
-								'NL' => __('Netherlands', 'schema'),
-								'NC' => __('New Caledonia', 'schema'),
-								'NZ' => __('New Zealand', 'schema'),
-								'NI' => __('Nicaragua', 'schema'),
-								'NE' => __('Niger', 'schema'),
-								'NG' => __('Nigeria', 'schema'),
-								'NU' => __('Niue', 'schema'),
-								'NF' => __('Norfolk Island', 'schema'),
-								'MP' => __('Northern Mariana Islands', 'schema'),
-								'NO' => __('Norway', 'schema'),
-								'OM' => __('Oman', 'schema'),
-								'PK' => __('Pakistan', 'schema'),
-								'PW' => __('Palau', 'schema'),
-								'PS' => __('Palestine', 'schema'),
-								'PA' => __('Panama', 'schema'),
-								'PG' => __('Papua New Guinea', 'schema'),
-								'PY' => __('Paraguay', 'schema'),
-								'PE' => __('Peru', 'schema'),
-								'PH' => __('Philippines', 'schema'),
-								'PN' => __('Pitcairn', 'schema'),
-								'PL' => __('Poland', 'schema'),
-								'PT' => __('Portugal', 'schema'),
-								'PR' => __('Puerto Rico', 'schema'),
-								'QA' => __('Qatar', 'schema'),
-								'RE' => __('Reunion', 'schema'),
-								'RO' => __('Romania', 'schema'),
-								'RU' => __('Russian Federation', 'schema'),
-								'RW' => __('Rwanda', 'schema'),
-								'BL' => __('St. Barthelemy', 'schema'),
-								'SH' => __('St. Helena', 'schema'),
-								'KN' => __('St. Kitts And Nevis', 'schema'),
-								'LC' => __('St. Lucia', 'schema'),
-								'MF' => __('St. Martin (French Part)', 'schema'),
-								'PM' => __('St. Pierre And Miquelon', 'schema'),
-								'VC' => __('St. Vincent And The Grenadines', 'schema'),
-								'WS' => __('Samoa', 'schema'),
-								'SM' => __('San Marino', 'schema'),
-								'ST' => __('Sao Tome And Principe', 'schema'),
-								'SA' => __('Saudi Arabia', 'schema'),
-								'SN' => __('Senegal', 'schema'),
-								'RS' => __('Serbia', 'schema'),
-								'SC' => __('Seychelles', 'schema'),
-								'SL' => __('Sierra Leone', 'schema'),
-								'SG' => __('Singapore', 'schema'),
-								'SX' => __('Sint Maarten (Dutch Part)', 'schema'),
-								'SK' => __('Slovakia', 'schema'),
-								'SI' => __('Slovenia', 'schema'),
-								'SB' => __('Solomon Islands', 'schema'),
-								'SO' => __('Somalia', 'schema'),
-								'ZA' => __('South Africa', 'schema'),
-								'GS' => __('South Georgia', 'schema'),
-								'SS' => __('South Sudan', 'schema'),
-								'ES' => __('Spain', 'schema'),
-								'LK' => __('Sri Lanka', 'schema'),
-								'SD' => __('Sudan', 'schema'),
-								'SR' => __('Suriname', 'schema'),
-								'SJ' => __('Svalbard', 'schema'),
-								'SZ' => __('Swaziland', 'schema'),
-								'SE' => __('Sweden', 'schema'),
-								'CH' => __('Switzerland', 'schema'),
-								'SY' => __('Syria', 'schema'),
-								'TW' => __('Taiwan', 'schema'),
-								'TJ' => __('Tajikistan', 'schema'),
-								'TZ' => __('Tanzania', 'schema'),
-								'TH' => __('Thailand', 'schema'),
-								'TL' => __('Timor-Leste', 'schema'),
-								'TG' => __('Togo', 'schema'),
-								'TK' => __('Tokelau', 'schema'),
-								'TO' => __('Tonga', 'schema'),
-								'TT' => __('Trinidad And Tobago', 'schema'),
-								'TN' => __('Tunisia', 'schema'),
-								'TR' => __('Turkey', 'schema'),
-								'TM' => __('Turkmenistan', 'schema'),
-								'TC' => __('Turks And Caicos Islands', 'schema'),
-								'TV' => __('Tuvalu', 'schema'),
-								'UG' => __('Uganda', 'schema'),
-								'UA' => __('Ukraine', 'schema'),
-								'AE' => __('United Arab Emirates', 'schema'),
-								'UM' => __('United States Minor Outlying Islands', 'schema'),
-								'UY' => __('Uruguay', 'schema'),
-								'UZ' => __('Uzbekistan', 'schema'),
-								'VU' => __('Vanuatu', 'schema'),
-								'VE' => __('Venezuela', 'schema'),
-								'VN' => __('Vietnam', 'schema'),
-								'VG' => __('British Virgin Islands ', 'schema'),
-								'VI' => __('U.S. Virgin Islands ', 'schema'),
-								'WF' => __('Wallis And Futuna', 'schema'),
-								'EH' => __('Western Sahara', 'schema'),
-								'YE' => __('Yemen', 'schema'),
-								'ZM' => __('Zambia', 'schema'),
-								'ZW' => __('Zimbabwe', 'schema')
-							);
-							// sort alphabetical with translated names
-							asort($countries);
+							$countries = $this->get_countries();
+							unset($countries["US"]);
+							unset($countries["CA"]);
+							unset($countries["MX"]);
+							unset($countries["GB"]);
 							// set array of each item
 							foreach ($countries as $country_key => $country_name) {
 								echo "\n\t<option value='{$country_key}'>{$country_name}</option>";
