@@ -1,6 +1,7 @@
 <?php 
 /*
   Scrapes the schemas from schema.org and processes them into php code.
+  This does NOT scrape pages for schema data.
 
   Version: 1.0
   Author: Derk-Jan Karrenbeld
@@ -340,7 +341,7 @@ if (!class_exists("DJ_SchemaScraper"))
 			add_settings_field( 'scrape_url', __( 'Scrape URL', 'schema' ), array( &$this, 'options_scraper_scrapeurl' ), 'dj_schemascraper', 'scraper_section' );
 			add_settings_field( 'cache_path', __( 'Cache Path', 'schema' ), array( &$this, 'options_scraper_cachepath' ), 'dj_schemascraper', 'scraper_section' );
 			add_settings_field( 'cache_time', __( 'Cache Time', 'schema' ), array( &$this, 'options_scraper_cachetime' ), 'dj_schemascraper', 'scraper_section' );
-
+			
 		}
 		
 		/**
@@ -348,7 +349,7 @@ if (!class_exists("DJ_SchemaScraper"))
 		 */
 		function options_scraper_section() {
 			echo '<p id="scraper_section">';
-			_e( 'The scraper module tries to retrieve any arbitrary schema in JSON format. In the end, the schema creator should be able to parse this data and provide functionality for any schema on the scrape url.', 'schema' );
+			_e( 'The scraper module tries to retrieve any arbitrary schema in JSON format. In the end, the schema creator should be able to parse this data and provide functionality for any schema on the scrape url. The schemas are fetched from the <code>scrape url</code> and saved at <code>cache_path</code>. The filename used is the same as fetched from the url. If a <code>valid</code> parameter is provided in the data retrieved, that + 1 day or fetch time + <code>cache_time</code>, whichever comes first, will invalidate the cache.', 'schema' );
 			echo '</p>';
 		}
 		
