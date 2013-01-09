@@ -59,7 +59,7 @@ if (!class_exists("DJ_SchemaScraper"))
 			add_action( 'raven_sc_default_settings', array( &$this, 'default_settings' ) );
 			add_action( 'raven_sc_register_settings', array( &$this, 'register_settings' ) );
 			add_action( 'raven_sc_options_form', create_function( '', 'settings_fields(\'dj_schemascraper\'); do_settings_sections(\'dj_schemascraper\');' ) );
-			add_action( 'admin_init', array( &$this, 'retrieve_schema_data' ) );
+			add_action( 'init', array( &$this, 'retrieve_schema_data' ) );
 		}
 		
 		/**
@@ -147,14 +147,16 @@ if (!class_exists("DJ_SchemaScraper"))
 		 *	Get all the ancestors of a type
 		 */
 		public function get_schema_ancestors( $type, $recursive = true ) {
-			return $recursive ? $this->get_schema( $type )->ancestors : $this->get_schema( $type )->supertypes;
+			$schema = is_object( $type ) ? $type : $this->get_schema( $type );
+			return $recursive ? $schema ->ancestors : $schema ->supertypes;
 		}
 		
 		/**
 		 * Get schema descendants
 		 */
 		public function get_schema_descendants( $type, $recursive = true ) {
-			$result = $this->get_schema( $type )->subtypes;
+			$schema = is_object( $type ) ? $type : $this->get_schema( $type );
+			$result = $schema->subtypes;
 			
 			if ($recursive) :
 				$results = array();
@@ -170,16 +172,17 @@ if (!class_exists("DJ_SchemaScraper"))
 		 * Get all the properties of a type
 		 */
 		public function get_schema_properties( $type, $recursive = true, $flat = false ) {
-			$result = $this->get_schema( $type )->specific_properties;
+			$schema = is_object( $type ) ? $type : $this->get_schema( $type );
+			$result = $schema->specific_properties;
 			
 			// Parent properties
 			if ($recursive) :
 				$result = array( $type => $result );
 				
 				if ($flat) :
-					return $this->get_schema( $type )->properties;
+					return $schema->properties;
 				else :
-					foreach( $this->get_schema_ancestors( $type ) as $ancestor )
+					foreach( $this->get_schema_ancestors( $schema ) as $ancestor )
 						$result = $this->get_schema_properties( $ancestor, $recursive ) + $result;
 				endif;
 			endif;
@@ -191,21 +194,34 @@ if (!class_exists("DJ_SchemaScraper"))
 		 * Get the schema comment for a type
 		 */
 		public function get_schema_comment( $type, $html = true ) {
-			return $html ? $this->get_schema( $type )->comment : $this->get_schema( $type )->comment_plain;
+			$schema = is_object( $type ) ? $type : $this->get_schema( $type );
+			return $html ? $schema ->comment : $schema ->comment_plain;
 		}
 		
 		/**
 		 * Get the URL of the schema
 		 */
 		public function get_schema_url( $type ) {
+			if ( is_object( $type ) )
+				return $type->url;
 			return 	$this->get_schema( $type )->url;
 		}
 		
 		/**
 		 * Gets the properties data
 		 */
-		public function get_properties() {
+		public function get_properties( ) {
 			return $this->schema_data->properties;	
+		}
+		
+		/**
+		 * Gets the property keys
+		 */
+		public function get_property_keys( ) {
+			$results = array();
+			foreach( $this->get_properties() as $property => $data)
+				array_push( $results, $property );
+			return $results;
 		}
 		
 		/**
@@ -219,6 +235,8 @@ if (!class_exists("DJ_SchemaScraper"))
 		 * Gets the property id
 		 */
 		public function get_property_id( $property ) {
+			if ( is_object( $property ) )
+				return $property->id;
 			return $this->get_property( $property )->id;	
 		}
 		
@@ -226,6 +244,8 @@ if (!class_exists("DJ_SchemaScraper"))
 		 * Gets a property english display label
 		 */
 		public function get_property_label( $property ) {
+			if ( is_object( $property ) )
+				return $property->label;
 			return $this->get_property( $property )->label;	
 		}
 		
@@ -233,14 +253,16 @@ if (!class_exists("DJ_SchemaScraper"))
 		 * Gets a property description
 		 */
 		public function get_property_comment( $property, $html = true ) {
-			return $html ? $this->get_property( $property )->comment :
-				 $this->get_property( $property )->comment_plain;	
+			$property = is_object( $property ) ? $property : $this->get_property( $property );
+			return $html ? $property->comment : $property->comment_plain;	
 		}
 		
 		/**
 		 * Get property ranges (what is valid contents)
 		 */
 		public function get_property_ranges( $property ) {
+			if ( is_object( $property ) )
+				return $property->ranges;
 			return $this->get_property( $property )->ranges;	
 		}
 		
@@ -248,6 +270,8 @@ if (!class_exists("DJ_SchemaScraper"))
 		 * Get property domains (where is this used)
 		 */
 		public function get_property_domains( $property ) {
+			if ( is_object( $property ) )
+				return $property->domains;
 			return $this->get_property( $property )->domains;	
 		}
 		
@@ -276,6 +300,8 @@ if (!class_exists("DJ_SchemaScraper"))
 		 *
 		 */
 		public function get_datatype_id( $type ) {
+			if ( is_object( $type ) )
+				return $type->id;
 			return $this->get_datatype( $type )->id;
 		}
 		
@@ -283,6 +309,8 @@ if (!class_exists("DJ_SchemaScraper"))
 		 *
 		 */
 		public function get_datatype_label( $type ) {
+			if ( is_object( $type ) )
+				return $type->label;
 			return $this->get_datatype( $type )->label;
 		}
 		
@@ -290,14 +318,16 @@ if (!class_exists("DJ_SchemaScraper"))
 		 *	Get all the ancestors of a datatype
 		 */
 		public function get_datatype_ancestors( $type, $recursive = true ) {
-			return $recursive ? $this->get_datatype( $type )->ancestors : $this->get_datatype( $type )->supertypes;
+			$datatype = is_object( $type ) ? $type : $this->get_datatype( $type );
+			return $recursive ? $datatype->ancestors : $datatype->supertypes;
 		}
 		
 		/**
 		 * Get datatype descendants
 		 */
 		public function get_datatype_descendants( $type, $recursive = true ) {
-			$result = $this->get_datatype( $type )->subtypes;
+			$datatype = is_object( $type ) ? $type : $this->get_datatype( $type );
+			$result = $datatype->subtypes;
 			
 			if ($recursive) :
 				$results = array();
@@ -313,13 +343,16 @@ if (!class_exists("DJ_SchemaScraper"))
 		 * Gets a datatype comment
 		 */
 		public function get_datatype_comment( $type, $html = true ) {
-			return $html ? $this->get_datatype( $type )->comment : $this->get_datatype( $type )->comment_plain;
+			$datatype = is_object( $type ) ? $type : $this->get_datatype( $type );
+			return $html ? $datatype ->comment : $datatype ->comment_plain;
 		}
 		
 		/**
-		 *
+		 * Gets the datatype url
 		 */
 		public function get_datatype_url( $type ) {
+			if ( is_object( $type ) )
+				return $type->url;
 			return $this->get_datatype( $type )->url;
 		}
 		
