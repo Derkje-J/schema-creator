@@ -70,8 +70,8 @@ if (!class_exists("DJ_SchemaViewer"))
 		/**
 		 *
 		 */
-		public function get_link( $type, $format = '%s' ) {
-			return '<a href="' . esc_attr( esc_url( $this->get_url( $type ) ) ) . '" title="' . esc_attr( sprintf( __( 'See the schema for %s', 'schema') , $type ) ) . '">
+		public function get_link( $type, $format = '%s', $classes = 'schema' ) {
+			return '<a class="' . $classes . '" href="' . esc_attr( esc_url( $this->get_url( $type ) ) ) . '" title="' . esc_attr( sprintf( __( 'See the schema for %s', 'schema') , $type ) ) . '">
                 	' . sprintf( $format, $type ) . '
                 </a>';
 		}
@@ -192,10 +192,12 @@ if (!class_exists("DJ_SchemaViewer"))
                                                     // Create links
                                                     foreach ( $ranges as &$range ) {
                                                         $range_schema = $schema_scraper->get_schema( $range );
-                                                        if ( !empty( $range_schema ) || $schema_scraper->is_datatype( $range ) )
+                                                        if ( !empty( $range_schema ) )
                                                             $range = $this->get_link( $range );
+														else if ( $schema_scraper->is_datatype( $range ) )
+															$range = $this->get_link( $range, '%s', 'datatype' );
                                                     }
-                                                    array_splice( $ranges, -2, 2, implode( _x( 'or', 'listing: last two items glue', 'schema' ), array_slice( $ranges, -2, 2 ) ) );
+                                                    array_splice( $ranges, -2, 2, implode( _x( ' or ', 'listing: last 2 items glue', 'schema' ), array_slice( $ranges, -2, 2 ) ) );
                                                     echo implode( _x( ', ', 'listing: glue, space after comma', 'schema' ) , $ranges );
                                                 ?>
                                             </td>
