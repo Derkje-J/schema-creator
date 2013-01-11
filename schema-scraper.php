@@ -58,7 +58,7 @@ if (!class_exists("DJ_SchemaScraper"))
 			add_action( 'raven_sc_default_settings', array( &$this, 'default_settings' ) );
 			add_action( 'raven_sc_register_settings', array( &$this, 'register_settings' ) );
 			add_action( 'raven_sc_options_form', create_function( '', 'settings_fields(\'dj_schemascraper\'); do_settings_sections(\'dj_schemascraper\');' ) );
-			add_action( 'admin_init', array( &$this, 'retrieve_schema_data' ) );
+			add_action( 'admin_init', array( &$this, 'get_schema_data' ) );
 		}
 		
 		/**
@@ -73,8 +73,11 @@ if (!class_exists("DJ_SchemaScraper"))
 		/**
 		 * Runs when the admin initializes
 		 */
-		public function retrieve_schema_data() 
+		public function get_schema_data() 
 		{
+			if ( !empty( $this->schema_data ) && is_object( $this->schema_data ) )
+				return $this->schema_data;
+			
 			$url  =	$this->get_option( 'scrape_url' );
 			$path = WP_CONTENT_DIR . $this->get_option( 'cache_path' );
 			
@@ -87,6 +90,8 @@ if (!class_exists("DJ_SchemaScraper"))
 			// Try cached value
 			if ( file_exists( $path ) && file_exists ( $path . $file ) ) :
 				$this->schema_data = @json_decode( file_get_contents( $path . $file ) );
+				
+						print_r ( $this->schema_data ) ;
 								
 				if ( is_object( $this->schema_data ) ) :
 					$cache_time = $this->get_option( 'cache_time' ) ?: 3600;
@@ -100,13 +105,19 @@ if (!class_exists("DJ_SchemaScraper"))
 			endif;
 			
 			// Nope, we still need to fetch it
-			$this->schema_data = @json_decode( $this->get_document( $url ) );
-			if( is_object( $this->schema_data ) ) :
-				 $this->timestamp = microtime( true );
-				 
+			$fetched_schema = @json_decode( $this->get_document( $url ) );
+			if( is_object( $fetched_schema ) ) :
+			
 				// We got it, so try to write it
-				if ( !is_wp_error( $this->schema_data ) )
+				if ( !is_wp_error( $fetched_schema ) ) :
 					@file_put_contents( $path . $file, json_encode( $this->schema_data ) );	
+					// Don't set it earlier, we might have an outdated
+					// but still valid fetch from cache.
+					$this->schema_data = $fetched_schema;
+					$this->timestamp = microtime( true );
+				 
+				 endif;
+				 
 			endif;
 		}
 		
@@ -143,6 +154,19 @@ if (!class_exists("DJ_SchemaScraper"))
 		}
 		
 		/**
+		 * Gets the schemas with no parents
+		 */
+		public function get_top_level_schemas() {
+			$results = array( );
+			foreach( $this->get_schemas() as $type => $schema ) :
+				$parents = $this->get_schema_ancestors( $type );
+				if ( empty( $parents ) )
+					array_push( $results, $type );
+			endforeach;
+			return $results;
+		}
+		
+		/**
 		 *	Get all the ancestors of a type
 		 */
 		public function get_schema_ancestors( $type, $recursive = true ) {
@@ -163,6 +187,21 @@ if (!class_exists("DJ_SchemaScraper"))
 			endif;
 			
 			return $result;
+		}
+		
+		/**
+		 * Gets schema siblings
+		 */
+		public function get_schema_siblings( $type ) 
+		{
+			$results = array();
+			$parents = $this->get_schema_ancestors( $type, false );
+			if ( empty( $parents ) )
+				$results = $this->get_top_level_schemas();
+				
+			foreach( $parents as $parent )
+				$results += $this->get_schema_descendants( $parent, false);
+			return array_diff( $results, array( $type ) );
 		}
 		
 		/**

@@ -523,7 +523,7 @@ if ( !class_exists( "RavenSchema" ) ) :
 	
 			// for admin settings screen
 			$current_screen = get_current_screen();
-			if ( 'settings_page_schema-creator' == $current_screen->base ) :
+			if ( 'settings_page_' . $this->get_page_slug() == $current_screen->base ) :
 				wp_enqueue_style( 'schema-admin', plugins_url('/lib/css/schema-admin.css', __FILE__), array(), SC_VER, 'all' );
 	
 				wp_enqueue_script( 'jquery-qtip', plugins_url('/lib/js/jquery.qtip.min.js', __FILE__) , array('jquery'), SC_VER, true );
