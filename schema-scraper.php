@@ -87,7 +87,7 @@ if (!class_exists("DJ_SchemaScraper"))
 			// Try cached value
 			if ( file_exists( $path ) && file_exists ( $path . $file ) ) :
 				$this->schema_data = @json_decode( file_get_contents( $path . $file ) );
-				
+								
 				if ( is_object( $this->schema_data ) ) :
 					$cache_time = $this->get_option( 'cache_time' ) ?: 3600;
 					$this->timestamp = filemtime( $path . $file );
