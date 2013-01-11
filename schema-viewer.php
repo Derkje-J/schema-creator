@@ -119,9 +119,13 @@ if (!class_exists("DJ_SchemaViewer"))
 			// Get the displayed type, default to first top level
 			$top_level_schemas = $schema_scraper->get_top_level_schemas();
 			$schema_type = isset( $_REQUEST[ 'schema' ] ) ? urldecode( $_REQUEST[ 'schema' ] ) : array_shift( $top_level_schemas );
-			
 			$is_datatype = $schema_scraper->is_datatype( $schema_type );
 			$schema = $is_datatype ? $schema_scraper->get_datatype( $schema_type ) : $schema_scraper->get_schema( $schema_type );
+			
+			// Replace toplevel if datatype
+			if ( $is_datatype ) :
+				$top_level_schemas = $schema_scraper->get_top_level_datatypes();
+			endif;
 			
 			// Fallback for not found schema
 			if ( empty( $schema ) ) :
@@ -130,11 +134,15 @@ if (!class_exists("DJ_SchemaViewer"))
 			endif;
 			
 			// Property time
-			$schema_properties = $is_datatype ? $schema_scraper->get_datatype_properties( $schema_type, true, false ) : $schema_scraper->get_schema_properties( $schema_type, true, false );
+			$schema_properties = $is_datatype ? array() : $schema_scraper->get_schema_properties( $schema, true, false ); 
+			// $schema_scraper->get_datatype_properties( $schema, true, false ) is available, but datatypes don't have props
 			
 			// Find the Family
-			$schema_children = $is_datatype ? $schema_scraper->get_datatype_descendants( $schema_type, false ) : $schema_scraper->get_schema_descendants( $schema_type, false );
-			$schema_siblings = !in_array( $schema_type, $top_level_schemas ) ? $schema_scraper->get_schema_siblings( $schema_type ) : array();
+			$schema_parents = $schema_scraper->get_datatype_ancestors( $schema, true );
+			$schema_children = $schema_scraper->get_schema_descendants( $schema, false );
+			$schema_siblings = !in_array( $schema_type, $top_level_schemas ) ? 
+				( $is_datatype ? $schema_scraper->get_datatype_siblings( $schema ) : $schema_scraper->get_schema_siblings( $schema ) ) : 
+				array();
 							
 			// Start page display
 			?> 	
@@ -142,54 +150,64 @@ if (!class_exists("DJ_SchemaViewer"))
 				<div class="icon32" id="icon-schema"><br></div>
                 <h2><?php _e('Schema Viewer', 'schema'); ?></h2>
                 <div class="schema_listing">
-                	<h2 class="page-title"><?php echo $schema_type; ?></h2>
-                    <span class="page-description"><?php echo $schema_scraper->get_schema_comment( $schema_type ); ?></span>
+                	<h2 class="page-title">
+					<?php 
+						$title = array();
+						foreach( $schema_parents as $parent ) 
+							$title[] = $this->get_link( $parent );
+						$title[] = $this->get_link( $schema_type ); 
+						echo implode( ' > ', $title );
+					?>
+                    </h2>
+                    <span class="page-description"><?php echo $schema_scraper->get_schema_comment( $schema ); ?></span>
                     
-                    <table class="definition-table" cellspacing="3">
-                    	<thead>
-                        	<tr>
-                            	<th><?php _e( 'Property', 'schema' ); ?></th>
-                                <th><?php _e( 'Expected Type', 'schema' );?></th>
-                                <th><?php _e( 'Description', 'schema' ); ?></th>
-                            </tr>
-                        </thead>
-                        <?php foreach( $schema_properties as $type => $properties ): ?>
-                        	<thead class="<?php if ( $type !== $schema_type ) echo "supertype "; ?>type">
-                            	<tr>
-                                	<th class="type-name" colspan="3">
-                                    	<?php printf( __( 'Properties from %s', 'schema' ), 
-											$this->get_link( $type ) ); ?>
-                                    </th>
+                    <?php if ( !$is_datatype ) : ?>
+                        <table class="definition-table" cellspacing="3">
+                            <thead>
+                                <tr>
+                                    <th><?php _e( 'Property', 'schema' ); ?></th>
+                                    <th><?php _e( 'Expected Type', 'schema' );?></th>
+                                    <th><?php _e( 'Description', 'schema' ); ?></th>
                                 </tr>
                             </thead>
-                            <tbody class="<?php if ( $type !== $schema_type ) echo "supertype "; ?>type">
-                            	<?php foreach( $properties as $property ) : ?>
-                                	<tr>
-                                        <th class="prop-nam" scope="row">
-                                            <code><?php echo $property; ?></code>
+                            <?php foreach( $schema_properties as $type => $properties ): ?>
+                                <thead class="<?php if ( $type !== $schema_type ) echo "supertype "; ?>type">
+                                    <tr>
+                                        <th class="type-name" colspan="3">
+                                            <?php printf( __( 'Properties from %s', 'schema' ), 
+                                                $this->get_link( $type ) ); ?>
                                         </th>
-                                        <td class="prop-ect">
-                                            <?php  
-                                                $ranges = $schema_scraper->get_property_ranges( $property );
-                                                
-                                                // Create links
-                                                foreach ( $ranges as &$range ) {
-                                                    $range_schema = $schema_scraper->get_schema( $range );
-                                                    if ( !empty( $range_schema ) || $schema_scraper->is_datatype( $range ) )
-                                                        $range = $this->get_link( $range );
-                                                }
-												array_splice( $ranges, -2, 2, implode( _x( 'or', 'listing: last two items glue', 'schema' ), array_slice( $ranges, -2, 2 ) ) );
-                                                echo implode( _x( ', ', 'listing: glue, space after comma', 'schema' ) , $ranges );
-                                            ?>
-                                        </td>
-                                        <td class="prop-desc">
-                                        	<?php echo $schema_scraper->get_property_comment( $property ); ?>
-                                        </td>
-                                	</tr>
-                                <?php endforeach; ?>
-                            </tbody>
-                        <?php endforeach; ?>
-                    </table>
+                                    </tr>
+                                </thead>
+                                <tbody class="<?php if ( $type !== $schema_type ) echo "supertype "; ?>type">
+                                    <?php foreach( $properties as $property ) : ?>
+                                        <tr>
+                                            <th class="prop-nam" scope="row">
+                                                <code><?php echo $property; ?></code>
+                                            </th>
+                                            <td class="prop-ect">
+                                                <?php  
+                                                    $ranges = $schema_scraper->get_property_ranges( $property );
+                                                    
+                                                    // Create links
+                                                    foreach ( $ranges as &$range ) {
+                                                        $range_schema = $schema_scraper->get_schema( $range );
+                                                        if ( !empty( $range_schema ) || $schema_scraper->is_datatype( $range ) )
+                                                            $range = $this->get_link( $range );
+                                                    }
+                                                    array_splice( $ranges, -2, 2, implode( _x( 'or', 'listing: last two items glue', 'schema' ), array_slice( $ranges, -2, 2 ) ) );
+                                                    echo implode( _x( ', ', 'listing: glue, space after comma', 'schema' ) , $ranges );
+                                                ?>
+                                            </td>
+                                            <td class="prop-desc">
+                                                <?php echo $schema_scraper->get_property_comment( $property ); ?>
+                                            </td>
+                                        </tr>
+                                    <?php endforeach; ?>
+                                </tbody>
+                            <?php endforeach; ?>
+                        </table>
+                    <?php endif; ?>
                     
                     <?php if ( !empty( $schema_children ) ) : ?>
                         <h3><?php _e( 'More specific types', 'schema' ); ?></h3>
