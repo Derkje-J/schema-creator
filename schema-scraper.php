@@ -59,7 +59,7 @@ if (!class_exists("DJ_SchemaScraper"))
 			add_action( 'raven_sc_default_settings', array( &$this, 'default_settings' ) );
 			add_action( 'raven_sc_register_settings', array( &$this, 'register_settings' ) );
 			add_action( 'raven_sc_options_form', create_function( '', 'settings_fields(\'dj_schemascraper\'); do_settings_sections(\'dj_schemascraper\');' ) );
-			add_action( 'init', array( &$this, 'retrieve_schema_data' ) );
+			add_action( 'init', array( &$this, 'get_schema_data' ) );
 		}
 		
 		/**
@@ -74,8 +74,11 @@ if (!class_exists("DJ_SchemaScraper"))
 		/**
 		 * Runs when the admin initializes
 		 */
-		public function retrieve_schema_data() 
+		public function get_schema_data() 
 		{
+			if ( !empty( $this->schema_data ) && is_object( $this->schema_data ) )
+				return $this->schema_data;
+			
 			$url  =	$this->get_option( 'scrape_url' );
 			$path = WP_CONTENT_DIR . $this->get_option( 'cache_path' );
 			
@@ -88,7 +91,7 @@ if (!class_exists("DJ_SchemaScraper"))
 			// Try cached value
 			if ( file_exists( $path ) && file_exists ( $path . $file ) ) :
 				$this->schema_data = @json_decode( file_get_contents( $path . $file ) );
-				
+								
 				if ( is_object( $this->schema_data ) ) :
 					$cache_time = $this->get_option( 'cache_time' ) ?: 3600;
 					$this->timestamp = filemtime( $path . $file );
@@ -101,13 +104,19 @@ if (!class_exists("DJ_SchemaScraper"))
 			endif;
 			
 			// Nope, we still need to fetch it
-			$this->schema_data = @json_decode( $this->get_document( $url ) );
-			if( is_object( $this->schema_data ) ) :
-				 $this->timestamp = microtime( true );
-				 
+			$fetched_schema = @json_decode( $this->get_document( $url ) );
+			if( is_object( $fetched_schema ) ) :
+			
 				// We got it, so try to write it
-				if ( !is_wp_error( $this->schema_data ) )
+				if ( !is_wp_error( $fetched_schema ) ) :
 					@file_put_contents( $path . $file, json_encode( $this->schema_data ) );	
+					// Don't set it earlier, we might have an outdated
+					// but still valid fetch from cache.
+					$this->schema_data = $fetched_schema;
+					$this->timestamp = microtime( true );
+				 
+				 endif;
+				 
 			endif;
 		}
 		
@@ -140,7 +149,30 @@ if (!class_exists("DJ_SchemaScraper"))
 		 * Get the schema for a type
 		 */
 		public function get_schema( $type ) {
-			return isset($this->get_schemas()->$type) ? $this->get_schemas()->$type : NULL;
+			if ( is_object( $type ) )
+				return $type;
+			return isset( $this->get_schemas()->$type ) ? $this->get_schemas()->$type : NULL;
+		}
+		
+		/**
+		 * Gets the schema's id
+		 */
+		public function get_schema_id( $type ) {
+			$type = is_object( $type ) ? $type : $this->get_schema( $type );
+			return $type->id;
+		}
+		
+		/**
+		 * Gets the schemas with no parents
+		 */
+		public function get_top_level_schemas() {
+			$results = array( );
+			foreach( $this->get_schemas() as $type => $schema ) :
+				$parents = $this->get_schema_ancestors( $schema );
+				if ( empty( $parents ) )
+					array_push( $results, $type );
+			endforeach;
+			return $results;
 		}
 		
 		/**
@@ -169,20 +201,35 @@ if (!class_exists("DJ_SchemaScraper"))
 		}
 		
 		/**
+		 * Gets schema siblings
+		 */
+		public function get_schema_siblings( $type ) 
+		{
+			$results = array();
+			$parents = $this->get_schema_ancestors( $type, false );
+			if ( empty( $parents ) )
+				$results = $this->get_top_level_schemas();
+				
+			foreach( $parents as $parent )
+				$results += $this->get_schema_descendants( $parent, false);
+			return array_diff( $results, array( $this->get_schema_id( $type ) ) );
+		}
+		
+		/**
 		 * Get all the properties of a type
 		 */
 		public function get_schema_properties( $type, $recursive = true, $flat = false ) {
-			$schema = is_object( $type ) ? $type : $this->get_schema( $type );
-			$result = $schema->specific_properties;
+			$type = is_object( $type ) ? $type : $this->get_schema( $type );
+			$result = $type->specific_properties;
 			
 			// Parent properties
 			if ($recursive) :
-				$result = array( $type => $result );
+				$result = array( $this->get_schema_id( $type ) => $result );
 				
 				if ($flat) :
 					return $schema->properties;
 				else :
-					foreach( $this->get_schema_ancestors( $schema ) as $ancestor )
+					foreach( $this->get_schema_ancestors( $type ) as $ancestor )
 						$result = $this->get_schema_properties( $ancestor, $recursive ) + $result;
 				endif;
 			endif;
@@ -315,6 +362,19 @@ if (!class_exists("DJ_SchemaScraper"))
 		}
 		
 		/**
+		 * Gets the datatypes with no parents
+		 */
+		public function get_top_level_datatypes() {
+			$results = array( );
+			foreach( $this->get_datatypes() as $type => $datatype ) :
+				$parents = $this->get_datatype_ancestors( $datatype );
+				if ( empty( $parents ) )
+					array_push( $results, $type );
+			endforeach;
+			return $results;
+		}
+		
+		/**
 		 *	Get all the ancestors of a datatype
 		 */
 		public function get_datatype_ancestors( $type, $recursive = true ) {
@@ -332,10 +392,47 @@ if (!class_exists("DJ_SchemaScraper"))
 			if ($recursive) :
 				$results = array();
 				foreach( $result as $descendant )
-					 $results[$descendant] = $this->get_datatype_descendants( $descendant, $recursive );
+					 $results[ $descendant ] = $this->get_datatype_descendants( $descendant, $recursive );
 				return $results;
 			endif;
 			
+			return $result;
+		}
+		
+		/**
+		 * Gets datatype siblings
+		 */
+		public function get_datatype_siblings( $type ) 
+		{
+			$results = array();
+			$parents = $this->get_datatype_ancestors( $type, false );
+			if ( empty( $parents ) )
+				$results = $this->get_top_level_datatypes();
+				
+			foreach( $parents as $parent )
+				$results += $this->get_datatype_descendants( $parent, false);
+			return array_diff( $results, array( $this->get_datatype_id( $type ) ) );
+		}
+		
+		/**
+		 * Get all the properties of a datatype
+		 */
+		public function get_datatype_properties( $type, $recursive = true, $flat = false ) {
+			$datatype = is_object( $type ) ? $type : $this->get_datatype( $type );
+			$result = $datatype->specific_properties;
+			
+			// Parent properties
+			if ($recursive) :
+				$result = array( $this->get_datatype_id( $type ) => $result );
+				
+				if ($flat) :
+					return $datatype->properties;
+				else :
+					foreach( $this->get_datatype_ancestors( $type ) as $ancestor )
+						$result = $this->get_datatype_properties( $ancestor, $recursive ) + $result;
+				endif;
+			endif;
+					
 			return $result;
 		}
 		

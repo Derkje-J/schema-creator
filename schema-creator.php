@@ -42,6 +42,7 @@ Filters:
 */
 
 include_once "schema-scraper.php";
+include_once "schema-viewer.php";
 
 if(!defined('SC_BASE'))
 	define('SC_BASE', plugin_basename(__FILE__) );
@@ -265,13 +266,22 @@ if ( !class_exists( "RavenSchema" ) ) :
 		 * @return ravenSchema
 		 */
 		public function add_pages() {
-			add_submenu_page('options-general.php',
+			
+			add_submenu_page( 'options-general.php',
 				 __('Schema Creator', 'schema'),
 				 __('Schema Creator', 'schema'), 
 				'manage_options', 
-				'schema-creator', 
+				$this->get_page_slug(), 
 				array( $this, 'do_page' )
 			);
+			
+		}
+		
+		/**
+		 * Gets the page slug name
+		 */
+		public function get_page_slug() {
+			return 'schema-creator';
 		}
 	
 		/**
@@ -473,7 +483,7 @@ if ( !class_exists( "RavenSchema" ) ) :
 		 */
 		public function do_page() {
 	
-			if (!current_user_can('manage_options') )
+			if (!current_user_can( 'manage_options' ) )
 				return;
 			?> 	
 			<div class="wrap">
@@ -513,7 +523,7 @@ if ( !class_exists( "RavenSchema" ) ) :
 	
 			// for admin settings screen
 			$current_screen = get_current_screen();
-			if ( 'settings_page_schema-creator' == $current_screen->base ) :
+			if ( 'settings_page_' . $this->get_page_slug() == $current_screen->base ) :
 				wp_enqueue_style( 'schema-admin', plugins_url('/lib/css/schema-admin.css', __FILE__), array(), SC_VER, 'all' );
 	
 				wp_enqueue_script( 'jquery-qtip', plugins_url('/lib/js/jquery.qtip.min.js', __FILE__) , array('jquery'), SC_VER, true );
