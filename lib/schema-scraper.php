@@ -51,6 +51,8 @@ if (!class_exists("DJ_SchemaScraper"))
 		 */
 		protected function __construct() 
 		{	
+			$this->get_schema_data();	
+		
 			add_filter( 'dj_schemascraper_scrapeurl', array( &$this, 'get_scrapeurl' ) );
 			add_filter( 'dj_schemascraper_cachepath', array( &$this, 'get_cachepath' ) );			
 			//add_filter( 'raven_sc_admin_tooltip', array( &$this, 'get_tooltips' ) );
@@ -59,7 +61,6 @@ if (!class_exists("DJ_SchemaScraper"))
 			add_action( 'raven_sc_default_settings', array( &$this, 'default_settings' ) );
 			add_action( 'raven_sc_register_settings', array( &$this, 'register_settings' ) );
 			add_action( 'raven_sc_options_form', create_function( '', 'settings_fields(\'dj_schemascraper\'); do_settings_sections(\'dj_schemascraper\');' ) );
-			add_action( 'init', array( &$this, 'get_schema_data' ) );
 		}
 		
 		/**
@@ -95,7 +96,7 @@ if (!class_exists("DJ_SchemaScraper"))
 				if ( is_object( $this->schema_data ) ) :
 					$cache_time = ( $this->get_option( 'cache_time' ) ?: 60 * 24 ) * 60;
 					$this->timestamp = filemtime( $path . $file );
-														
+												
 					$timestamp_now = microtime( true );
 					if (strtotime( $this->get_validation_date(). " + 1 day") <= $timestamp_now)
 						if ($this->timestamp && ($timestamp_now - $this->timestamp) <= $cache_time)
@@ -109,15 +110,17 @@ if (!class_exists("DJ_SchemaScraper"))
 			
 				// We got it, so try to write it
 				if ( !is_wp_error( $fetched_schema ) ) :
-					@file_put_contents( $path . $file, json_encode( $this->schema_data ) );	
+					@file_put_contents( $path . $file, json_encode( $fetched_schema ) );	
 					// Don't set it earlier, we might have an outdated
 					// but still valid fetch from cache.
 					$this->schema_data = $fetched_schema;
 					$this->timestamp = microtime( true );
-				 
+				 	return;
 				 endif;
 				 
 			endif;
+			
+			print "failed";
 		}
 		
 		/**
@@ -227,7 +230,7 @@ if (!class_exists("DJ_SchemaScraper"))
 				$result = array( $this->get_schema_id( $type ) => $result );
 				
 				if ($flat) :
-					return $schema->properties;
+					return $type->properties;
 				else :
 					foreach( $this->get_schema_ancestors( $type ) as $ancestor )
 						$result = $this->get_schema_properties( $ancestor, $recursive ) + $result;
