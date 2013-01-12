@@ -28,6 +28,7 @@ if (!class_exists("DJ_SchemaScraper"))
 		private $options;
 		private $schema_data;
 		private $timestamp;
+		private $last_error;
 		
 		/**
 		 * Gets a singleton of this class
@@ -98,8 +99,8 @@ if (!class_exists("DJ_SchemaScraper"))
 					$this->timestamp = filemtime( $path . $file );
 												
 					$timestamp_now = microtime( true );
-					if (strtotime( $this->get_validation_date(). " + 1 day") <= $timestamp_now)
-						if ($this->timestamp && ($timestamp_now - $this->timestamp) <= $cache_time)
+					if ( strtotime( $this->get_validation_date(). " + 1 day") <= $timestamp_now )
+						if ( $timestamp_now - $this->timestamp <= $cache_time )
 							return;
 				endif;
 			endif;
@@ -120,7 +121,19 @@ if (!class_exists("DJ_SchemaScraper"))
 				 
 			endif;
 			
-			print "failed";
+			$this->last_error = $fetched_schema;
+			if ( is_admin() ) 
+				add_action( 'admin_notices' , array( &$this, 'notice_fetch' ) );
+			print "failed to fetch schema";
+			var_dump( $this->last_error );
+			var_dump( $url );
+		}
+		
+		/**
+		 *
+		 */
+		public function notice_fetch( ) {
+			print_r( $this->last_error );
 		}
 		
 		/**

@@ -42,14 +42,11 @@ Filters:
 	raven_sc_admin_tooltip		: gets the tooltips for admin pages
 */
 
-if(!defined('SC_BASE'))
-	define('SC_BASE', plugin_basename(__FILE__) );
+if ( !class_exists( "RavenSchema" ) ) :
 
-if(!defined('SC_VER'))
+	define('SC_BASE', plugin_basename(__FILE__) );
 	define('SC_VER', '1.042');
 
-
-if ( !class_exists( "RavenSchema" ) ) :
 	class RavenSchema
 	{
 		/**
@@ -59,35 +56,38 @@ if ( !class_exists( "RavenSchema" ) ) :
 		 */
 		public function __construct() {		
 			// Text domain
-			add_action( 'plugins_loaded', array( $this, 'plugin_textdomain' ) );
+			add_action( 'plugins_loaded', array( &$this, 'plugin_textdomain' ) );
 			
 			// Edit Post Page ( Metabox/Media button )
-			add_action( 'the_posts', array( $this, 'schema_loader' ) );
-			add_action( 'do_meta_boxes', array( $this, 'metabox_schema' ), 10, 2 );
-			add_action( 'save_post', array( $this, 'save_metabox' ) );
-			add_filter( 'media_buttons', array( $this, 'media_button' ), 31 );
-			add_action( 'admin_footer',	array( $this, 'schema_form'	) );
+			add_action( 'the_posts', array( &$this, 'schema_loader' ) );
+			add_action( 'do_meta_boxes', array( &$this, 'metabox_schema' ), 10, 2 );
+			add_action( 'save_post', array( &$this, 'save_metabox' ) );
+			add_filter( 'media_buttons', array( &$this, 'schema_media_button' ), 31 );
+			add_action( 'admin_footer',	array( &$this, 'schema_media_form'	) );
 
 			// Plugins page
-			add_filter( 'plugin_action_links', array( $this, 'quick_link' ), 10, 2 );
+			add_filter( 'plugin_action_links', array( &$this, 'quick_link' ), 10, 2 );
 			
 			// Settings Page
-			add_action( 'admin_enqueue_scripts', array( $this, 'admin_scripts' ) );
-			add_action( 'admin_menu', array( $this, 'add_pages' )	);
-			add_action( 'admin_init', array( $this, 'register_settings' ) );
-			add_filter( 'admin_footer_text', array( $this, 'schema_footer' ) );
-			add_filter( 'raven_sc_default_settings', array( $this, 'get_default_settings' ) );
-			add_filter( 'raven_sc_admin_tooltip', array( $this, 'get_tooltips' ) );
-			register_activation_hook( __FILE__, array( $this, 'default_settings' ) );
+			add_action( 'admin_enqueue_scripts', array( &$this, 'admin_scripts' ) );
+			add_action( 'admin_menu', array( &$this, 'add_pages' )	);
+			add_action( 'admin_init', array( &$this, 'register_settings' ) );
+			add_filter( 'raven_sc_default_settings', array( &$this, 'get_default_settings' ) );
+			add_filter( 'raven_sc_admin_tooltip', array( &$this, 'get_tooltips' ) );
+			add_filter( 'admin_footer_text', array( &$this, 'admin_footer_attribution' ) );
+			register_activation_hook( __FILE__, array( &$this, 'default_settings' ) );
 			
 			// Admin bar
-			add_action( 'admin_bar_menu', array( $this, 'schema_test' ), 9999 );
+			add_action( 'admin_bar_menu', array( &$this, 'admin_bar_schema_test' ), 9999 );
 			
 			// Content
-			add_filter( 'body_class', array( $this, 'body_class' ) );
-			add_filter( 'the_content', array( $this, 'schema_wrapper' ) );
+			add_filter( 'body_class', array( &$this, 'body_class' ) );
+			add_filter( 'the_content', array( &$this, 'schema_wrapper' ) );
 			
-			add_shortcode( 'schema', array( $this, 'shortcode' ) );
+			add_shortcode( 'schema', array( &$this, 'shortcode' ) );
+			
+			// Ajax actions
+			add_action( 'wp_ajax_get_schema_types', array( &$this, 'get_schema_types' ) );
 		}
 		
 	
@@ -117,7 +117,7 @@ if ( !class_exists( "RavenSchema" ) ) :
 		/**
 		 * Add link to admin toolbar for testing
 		 */
-		public function schema_test( $wp_admin_bar ) {
+		public function admin_bar_schema_test( $wp_admin_bar ) {
 			// No link on admin panel, only load on singles
 			if ( is_admin() || !is_singular() )
 				return;
@@ -266,7 +266,7 @@ if ( !class_exists( "RavenSchema" ) ) :
 				 __('Schema Creator', 'schema'), 
 				'manage_options', 
 				$this->get_page_slug(), 
-				array( $this, 'do_page' )
+				array( &$this, 'do_page' )
 			);
 			
 		}
@@ -467,6 +467,15 @@ if ( !class_exists( "RavenSchema" ) ) :
 	
 			return $tooltip;
 		}
+		
+		/**
+		 * Adds ajax headers
+		 */
+		public function do_ajax() {
+			header( 'Cache-Control: no-cache, must-revalidate' );
+			header( 'Expires: Mon, 26 Jul 1997 05:00:00 GMT' );
+			header( 'Content-type: application/json' );	
+		}
 	
 		/**
 		 * Display main options page structure
@@ -497,24 +506,33 @@ if ( !class_exists( "RavenSchema" ) ) :
 		 * Load scripts and style for admin settings page
 		 */
 		public function admin_scripts( $hook ) {
-			// for post editor
-			if ( $hook == 'post-new.php' || $hook == 'post.php' ) :
+			
+			$post_screen = $hook == 'post-new.php' || $hook == 'post.php';
+			$settings_screen = 'settings_page_' . $this->get_page_slug() == $hook;
+			
+			if ( $post_screen || $settings_screen ) :
+				
+				// Style
 				wp_enqueue_style( 'schema-admin', plugins_url('/lib/css/schema-admin.css', __FILE__), array(), SC_VER, 'all' );
-	
-				wp_enqueue_script( 'jquery-ui-core');
-				wp_enqueue_script( 'jquery-ui-datepicker');
-				wp_enqueue_script( 'jquery-ui-slider');
-				wp_enqueue_script( 'jquery-timepicker', plugins_url('/lib/js/jquery.timepicker.js', __FILE__) , array('jquery'), SC_VER, true );
-				wp_enqueue_script( 'format-currency', plugins_url('/lib/js/jquery.currency.min.js', __FILE__) , array('jquery'), SC_VER, true );
-				wp_enqueue_script( 'schema-form', plugins_url('/lib/js/schema.form.init.js', __FILE__) , array('jquery'), SC_VER, true );
-			endif;
-	
-			// For admin settings screen
-			if ( 'settings_page_' . $this->get_page_slug() == $hook ) :
-				wp_enqueue_style( 'schema-admin', plugins_url('/lib/css/schema-admin.css', __FILE__), array(), SC_VER, 'all' );
-	
+				
+				// Tooltip
 				wp_enqueue_script( 'jquery-qtip', plugins_url('/lib/js/jquery.qtip.min.js', __FILE__) , array('jquery'), SC_VER, true );
-				wp_enqueue_script( 'schema-admin', plugins_url('/lib/js/schema.admin.init.js', __FILE__) , array('jquery'), SC_VER, true );
+				wp_enqueue_script( 'schema-admin', plugins_url('/lib/js/schema.admin.js', __FILE__) , array('jquery'), SC_VER, true );
+	
+				if ( $post_screen ) :
+				
+					// Create form
+					wp_enqueue_script( 'jquery-ui-core' );
+					wp_enqueue_script( 'jquery-ui-datepicker');
+					wp_enqueue_script( 'jquery-ui-slider');
+					wp_enqueue_script( 'jquery-timepicker', plugins_url( '/lib/js/jquery.timepicker.js', __FILE__) , array( 'jquery' ), SC_VER, true );
+					wp_enqueue_script( 'format-currency', plugins_url( '/lib/js/jquery.currency.min.js', __FILE__) , array( 'jquery' ), SC_VER, true );
+					wp_enqueue_script( 'schema-admin-form', plugins_url( '/lib/js/schema.admin.form.js', __FILE__) , array( 'jquery' ), SC_VER, true );
+					wp_enqueue_script( 'schema-admin-ajax', plugins_url( '/lib/js/schema.admin.ajax.js', __FILE__) , array( 'jquery' ), SC_VER, true );
+					
+					wp_localize_script( 'schema-admin-ajax', 'schema_ajax', array( 'nonce' => wp_create_nonce( 'schema_ajax_nonce' ) ) );
+					
+				endif;
 			endif;
 		}
 	
@@ -522,7 +540,7 @@ if ( !class_exists( "RavenSchema" ) ) :
 		/**
 		 * Add attribution link to settings page
 		 */
-		public function schema_footer( $text ) {
+		public function admin_footer_attribution( $text ) {
 			$current_screen = get_current_screen();
 	
 			if ( 'settings_page_schema-creator' !== $current_screen->base )
@@ -915,6 +933,31 @@ if ( !class_exists( "RavenSchema" ) ) :
 			return $coutries;
 		}
 		
+		/**
+		 * Gets the schema types
+		 *
+		 */
+		public function get_schema_types( $ajax = true ) {
+			$this->do_ajax();
+			check_ajax_referer( 'schema_ajax_nonce', 'security' );
+			
+			$scraper = $this->get_scraper();
+			$results = array();
+			
+			// Get selected schema
+			$top_level = $scraper->get_top_level_schemas();
+			$type = isset( $_POST[ 'type' ] ) ? $_POST[ 'type' ] : array_shift( $top_level );
+			$schema = $scraper->get_schema( $type );
+			if ( empty( $schema ) ) $type = array_shift( $top_level );
+			
+			// Get descendants
+			foreach( $scraper->get_schema_descendants( $type, false ) as $schema )
+				$results[]= $scraper->get_schema_id( $schema );
+			
+			echo json_encode( array( 'types' => $results ) );
+			exit;
+		}
+		
 		/** 
 		 * Gets the scraper class
 		 *
@@ -988,7 +1031,7 @@ if ( !class_exists( "RavenSchema" ) ) :
 		/**
 		 * Add button to top level media row
 		 */
-		public function media_button() {
+		public function schema_media_button() {
 	
 			// don't show on dashboard (QuickPress)
 			$current_screen = get_current_screen();
@@ -1020,7 +1063,7 @@ if ( !class_exists( "RavenSchema" ) ) :
 		/**
 		 * Build form and add into footer
 		 */
-		public function schema_form() {
+		public function schema_media_form() {
 	
 			// don't load form on non-editing pages
 			$current_screen = get_current_screen();
