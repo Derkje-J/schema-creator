@@ -82,8 +82,7 @@ if (!class_exists("DJ_SchemaViewer"))
 		public function admin_scripts( $hook ) {
 			
 			if ( $hook == 'settings_page_' . $this->page_slug() ) :
-				wp_enqueue_style( 'schema-admin', plugins_url('/lib/css/schema-admin.css', __FILE__), array(), SC_VER, 'all' );
-				wp_enqueue_style( 'schema-viewer', plugins_url('/lib/css/schema-viewer.css', __FILE__), array(), DJ_SCHEMAVIEWER_VERSION, 'all' );
+				wp_enqueue_style( 'schema-viewer', plugins_url( 'css/schema-viewer.css' , __FILE__ ), array(), DJ_SCHEMAVIEWER_VERSION, 'all' );
 			endif;
 		}
 		

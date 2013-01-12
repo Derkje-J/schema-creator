@@ -41,9 +41,6 @@ Filters:
 	raven_sc_admin_tooltip		: gets the tooltips for admin pages
 */
 
-include_once "schema-scraper.php";
-include_once "schema-viewer.php";
-
 if(!defined('SC_BASE'))
 	define('SC_BASE', plugin_basename(__FILE__) );
 
@@ -1309,3 +1306,7 @@ if ( !class_exists( "RavenSchema" ) ) :
 	// Instantiate our class
 	$ravenSchema = new RavenSchema();
 endif;
+// Include modules
+foreach ( glob( plugin_dir_path(__FILE__) . "/lib/*.php" ) as $filename )
+    include_once $filename;
+

@@ -1,4 +1,8 @@
 
+div#icon-schema {
+	background:url(../img/schema_icon_32.png) no-repeat 0 0;
+}
+
 .schema_listing ul li {
     list-style: inherit;
     margin: 0;
