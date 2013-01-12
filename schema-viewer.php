@@ -143,6 +143,9 @@ if (!class_exists("DJ_SchemaViewer"))
 			$schema_siblings = !in_array( $schema_type, $top_level_schemas ) ? 
 				( $is_datatype ? $schema_scraper->get_datatype_siblings( $schema ) : $schema_scraper->get_schema_siblings( $schema ) ) : 
 				array();
+				
+			// Base type
+			$base_types = array( 'URL', 'Text' );
 							
 			// Start page display
 			?> 	
@@ -154,8 +157,8 @@ if (!class_exists("DJ_SchemaViewer"))
 					<?php 
 						$title = array();
 						foreach( $schema_parents as $parent ) 
-							$title[] = $this->get_link( $parent );
-						$title[] = $this->get_link( $schema_type ); 
+							$title[] = $this->get_link( $parent, '%s', $is_datatype ? 'datatype' : 'schema' );
+						$title[] = $this->get_link( $schema_type, '%s', $is_datatype ? 'datatype' : 'schema' ); 
 						echo implode( ' > ', $title );
 					?>
                     </h2>
@@ -194,7 +197,7 @@ if (!class_exists("DJ_SchemaViewer"))
                                                         $range_schema = $schema_scraper->get_schema( $range );
                                                         if ( !empty( $range_schema ) )
                                                             $range = $this->get_link( $range );
-														else if ( $schema_scraper->is_datatype( $range ) )
+														else if ( !in_array( $range, $base_types ) && $schema_scraper->is_datatype( $range ) )
 															$range = $this->get_link( $range, '%s', 'datatype' );
                                                     }
                                                     array_splice( $ranges, -2, 2, implode( _x( ' or ', 'listing: last 2 items glue', 'schema' ), array_slice( $ranges, -2, 2 ) ) );
@@ -216,22 +219,38 @@ if (!class_exists("DJ_SchemaViewer"))
                         <ul class="children">
                         <?php foreach( $schema_children as $child ) : ?>
                             <li class="subtype">
-                                <?php echo $this->get_link( $child ); ?>
+                                <?php echo $this->get_link( $child, '%s', $is_datatype ? 'datatype' : 'schema' ); ?>
                             </li>
                         <?php endforeach; ?>
                         </ul>
                     <?php endif; ?>
                     
                     <?php if ( !empty( $schema_siblings ) ) : ?> 
-                        <h3><?php _e( 'Types with the same ancestor', 'schema' ); ?></h3>
+                        <h3><?php 
+							printf(
+								__( 'Types that are also a %s', 'schema' ), 
+								$this->get_link( $schema_parents[ count( $schema_parents ) - 1 ], '%s', $is_datatype ? 'datatype' : 'schema' )
+							); 
+						?></h3>
                         <ul class="siblings">
                         <?php foreach( $schema_siblings as $sibling ) : ?>
                             <li class="siblingtype">
-                                <?php echo $this->get_link( $sibling ); ?>
+                                <?php echo $this->get_link( $sibling, '%s', $is_datatype ? 'datatype' : 'schema' ); ?>
                             </li>
                         <?php endforeach; ?>
                         </ul>
                     <?php endif; ?>
+                    
+                    	<h3><?php _e( 'Different types', 'schema' ); ?></h3>
+                    <?php 
+						// Branch to other lists
+						$switch_links = $is_datatype ? 
+							$schema_scraper->get_top_level_schemas() :
+							$schema_scraper->get_top_level_datatypes();
+						echo $this->get_link( array_shift( $switch_links ), 
+							$is_datatype ? __( 'See schema types' , 'schema' ) : __( 'See data types' , 'schema' ), 
+							!$is_datatype ? 'datatype' : 'schema' ); 
+					?>
 				</div> <!-- end .schema_listing -->
 			</div> <!-- end .wrap -->
             <?php
