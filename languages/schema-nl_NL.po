@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: schema\n"
 "Report-Msgid-Bugs-To: http://wordpress.org/tag/schema-creator\n"
 "POT-Creation-Date: 2013-01-08 21:41:13+00:00\n"
-"PO-Revision-Date: 2013-01-08 22:43+0100\n"
+"PO-Revision-Date: 2013-01-10 12:00+0100\n"
 "Last-Translator: Derk-Jan Karrenbeld <derk-jan@karrenbeld.info>\n"
 "Language-Team: Derk-Jan Karrenbeld <derk-jan@karrenbeld.info>\n"
 "Language: nl\n"
@@ -32,7 +32,7 @@ msgstr "http://www.google.nl/webmasters/tools/richsnippets"
 
 #: schema-creator.php:180
 msgid "Schema Display Options"
-msgstr "Schema Weegave Opties"
+msgstr "Schema Weergave Opties"
 
 #: schema-creator.php:203
 msgid "Disable body itemscopes on this post."
@@ -80,9 +80,9 @@ msgid ""
 "reference the CSS to control the style of the HTML that the Schema Creator "
 "plugin outputs."
 msgstr ""
-"Standaard bevat the %s plugin door %s unieke CSS IDs en classes. Je kan de "
-"CSS refereren om de stijl waarin de HTML die door Schema Creator plugin "
-"wordt uitgevoerd staat te wijzigen."
+"Standaard bevat de %s plugin door %s unieke CSS IDs en classes. Deze kun je "
+"gebruiken om de stijl waarin de HTML die door Schema Creator plugin wordt "
+"gegenereerd te wijzigen."
 
 #: schema-creator.php:312
 msgctxt "plugin uri"
@@ -125,7 +125,7 @@ msgid ""
 "Google also offers a %s to review and test the schemas in your pages and "
 "posts."
 msgstr ""
-"Google biedt je ook %s aan om schema's in je pagina's en berichten te "
+"Google biedt ook een %s aan om schema's in je pagina's en berichten te "
 "herzien en te testen."
 
 #: schema-creator.php:327
@@ -134,7 +134,7 @@ msgstr "Tool voor gestructureerde gegevenstests"
 
 #: schema-creator.php:358
 msgid "Exclude default CSS for schema output"
-msgstr "Sluit standaard CSS voor schema uitvoer uit"
+msgstr "Schakel de standaard CSS voor schema uitvoer uit"
 
 #: schema-creator.php:360 schema-creator.php:380 schema-creator.php:396
 msgctxt "tooltip button"
@@ -178,7 +178,7 @@ msgstr "Schema Creator Instellingen"
 
 #: schema-creator.php:483
 msgid "Save Changes"
-msgstr "Wijzingen Opslaan"
+msgstr "Wijzigingen Opslaan"
 
 #: schema-creator.php:532
 msgid "This plugin brought to you by the fine folks at %s"

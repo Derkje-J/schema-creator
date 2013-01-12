@@ -220,7 +220,7 @@ if ( !class_exists( "RavenSchema" ) ) :
 		public function save_metabox( $post_id = 0 )
 		{	
 			$post_id = (int)$post_id;
-			$post_status = get_post_status( $event_id );
+			$post_status = get_post_status( $post_id );
 	
 			if ( "auto-draft" == $post_status ) 
 				return $post_id;
