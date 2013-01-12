@@ -93,7 +93,7 @@ if (!class_exists("DJ_SchemaScraper"))
 				$this->schema_data = @json_decode( file_get_contents( $path . $file ) );
 								
 				if ( is_object( $this->schema_data ) ) :
-					$cache_time = $this->get_option( 'cache_time' ) ?: 3600;
+					$cache_time = ( $this->get_option( 'cache_time' ) ?: 60 * 24 ) * 60;
 					$this->timestamp = filemtime( $path . $file );
 														
 					$timestamp_now = microtime( true );
@@ -505,7 +505,7 @@ if (!class_exists("DJ_SchemaScraper"))
 		 */
 		function options_scraper_cachetime() {
 			echo '<input type="textfield" size="5" id="scraper_cache_time" name="dj_schemascraper[cache_time]" class="schema_textfield options-big" 
-				value="'.$this->get_option('cache_time').'"/> <label for="scraper_cache_time">'._x( 'seconds', 'cache time', 'schema' ).'</label>';
+				value="'.$this->get_option('cache_time').'"/> <label for="scraper_cache_time">'._x( 'minutes', 'cache time', 'schema' ).'</label>';
 		}
 		
 		/**
@@ -514,7 +514,7 @@ if (!class_exists("DJ_SchemaScraper"))
 		function options_validate( $input ) {
 			//$input["scrape_url"]
 			//$input["cache_path"] 
-			$input["cache_time"] = max( array(0, intval( $input["cache_time"] ) ) );
+			$input["cache_time"] = max( array(0, floatval( $input["cache_time"] ) ) );
 			return $input;
 		}
 		
