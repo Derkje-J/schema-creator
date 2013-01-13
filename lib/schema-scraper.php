@@ -8,6 +8,7 @@
   Author URI: http://derk-jan.com
   
   Hooks:
+  	- dj_schemascraper_fetched		: Runs when the schemas are fetched
   
   Filters:
   	- dj_schemascraper_scrapeurl	: Retrieves the schema scraping url
@@ -107,7 +108,7 @@ if (!class_exists("DJ_SchemaScraper"))
 					
 					if ( is_admin() ) {
 						$this->last_error .= sprintf( "<div class='updated'><p>" . 
-								__( 'Schemas invalidated. Cache time: %s, File time: %s (%s), Contents time: %s (%s), Timestamp: %s', 'dj_schema_scraper' ) .
+								__( 'Schemas invalidated. Cache time: %s, File time: %s (%s), Contents time: %s (%s), Timestamp: %s', 'schema' ) .
 							"</p></div>",	
 							gmdate("H:i:s", $cache_time),
 							date_i18n("d M Y, H:i:s", $this->timestamp + get_option( 'gmt_offset' ) * 3600 ),
@@ -133,6 +134,8 @@ if (!class_exists("DJ_SchemaScraper"))
 					// but still valid fetch from cache.
 					$this->schema_data = $fetched_schema;
 					$this->timestamp = microtime( true );
+					
+					do_action( 'dj_schemascraper_fetched', $this->schema_data );
 				 	return;
 				 endif;
 				 
@@ -141,7 +144,7 @@ if (!class_exists("DJ_SchemaScraper"))
 			if ( is_admin() ) {
 				
 				$this->last_error .= sprintf( 
-					"<div class='error'><p>" . __( 'Failed to fetch schema: ( %s ) from %s', 'dj_schemascraper' ) . "</p></div>",
+					"<div class='error'><p>" . __( 'Failed to fetch schema: ( %s ) from %s', 'schema' ) . "</p></div>",
 					var_export(  $fetched_schema, true ),
 					var_export( $url, true )
 				);
