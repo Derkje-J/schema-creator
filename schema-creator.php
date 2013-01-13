@@ -672,6 +672,10 @@ if ( !class_exists( "RavenSchema" ) ) :
 	
 		}
 		
+		public function get_i18n( $string ) {
+			return $string;
+		}
+		
 		/**
 		 * Gets the countries and their translated counterparts
 		 */
@@ -936,13 +940,19 @@ if ( !class_exists( "RavenSchema" ) ) :
 		/**
 		 * Gets the schema types
 		 *
+		 * @returns JSON encoded array of siblings, parents, children and select type of a type
 		 */
 		public function get_schema_types( $ajax = true ) {
-			$this->do_ajax();
-			check_ajax_referer( 'schema_ajax_nonce', 'security' );
+			if ( $ajax ) :
+				$this->do_ajax();
+				check_ajax_referer( 'schema_ajax_nonce', 'security' );
+			endif;
 			
 			$scraper = $this->get_scraper();
-			$results = array();
+			$children = array();
+			$siblings = array();
+			$parents = array();
+			$starred = array( 'Person', 'Product', 'Event', 'Organization', 'Movie', 'Book', 'Review', 'Recipe' ); // TODO filter or option
 			
 			// Get selected schema
 			$top_level = $scraper->get_top_level_schemas();
@@ -951,12 +961,77 @@ if ( !class_exists( "RavenSchema" ) ) :
 			if ( empty( $schema ) ) $type = array_shift( $top_level );
 			
 			// Get descendants
-			foreach( $scraper->get_schema_descendants( $type, false ) as $schema )
-				$results[]= $scraper->get_schema_id( $schema );
+			foreach( $scraper->get_schema_descendants( $type, false ) as $child )
+				$children[]= array( 'id' => $scraper->get_schema_id( $child ) ); //, 'desc' => $this->get_i18n( $scraper->get_schema_comment( $child ) ) );
+				
+			// Get siblings
+			foreach( $scraper->get_schema_siblings( $type ) as $sibling )
+				$siblings[]= array( 'id' => $scraper->get_schema_id( $sibling ) ); //, 'desc' => $this->get_i18n( $scraper->get_schema_comment( $sibling ) ) );
+				
+			// Get ancestors
+			foreach( $scraper->get_schema_ancestors( $type, false) as $parent )
+				$parents[]= array( 'id' => $scraper->get_schema_id( $parent ) ); //, 'desc' => $this->get_i18n( $scraper->get_schema_comment( $parent ) ) );
+				
+			// Get starred
+			foreach( $starred as &$star )
+				$star = array( 'id' => $scraper->get_schema_id( $star ) ); //, 'desc' => $this->get_i18n( $scraper->get_schema_comment( $star ) ) );
 			
-			echo json_encode( array( 'types' => $results ) );
-			exit;
+			$results = array( 
+				'types' => array(
+					'' => array( array( 'id' => $type, 'desc' => $this->get_i18n( $scraper->get_schema_comment( $type ) ) ) ),
+					esc_attr__( 'Children', 'schema' ) => $children,
+					esc_attr__( 'Siblings', 'schema' ) => $siblings,
+					esc_attr__( 'Parents', 'schema' ) => $parents,
+					esc_attr__( 'Starred', 'schema' ) => $starred,
+				)
+			) ;
+					
+			if ( $ajax ) :
+				echo json_encode( $results );
+				exit;
+			endif;
+			
+			return $results;
 		}
+		
+		/**
+		 *
+		 */
+		function get_schema_properties( $ajax = true ) {
+			if ( $ajax ) :
+				$this->do_ajax();
+				check_ajax_referer( 'schema_ajax_nonce', 'security' );
+			endif;
+			
+			$properties = array();
+			
+			$scraper = $this->get_scraper();
+			$schema = $scraper->get_schema( $_POST['type'] );
+			
+			foreach( $scraper->get_schema_properties( $schema, true ) as $type => $properties )  :
+				$properties[ $type ] = array();
+				foreach( $properties as $property ) 
+					$properties[ $type ][] = array(
+						'id' => $scraper->get_property_id( $property ),
+						'label' => $scraper->get_property_label( $property ),
+						'desc' => $scraper->get_property_comment( $property ),
+						'ranges' => $scraper->get_property_ranges( $property ),
+					);
+			endforeach;
+			
+			$results = array( 
+				'properties' => $properties,
+			);
+			
+			if ( $ajax ) :
+				echo json_encode( $results );
+				exit;
+			endif;
+			
+			return $results;
+		}
+		
+		// 
 		
 		/** 
 		 * Gets the scraper class
@@ -1105,10 +1180,18 @@ if ( !class_exists( "RavenSchema" ) ) :
 						<label for="schema_type"><?php _e('Schema Type', 'schema'); ?></label>
 						<select name="schema_type" id="schema_type" class="schema_drop schema_thindrop">
 							<option class="holder" value="">(<?php _e('Select a Type', 'schema'); ?>)</option>    
-                            
 						</select>
+                        <input type="button" id="schema_type_use" class="button button-primary" value="<?php _e( 'Use selected', 'schema'); ?>"/>
+                    </div>
+                    <div id="sc_type_description" class="sc_desc">
+                        <label><?php _e('Schema Descripton', 'schema'); ?></label>
+                        <span id="schema_type_description"></span>
 					</div>
 					<!-- end schema type dropdown -->
+                    
+                    <div id="sc_properties">
+          			
+                    </div>
                     
 					<div id="sc_country" class="sc_option" style="display:none">
 						<label for="schema_country"><?php _e('Country', 'schema'); ?></label>
@@ -1320,15 +1403,14 @@ if ( !class_exists( "RavenSchema" ) ) :
 					</div>
 			
 					<!-- button for inserting -->
-					<div class="insert_button" style="display:none">
-						<input class="schema_insert schema_button" type="button" value="<?php _e('Insert'); ?>" onclick="InsertSchema();"/>
-						<input class="schema_cancel schema_clear schema_button" type="button" value="<?php _e('Cancel'); ?>" onclick="tb_remove(); return false;"/>
+					<div class="insert_button">
+						<input class="schema_insert button button-primary" disabled type="button" value="<?php _e('Insert'); ?>" onclick="InsertSchema();"/>
+						<input class="schema_cancel button" type="button" value="<?php _e('Cancel'); ?>" onclick="tb_remove(); return false;"/>
 					</div>
 			
 					<!-- various messages -->
 					<div id="sc_messages">
 						<p class="start"><?php _e('Select a schema type above to get started', 'schema'); ?></p>
-						<p class="pending" style="display:none;"><?php _e('This schema type is currently being constructed.', 'schema'); ?></p>
 					</div>
 			
 				</div>
