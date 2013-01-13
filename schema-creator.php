@@ -88,6 +88,7 @@ if ( !class_exists( "RavenSchema" ) ) :
 			
 			// Ajax actions
 			add_action( 'wp_ajax_get_schema_types', array( &$this, 'get_schema_types' ) );
+			add_action( 'wp_ajax_get_schema_properties', array( &$this, 'get_schema_properties' ) );
 		}
 		
 	
@@ -942,7 +943,8 @@ if ( !class_exists( "RavenSchema" ) ) :
 		 *
 		 * @returns JSON encoded array of siblings, parents, children and select type of a type
 		 */
-		public function get_schema_types( $ajax = true ) {
+		public function get_schema_types( $_argument = '', $ajax = true ) {
+			
 			if ( $ajax ) :
 				$this->do_ajax();
 				check_ajax_referer( 'schema_ajax_nonce', 'security' );
@@ -997,7 +999,7 @@ if ( !class_exists( "RavenSchema" ) ) :
 		/**
 		 *
 		 */
-		function get_schema_properties( $ajax = true ) {
+		function get_schema_properties( $_argument = '', $ajax = true ) {
 			if ( $ajax ) :
 				$this->do_ajax();
 				check_ajax_referer( 'schema_ajax_nonce', 'security' );
@@ -1007,15 +1009,19 @@ if ( !class_exists( "RavenSchema" ) ) :
 			
 			$scraper = $this->get_scraper();
 			$schema = $scraper->get_schema( $_POST['type'] );
-			
-			foreach( $scraper->get_schema_properties( $schema, true ) as $type => $properties )  :
-				$properties[ $type ] = array();
-				foreach( $properties as $property ) 
-					$properties[ $type ][] = array(
-						'id' => $scraper->get_property_id( $property ),
-						'label' => $scraper->get_property_label( $property ),
-						'desc' => $scraper->get_property_comment( $property ),
-						'ranges' => $scraper->get_property_ranges( $property ),
+						
+			//var_dump( $scraper->get_schema_properties( $schema, true ) );
+			foreach( $scraper->get_schema_properties( $schema, true ) as $type => $t_properties )  :
+				$type_id = $scraper->get_schema_id( $type );
+				$properties[ $type_id ] = array();
+				foreach( $t_properties as $t_property ) 
+					array_push( $properties[ $type_id ], 
+						array(
+							'id' => $scraper->get_property_id( $t_property ),
+							'label' => $scraper->get_property_label( $t_property ),
+							'desc' => $scraper->get_property_comment( $t_property, false ),
+							'ranges' => $scraper->get_property_ranges( $t_property ),
+						)
 					);
 			endforeach;
 			
@@ -1185,7 +1191,7 @@ if ( !class_exists( "RavenSchema" ) ) :
                     </div>
                     <div id="sc_type_description" class="sc_desc">
                         <label><?php _e('Schema Descripton', 'schema'); ?></label>
-                        <span id="schema_type_description"></span>
+                        <span id="schema_type_description" class="fullwidth"></span>
 					</div>
 					<!-- end schema type dropdown -->
                     
@@ -1410,7 +1416,8 @@ if ( !class_exists( "RavenSchema" ) ) :
 			
 					<!-- various messages -->
 					<div id="sc_messages">
-						<p class="start"><?php _e('Select a schema type above to get started', 'schema'); ?></p>
+						<p class="start"><?php _e( 'Select a schema type above to get started', 'schema' ); ?></p>
+                        <p class="loading" style="display:none"><?php _e( 'Retrieving schema data', 'schema' ); ?></p>
 					</div>
 			
 				</div>

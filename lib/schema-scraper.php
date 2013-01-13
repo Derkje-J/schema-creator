@@ -274,7 +274,7 @@ if (!class_exists("DJ_SchemaScraper"))
 						$result = $this->get_schema_properties( $ancestor, $recursive ) + $result;
 				endif;
 			endif;
-					
+
 			return $result;
 		}
 				
