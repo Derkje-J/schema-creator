@@ -81,6 +81,7 @@ if (!class_exists("DJ_SchemaScraper"))
 			if ( !empty( $this->schema_data ) && is_object( $this->schema_data ) )
 				return $this->schema_data;
 			
+			$this->last_error = '';
 			$url  =	$this->get_option( 'scrape_url' );
 			$path = WP_CONTENT_DIR . $this->get_option( 'cache_path' );
 			
@@ -99,9 +100,25 @@ if (!class_exists("DJ_SchemaScraper"))
 					$this->timestamp = filemtime( $path . $file );
 												
 					$timestamp_now = microtime( true );
-					if ( strtotime( $this->get_validation_date(). " + 1 day") <= $timestamp_now )
-						if ( $timestamp_now - $this->timestamp <= $cache_time )
+					if ( strtotime( $this->get_validation_date(). " + 1 day") > $timestamp_now ) {
+						if ( $timestamp_now - $this->timestamp <= $cache_time ) 
 							return;
+					}
+					
+					if ( is_admin() ) {
+						$this->last_error .= sprintf( "<div class='updated'><p>" . 
+								__( 'Schemas invalidated. Cache time: %s, File time: %s (%s), Contents time: %s (%s), Timestamp: %s', 'dj_schema_scraper' ) .
+							"</p></div>",	
+							gmdate("H:i:s", $cache_time),
+							date_i18n("d M Y, H:i:s", $this->timestamp + get_option( 'gmt_offset' ) * 3600 ),
+							gmdate("H:i:s", ($cache_time - ($timestamp_now - $this->timestamp) ) ),
+							date_i18n("d M Y, H:i:s", strtotime( $this->get_validation_date(). " + 1 day") + get_option( 'gmt_offset' ) * 3600 ),
+							gmdate("H:i:s", (strtotime( $this->get_validation_date(). " + 1 day" ) - $timestamp_now) ),
+							date_i18n("d M Y, H:i:s", $timestamp_now + get_option( 'gmt_offset' ) * 3600 ) 
+						);
+						
+						add_action( 'admin_notices' , array( &$this, 'notice_fetch' ) );
+					}
 				endif;
 			endif;
 			
@@ -121,19 +138,24 @@ if (!class_exists("DJ_SchemaScraper"))
 				 
 			endif;
 			
-			$this->last_error = $fetched_schema;
-			if ( is_admin() ) 
+			if ( is_admin() ) {
+				
+				$this->last_error .= sprintf( 
+					"<div class='error'><p>" . __( 'Failed to fetch schema: ( %s ) from %s', 'dj_schemascraper' ) . "</p></div>",
+					var_export(  $fetched_schema, true ),
+					var_export( $url, true )
+				);
+				
 				add_action( 'admin_notices' , array( &$this, 'notice_fetch' ) );
-			print "failed to fetch schema";
-			var_dump( $this->last_error );
-			var_dump( $url );
+			}
 		}
 		
 		/**
 		 *
 		 */
 		public function notice_fetch( ) {
-			print_r( $this->last_error );
+			echo $this->last_error;
+			$this->last_error = '';
 		}
 		
 		/**
