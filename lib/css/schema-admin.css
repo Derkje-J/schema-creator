@@ -101,8 +101,7 @@ div#TB_ajaxContent {
 	}
 #schema_builder label {
 	font-size:90%;
-	display: block;
-	float: left;
+	display: inline-block;
 	margin: 0 34px 0 0;
 	padding:5px 0 4px 0;
 	width: 100px;
@@ -110,14 +109,19 @@ div#TB_ajaxContent {
 	}
 
 
+#schema_builder span,
 #schema_builder textarea,
 #schema_builder select,
 #schema_builder input {
-	display: block;
-	float: left;
+	display: inline-block;
 	width: 450px;
 	padding: 3px 5px;
 	}
+
+#schema_builder input.button {
+	width: auto;
+	margin-left: 10px;	
+}
 
 #schema_builder select:hover {
 	cursor:pointer;
@@ -143,7 +147,7 @@ div#TB_ajaxContent {
 }
 
 #schema_builder .labels_inline label {
-	float:left;
+	display: inline-block;
 	width:auto;
 	margin:0;
 	font-style:italic;
@@ -158,8 +162,9 @@ div#TB_ajaxContent {
 
 #schema_builder div.insert_button {
 	clear:both;
-	margin-top:20px;
-	}
+	margin-top: 20px;
+	text-align: right;
+}
 
 #schema_builder div.insert_button input.schema_button {
 	float:right;
@@ -176,9 +181,6 @@ div#TB_ajaxContent {
 	background:#eee;
 	color:#333;
 	}
-
-#schema_builder div.insert_button input.schema_insert {margin:0 20px 0 0;}
-#schema_builder div.insert_button input.schema_cancel {margin:0 20px 0 0;}
 
 #schema_builder input.clone_button {
 	background: none repeat scroll 0 0 #9BC4E2;
