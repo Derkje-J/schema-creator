@@ -114,6 +114,7 @@ div#TB_ajaxContent {
 	display: inline-block;
 	width: 350px;
 	padding: 3px 5px;
+	margin-right: 4px;
 	}
 	
 #schema_builder span.fullwidth {
@@ -132,6 +133,11 @@ div#TB_ajaxContent {
 	margin-left: 10px;	
 }
 
+#schema_builder button.button {
+	margin-right: 4px;
+	padding: 0 10px 1px;
+}
+
 #schema_builder select:hover {
 	cursor:pointer;
 }
@@ -144,10 +150,10 @@ div#TB_ajaxContent {
 }
 
 #schema_builder input.form_full { width: 350px; }
-#schema_builder input.form_half { width: 175px; }
-#schema_builder input.form_third { width: 150px; }
-#schema_builder input.form_fourth { width: 110px; }
-#schema_builder input.form_eighth { width: 50px; }
+#schema_builder input.form_half { width: 173px; }
+#schema_builder input.form_third { width: 108px; }
+#schema_builder input.form_fourth { width: 75px; }
+#schema_builder input.form_eighth { width: 16px; }
 
 	/* Inline labels */
 
