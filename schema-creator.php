@@ -1451,7 +1451,7 @@ if ( !class_exists( "RavenSchema" ) ) :
 			
 					<!-- button for inserting -->
 					<div class="insert_button">
-						<input class="schema_insert button button-primary" disabled type="button" value="<?php _e('Insert'); ?>" onclick="InsertSchema();"/>
+						<input class="schema_insert button button-primary" type="button" value="<?php _e('Insert'); ?>" onclick="InsertSchema();"/>
 						<input class="schema_cancel button" type="button" value="<?php _e('Cancel'); ?>" onclick="tb_remove(); return false;"/>
 					</div>
 			
