@@ -32,6 +32,7 @@ div.schema_options span.ap_tooltip, span.ap_tooltip {
 	text-decoration:none;
 	margin:0 0 0 7px;
 	cursor:pointer;
+	text-align: left;
 }
 
 div.schema_options span.ap_tooltip:hover, span.ap_tooltip:hover {
