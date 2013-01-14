@@ -951,16 +951,18 @@ if ( !class_exists( "RavenSchema" ) ) :
 				check_ajax_referer( 'schema_ajax_nonce', 'security' );
 			endif;
 			
+			$prefix = isset( $_POST['prefix'] ) && !empty( $_POST['prefix'] ) ? $_POST['prefix'] : '';
 			$scraper = $this->get_scraper();
 		
 			// Get datatypes
 			$datatypes = array();
 			foreach( $scraper->get_datatypes() as $datatype ) {
-				$datatypes[ $scraper->get_datatype_id( $datatype ) ] = array( 
+				$datatypes[ $prefix . $scraper->get_datatype_id( $datatype ) ] = array( 
 					'id' => $scraper->get_datatype_id( $datatype ), 
 					'label' => $scraper->get_datatype_label( $datatype ), 
 					'subtypes' => $scraper->get_datatype_descendants( $datatype, true, true ), 
 					'desc' => $this->get_i18n( $scraper->get_datatype_comment( $datatype, false ) ),
+					'button' => $this->get_i18n( $scraper->get_datatype_label( $datatype ) ),
 				);
 			}
 			
