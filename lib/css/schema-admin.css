@@ -139,15 +139,15 @@ div#TB_ajaxContent {
 #schema_builder select option {text-indent:5px;}
 
 #schema_builder select.schema_thindrop {
-	width:200px;
+	width: 200px;
 	padding: 3px 5px;
 }
 
-#schema_builder input.form_full { width:350px; }
-#schema_builder input.form_half { width:225px; }
-#schema_builder input.form_third { width:150px; }
-#schema_builder input.form_fourth { width:110px; }
-#schema_builder input.form_eighth { width:50px; }
+#schema_builder input.form_full { width: 350px; }
+#schema_builder input.form_half { width: 175px; }
+#schema_builder input.form_third { width: 150px; }
+#schema_builder input.form_fourth { width: 110px; }
+#schema_builder input.form_eighth { width: 50px; }
 
 	/* Inline labels */
 
