@@ -101,7 +101,7 @@ if (!class_exists("DJ_SchemaScraper"))
 					$this->timestamp = filemtime( $path . $file );
 												
 					$timestamp_now = microtime( true );
-					if ( strtotime( $this->get_validation_date(). " + 1 day") > $timestamp_now ) {
+					if ( strtotime( $this->get_validation_date(). " + 2 days") > $timestamp_now ) {
 						if ( $timestamp_now - $this->timestamp <= $cache_time ) 
 							return;
 					}
@@ -114,7 +114,7 @@ if (!class_exists("DJ_SchemaScraper"))
 							date_i18n("d M Y, H:i:s", $this->timestamp + get_option( 'gmt_offset' ) * 3600 ),
 							gmdate("H:i:s", ($cache_time - ($timestamp_now - $this->timestamp) ) ),
 							date_i18n("d M Y, H:i:s", strtotime( $this->get_validation_date(). " + 1 day") + get_option( 'gmt_offset' ) * 3600 ),
-							gmdate("H:i:s", (strtotime( $this->get_validation_date(). " + 1 day" ) - $timestamp_now) ),
+							gmdate("H:i:s", (strtotime( $this->get_validation_date(). " + 2 days" ) - $timestamp_now) ),
 							date_i18n("d M Y, H:i:s", $timestamp_now + get_option( 'gmt_offset' ) * 3600 ) 
 						);
 						
@@ -426,14 +426,20 @@ if (!class_exists("DJ_SchemaScraper"))
 		/**
 		 * Get datatype descendants
 		 */
-		public function get_datatype_descendants( $type, $recursive = true ) {
+		public function get_datatype_descendants( $type, $recursive = true, $flat = false ) {
 			$datatype = is_object( $type ) ? $type : $this->get_datatype( $type );
 			$result = $datatype->subtypes;
 			
 			if ($recursive) :
 				$results = array();
+				
 				foreach( $result as $descendant )
-					 $results[ $descendant ] = $this->get_datatype_descendants( $descendant, $recursive );
+					if ( $flat ) :
+						$results += array( $this->get_datatype_id( $descendant ) ) + $this->get_datatype_descendants( $descendant, $recursive );
+					else :
+						$results[ $descendant ] = $this->get_datatype_descendants( $descendant, $recursive );
+					endif;
+				
 				return $results;
 			endif;
 			
