@@ -435,9 +435,10 @@ if (!class_exists("DJ_SchemaScraper"))
 				
 				foreach( $result as $descendant )
 					if ( $flat ) :
-						$results += array( $this->get_datatype_id( $descendant ) ) + $this->get_datatype_descendants( $descendant, $recursive );
+						array_push( $results, $this->get_datatype_id( $descendant ) );
+						$results = array_merge( $results, $this->get_datatype_descendants( $descendant, $recursive, $flat ) );
 					else :
-						$results[ $descendant ] = $this->get_datatype_descendants( $descendant, $recursive );
+						$results[ $descendant ] = $this->get_datatype_descendants( $descendant, $recursive, $flat );
 					endif;
 				
 				return $results;
