@@ -89,6 +89,7 @@ if ( !class_exists( "RavenSchema" ) ) :
 			// Ajax actions
 			add_action( 'wp_ajax_get_schema_types', array( &$this, 'get_schema_types' ) );
 			add_action( 'wp_ajax_get_schema_properties', array( &$this, 'get_schema_properties' ) );
+			add_action( 'wp_ajax_get_schema_datatypes', array( &$this, 'get_schema_datatypes' ) );
 		}
 		
 	
@@ -939,6 +940,41 @@ if ( !class_exists( "RavenSchema" ) ) :
 		}
 		
 		/**
+		 * Gets the schema datatypes
+		 *
+		 * @returns JSON encoded array datatypes
+		 */
+		public function get_schema_datatypes( $_argument = '', $ajax = true ) {
+			
+			if ( $ajax ) :
+				$this->do_ajax();
+				check_ajax_referer( 'schema_ajax_nonce', 'security' );
+			endif;
+			
+			$scraper = $this->get_scraper();
+		
+			// Get datatypes
+			$datatypes = array();
+			foreach( $scraper->get_datatypes() as $datatype ) {
+				$datatypes[ $scraper->get_datatype_id( $datatype ) ] = array( 
+					'id' => $scraper->get_datatype_id( $datatype ), 
+					'label' => $scraper->get_datatype_label( $datatype ), 
+					'subtypes' => $scraper->get_datatype_descendants( $datatype, true, true ), 
+					'desc' => $this->get_i18n( $scraper->get_datatype_comment( $datatype, false ) ),
+				);
+			}
+			
+			$results = array( 'datatypes' => $datatypes );
+			
+			if ( $ajax ) :
+				echo json_encode( $results );
+				exit;
+			endif;
+			
+			return $results;
+		}
+		
+		/**
 		 * Gets the schema types
 		 *
 		 * @returns JSON encoded array of siblings, parents, children and select type of a type
@@ -980,12 +1016,12 @@ if ( !class_exists( "RavenSchema" ) ) :
 			
 			$results = array( 
 				'types' => array(
-					'' => array( array( 'id' => $type, 'desc' => $this->get_i18n( $scraper->get_schema_comment( $type ) ) ) ),
+					'' => array( array( 'id' => $type, 'desc' => $this->get_i18n( $scraper->get_schema_comment( $type, false ) ) ) ),
 					esc_attr__( 'Children', 'schema' ) => $children,
 					esc_attr__( 'Siblings', 'schema' ) => $siblings,
 					esc_attr__( 'Parents', 'schema' ) => $parents,
 					esc_attr__( 'Starred', 'schema' ) => $starred,
-				)
+				),
 			) ;
 					
 			if ( $ajax ) :
@@ -997,7 +1033,10 @@ if ( !class_exists( "RavenSchema" ) ) :
 		}
 		
 		/**
+		 * Gets the properties of a schema
 		 *
+		 * @ajax set to false to return insteaf of encode
+		 * @returns encoded json or array 
 		 */
 		function get_schema_properties( $_argument = '', $ajax = true ) {
 			if ( $ajax ) :
@@ -1129,7 +1168,7 @@ if ( !class_exists( "RavenSchema" ) ) :
 			if ($version < 3.5) {
 				// show button for v 3.4 and below
 				echo '<a href="#TB_inline?width=650&inlineId=schema_build_form" class="thickbox schema_clear schema_one" id="add_schema" title="' . __('Schema Creator Form') . '">' .
-					__('Schema Creator Form', 'schema' ) .
+					__( 'Schema Creator Form', 'schema' ) .
 				'</a>';
 			} else {
 				// display button matching new UI
@@ -1417,7 +1456,8 @@ if ( !class_exists( "RavenSchema" ) ) :
 					<!-- various messages -->
 					<div id="sc_messages">
 						<p class="start"><?php _e( 'Select a schema type above to get started', 'schema' ); ?></p>
-                        <p class="loading" style="display:none"><?php _e( 'Retrieving schema data', 'schema' ); ?></p>
+                        <p class="loading loading_types" style="display:none"><?php _e( 'Retrieving schema subtree and information...', 'schema' ); ?></p>
+                        <p class="loading loading_properties" style="display:none"><?php _e( 'Retrieving schema properties...', 'schema' ); ?></p>
 					</div>
 			
 				</div>
