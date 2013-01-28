@@ -55,13 +55,13 @@ if (!class_exists("DJ_SchemaScraper"))
 		{	
 			$this->get_schema_data();	
 		
-			add_filter( 'dj_schemascraper_scrapeurl', array( &$this, 'get_scrapeurl' ) );
-			add_filter( 'dj_schemascraper_cachepath', array( &$this, 'get_cachepath' ) );			
-			//add_filter( 'raven_sc_admin_tooltip', array( &$this, 'get_tooltips' ) );
-			add_filter( 'dj_scraper_default_settings', array( &$this, 'get_default_settings' ) );
+			add_filter( 'dj_schemascraper_scrapeurl', array( $this, 'get_scrapeurl' ) );
+			add_filter( 'dj_schemascraper_cachepath', array( $this, 'get_cachepath' ) );			
+			//add_filter( 'raven_sc_admin_tooltip', array( $this, 'get_tooltips' ) );
+			add_filter( 'dj_scraper_default_settings', array( $this, 'get_default_settings' ) );
 			
-			add_action( 'raven_sc_default_settings', array( &$this, 'default_settings' ) );
-			add_action( 'raven_sc_register_settings', array( &$this, 'register_settings' ) );
+			add_action( 'raven_sc_default_settings', array( $this, 'default_settings' ) );
+			add_action( 'raven_sc_register_settings', array( $this, 'register_settings' ) );
 			add_action( 'raven_sc_options_form', create_function( '', 'settings_fields(\'dj_schemascraper\'); do_settings_sections(\'dj_schemascraper\');' ) );
 		}
 		
@@ -118,7 +118,7 @@ if (!class_exists("DJ_SchemaScraper"))
 							date_i18n("d M Y, H:i:s", $timestamp_now + get_option( 'gmt_offset' ) * 3600 ) 
 						);
 						
-						add_action( 'admin_notices' , array( &$this, 'notice_fetch' ) );
+						add_action( 'admin_notices' , array( $this, 'notice_fetch' ) );
 					}
 				endif;
 			endif;
@@ -149,7 +149,7 @@ if (!class_exists("DJ_SchemaScraper"))
 					var_export( $url, true )
 				);
 				
-				add_action( 'admin_notices' , array( &$this, 'notice_fetch' ) );
+				add_action( 'admin_notices' , array( $this, 'notice_fetch' ) );
 			}
 		}
 		
@@ -512,13 +512,13 @@ if (!class_exists("DJ_SchemaScraper"))
 		 * Registers new option group
 		 */
 		function register_settings() {
-			register_setting( 'dj_schemascraper', 'dj_schemascraper', array(&$this, 'options_validate' ) );	
+			register_setting( 'dj_schemascraper', 'dj_schemascraper', array($this, 'options_validate' ) );	
 			
 			// Scraper section
-			add_settings_section( 'scraper_section', __('Schema Scraper', 'schema'), array( &$this, 'options_scraper_section' ), 'dj_schemascraper' );
-			add_settings_field( 'scrape_url', __( 'Scrape URL', 'schema' ), array( &$this, 'options_scraper_scrapeurl' ), 'dj_schemascraper', 'scraper_section' );
-			add_settings_field( 'cache_path', __( 'Cache Path', 'schema' ), array( &$this, 'options_scraper_cachepath' ), 'dj_schemascraper', 'scraper_section' );
-			add_settings_field( 'cache_time', __( 'Cache Time', 'schema' ), array( &$this, 'options_scraper_cachetime' ), 'dj_schemascraper', 'scraper_section' );
+			add_settings_section( 'scraper_section', __('Schema Scraper', 'schema'), array( $this, 'options_scraper_section' ), 'dj_schemascraper' );
+			add_settings_field( 'scrape_url', __( 'Scrape URL', 'schema' ), array( $this, 'options_scraper_scrapeurl' ), 'dj_schemascraper', 'scraper_section' );
+			add_settings_field( 'cache_path', __( 'Cache Path', 'schema' ), array( $this, 'options_scraper_cachepath' ), 'dj_schemascraper', 'scraper_section' );
+			add_settings_field( 'cache_time', __( 'Cache Time', 'schema' ), array( $this, 'options_scraper_cachetime' ), 'dj_schemascraper', 'scraper_section' );
 			
 		}
 		

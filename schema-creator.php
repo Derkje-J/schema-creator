@@ -56,40 +56,40 @@ if ( !class_exists( "RavenSchema" ) ) :
 		 */
 		public function __construct() {		
 			// Text domain
-			add_action( 'plugins_loaded', array( &$this, 'plugin_textdomain' ) );
+			add_action( 'plugins_loaded', array( $this, 'plugin_textdomain' ) );
 			
 			// Edit Post Page ( Metabox/Media button )
-			add_action( 'the_posts', array( &$this, 'schema_loader' ) );
-			add_action( 'do_meta_boxes', array( &$this, 'metabox_schema' ), 10, 2 );
-			add_action( 'save_post', array( &$this, 'save_metabox' ) );
-			add_filter( 'media_buttons', array( &$this, 'schema_media_button' ), 31 );
-			add_action( 'admin_footer',	array( &$this, 'schema_media_form'	) );
+			add_action( 'the_posts', array( $this, 'schema_loader' ) );
+			add_action( 'do_meta_boxes', array( $this, 'metabox_schema' ), 10, 2 );
+			add_action( 'save_post', array( $this, 'save_metabox' ) );
+			add_filter( 'media_buttons', array( $this, 'schema_media_button' ), 31 );
+			add_action( 'admin_footer',	array( $this, 'schema_media_form'	) );
 
 			// Plugins page
-			add_filter( 'plugin_action_links', array( &$this, 'quick_link' ), 10, 2 );
+			add_filter( 'plugin_action_links', array( $this, 'quick_link' ), 10, 2 );
 			
 			// Settings Page
-			add_action( 'admin_enqueue_scripts', array( &$this, 'admin_scripts' ) );
-			add_action( 'admin_menu', array( &$this, 'add_pages' )	);
-			add_action( 'admin_init', array( &$this, 'register_settings' ) );
-			add_filter( 'raven_sc_default_settings', array( &$this, 'get_default_settings' ) );
-			add_filter( 'raven_sc_admin_tooltip', array( &$this, 'get_tooltips' ) );
-			add_filter( 'admin_footer_text', array( &$this, 'admin_footer_attribution' ) );
-			register_activation_hook( __FILE__, array( &$this, 'default_settings' ) );
+			add_action( 'admin_enqueue_scripts', array( $this, 'admin_scripts' ) );
+			add_action( 'admin_menu', array( $this, 'add_pages' )	);
+			add_action( 'admin_init', array( $this, 'register_settings' ) );
+			add_filter( 'raven_sc_default_settings', array( $this, 'get_default_settings' ) );
+			add_filter( 'raven_sc_admin_tooltip', array( $this, 'get_tooltips' ) );
+			add_filter( 'admin_footer_text', array( $this, 'admin_footer_attribution' ) );
+			register_activation_hook( __FILE__, array( $this, 'default_settings' ) );
 			
 			// Admin bar
-			add_action( 'admin_bar_menu', array( &$this, 'admin_bar_schema_test' ), 9999 );
+			add_action( 'admin_bar_menu', array( $this, 'admin_bar_schema_test' ), 9999 );
 			
 			// Content
-			add_filter( 'body_class', array( &$this, 'body_class' ) );
-			add_filter( 'the_content', array( &$this, 'schema_wrapper' ) );
+			add_filter( 'body_class', array( $this, 'body_class' ) );
+			add_filter( 'the_content', array( $this, 'schema_wrapper' ) );
 			
-			add_shortcode( 'schema', array( &$this, 'shortcode' ) );
+			add_shortcode( 'schema', array( $this, 'shortcode' ) );
 			
 			// Ajax actions
-			add_action( 'wp_ajax_get_schema_types', array( &$this, 'get_schema_types' ) );
-			add_action( 'wp_ajax_get_schema_properties', array( &$this, 'get_schema_properties' ) );
-			add_action( 'wp_ajax_get_schema_datatypes', array( &$this, 'get_schema_datatypes' ) );
+			add_action( 'wp_ajax_get_schema_types', array( $this, 'get_schema_types' ) );
+			add_action( 'wp_ajax_get_schema_properties', array( $this, 'get_schema_properties' ) );
+			add_action( 'wp_ajax_get_schema_datatypes', array( $this, 'get_schema_datatypes' ) );
 		}
 		
 	
@@ -174,7 +174,7 @@ if ( !class_exists( "RavenSchema" ) ) :
 			$types		= $customs !== false ? array_merge( $customs, $builtin ) : $builtin;
 	
 			if ( in_array( $page,  $types ) )
-				add_meta_box( 'schema-post-box', __( 'Schema Display Options', 'schema' ), array( &$this, 'schema_post_box' ), $page, $context, 'high' );
+				add_meta_box( 'schema-post-box', __( 'Schema Display Options', 'schema' ), array( $this, 'schema_post_box' ), $page, $context, 'high' );
 		}
 	
 		/**
@@ -268,7 +268,7 @@ if ( !class_exists( "RavenSchema" ) ) :
 				 __('Schema Creator', 'schema'), 
 				'manage_options', 
 				$this->get_page_slug(), 
-				array( &$this, 'do_page' )
+				array( $this, 'do_page' )
 			);
 			
 		}
@@ -286,20 +286,20 @@ if ( !class_exists( "RavenSchema" ) ) :
 		 * Register settings
 		 */
 		public function register_settings() {
-			register_setting( 'schema_options', 'schema_options', array(&$this, 'options_validate' ) );
+			register_setting( 'schema_options', 'schema_options', array($this, 'options_validate' ) );
 			
 			// Information
-			add_settings_section('info_section', __('Information', 'schema'), array(&$this, 'options_info_section'), 'schema_options');
-			add_settings_field( 'info_version', __('Plugin Version', 'schema'), array(&$this, 'options_info_version'), 'schema_options', 'info_section');
+			add_settings_section('info_section', __('Information', 'schema'), array($this, 'options_info_section'), 'schema_options');
+			add_settings_field( 'info_version', __('Plugin Version', 'schema'), array($this, 'options_info_version'), 'schema_options', 'info_section');
 			
 			// CSS output
-			add_settings_section( 'display_section', __('Display', 'schema'), array( &$this, 'options_display_section' ), 'schema_options' );
-			add_settings_field( 'css', __( 'CSS output', 'schema' ), array( &$this, 'options_display_css' ), 'schema_options', 'display_section' );
+			add_settings_section( 'display_section', __('Display', 'schema'), array( $this, 'options_display_section' ), 'schema_options' );
+			add_settings_field( 'css', __( 'CSS output', 'schema' ), array( $this, 'options_display_css' ), 'schema_options', 'display_section' );
 			
 			// HTML data applying
-			add_settings_section( 'data_section', __('Data', 'schema'), array( &$this, 'options_data_section' ), 'schema_options' );
-			add_settings_field( 'body', __( 'Body Tag', 'schema' ), array( &$this, 'options_data_body' ), 'schema_options', 'data_section' );
-			add_settings_field( 'post', __( 'Content Wrapper', 'schema' ), array( &$this, 'options_data_post' ), 'schema_options', 'data_section' );
+			add_settings_section( 'data_section', __('Data', 'schema'), array( $this, 'options_data_section' ), 'schema_options' );
+			add_settings_field( 'body', __( 'Body Tag', 'schema' ), array( $this, 'options_data_body' ), 'schema_options', 'data_section' );
+			add_settings_field( 'post', __( 'Content Wrapper', 'schema' ), array( $this, 'options_data_post' ), 'schema_options', 'data_section' );
 
 			do_action( 'raven_sc_register_settings' );
 		}
