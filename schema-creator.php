@@ -543,6 +543,9 @@ if ( !class_exists( "RavenSchema" ) ) :
 					wp_enqueue_script( 'schema-admin-form', plugins_url( '/lib/js/schema.admin.form.js', __FILE__) , array( 'jquery' ), SC_VER, true );
 					wp_enqueue_script( 'schema-admin-ajax', plugins_url( '/lib/js/schema.admin.ajax.js', __FILE__) , array( 'jquery' ), SC_VER, true );
 					
+					wp_localize_script( 'schema-admin-form', 'schema_i18n', array( 
+						'numeric_only' => __( 'No non-numeric characters allowed', 'schema' )
+					) );
 					wp_localize_script( 'schema-admin-ajax', 'schema_ajax', array( 'nonce' => wp_create_nonce( 'schema_ajax_nonce' ) ) );
 					
 				endif;
