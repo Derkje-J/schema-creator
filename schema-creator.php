@@ -52,9 +52,7 @@ if ( !class_exists( "RavenSchema" ) ) :
 	class RavenSchema
 	{
 		/**
-		 * This is our constructor
-		 *
-		 * @return ravenSchema
+		 * Constructs a new RavenSchema
 		 */
 		public function __construct() {		
 			add_action( 'plugins_loaded', array( $this, 'plugin_textdomain' ) );
@@ -81,39 +79,40 @@ if ( !class_exists( "RavenSchema" ) ) :
 		}
 	
 		/**
-		 * load textdomain for international goodness
-		 *
-		 * @return ravenSchema
+		 * Load textdomain for international goodness
 		 */
 		public function plugin_textdomain() {
 			load_plugin_textdomain( 'schema', false, dirname( plugin_basename( __FILE__ ) ) . '/languages/' );
 		}
 	
 		/**
-		 * show settings link on plugins page
+		 * Shows the settings option on the plugins page
+		 * 
+		 * @param string[] $links current links for plugin
+		 * @param string $file plugin file links being fetched for
 		 *
-		 * @return ravenSchema
+		 * @return string[] the links for the plugin
 		 */
 		public function quick_link( $links, $file ) {
 			static $this_plugin;
 	
-			if (!$this_plugin) {
-				$this_plugin = plugin_basename(__FILE__);
+			if ( !$this_plugin ) {
+				$this_plugin = plugin_basename( __FILE__ );
 			}
 	
 			// check to make sure we are on the correct plugin
-			if ($file == $this_plugin) {
+			if ( $file == $this_plugin ) {
 				$settings_link	= '<a href="'.menu_page_url( 'schema-creator', 0 ).'">'.__( 'Settings', 'schema' ).'</a>';
-				array_unshift($links, $settings_link);
+				array_unshift( $links, $settings_link );
 			}
 	
 			return $links;
 		}
 	
 		/**
-		 * add link to admin toolbar for testing
+		 * Adds the `test schema` link to the admin toolbar
 		 *
-		 * @return ravenSchema
+		 * @param object $wp_admin_bar the current admin bar
 		 */
 		public function schema_test( $wp_admin_bar ) {
 			// No link on admin panel
@@ -147,9 +146,10 @@ if ( !class_exists( "RavenSchema" ) ) :
 		}
 	
 		/**
-		 * Display metabox
+		 * Display metabox for schemas
 		 *
-		 * @return ravenSchema
+		 * @param string $page current page hook
+		 * @param string $context current metabox context
 		 */
 		public function metabox_schema( $page, $context ) {
 			// only add on side
@@ -182,8 +182,6 @@ if ( !class_exists( "RavenSchema" ) ) :
 	
 		/**
 		 * Display checkboxes for disabling the itemprop and itemscope
-		 *
-		 * @return ravenSchema
 		 */
 		public function schema_post_box( ) {
 			global $post;
@@ -213,9 +211,10 @@ if ( !class_exists( "RavenSchema" ) ) :
 		}
 	
 		/**
-		 * save the data
+		 * Save the data
 		 *
-		 * @return ravenSchema
+		 * @param int $post_id the current post id
+		 * @return int|void the post id or void
 		 */
 		public function save_metabox( $post_id = 0 )
 		{	
@@ -243,6 +242,9 @@ if ( !class_exists( "RavenSchema" ) ) :
 		
 		/**
 		 * Gets the options value for a key
+		 * 
+		 * @param string $key the option key
+		 * @return mixed the option value
 		 */
 		function get_option( $key ) {
 			$schema_options	= get_option( 'schema_options' );	
@@ -251,6 +253,9 @@ if ( !class_exists( "RavenSchema" ) ) :
 		
 		/**
 		 * Gets the tooltip value for a key
+		 *
+		 * @param string $key the tooltip key
+		 * @return string the tooltip value
 		 */
 		function get_tooltip( $key ) {
 			$tooltips = apply_filters( 'raven_sc_admin_tooltip', array() );
@@ -258,9 +263,7 @@ if ( !class_exists( "RavenSchema" ) ) :
 		}
 	
 		/**
-		 * build out settings page
-		 *
-		 * @return ravenSchema
+		 * Build settings page
 		 */
 		public function add_pages() {
 			add_submenu_page('options-general.php',
@@ -274,8 +277,6 @@ if ( !class_exists( "RavenSchema" ) ) :
 	
 		/**
 		 * Register settings
-		 *
-		 * @return ravenSchema
 		 */
 		public function register_settings() {
 			register_setting( 'schema_options', 'schema_options', array(&$this, 'options_validate' ) );
@@ -399,6 +400,9 @@ if ( !class_exists( "RavenSchema" ) ) :
 		
 		/**
 		 * Validates input
+		 *
+		 * @param mixed[] $input the to be processed new values
+		 * @return mixed the processed new values
 		 */
 		function options_validate( $input ) {
 			do_action_ref_array( 'raven_sc_options_validate', array( &$input ) );
@@ -417,11 +421,6 @@ if ( !class_exists( "RavenSchema" ) ) :
 	
 		/**
 		 * Set default settings
-		 * @return ravenSchema
-		 */
-		/**
-		 * Set default settings
-		 * @return ravenSchema
 		 */
 		public function default_settings( ) 
 		{
@@ -448,6 +447,9 @@ if ( !class_exists( "RavenSchema" ) ) :
 		
 		/**
 		 * Gets the default settings
+		 *
+		 * @param mixed[] $default current defaults
+		 * @return mixed[] new defaults
 		 */
 		public function get_default_settings( $default = array() ) 
 		{
@@ -461,7 +463,8 @@ if ( !class_exists( "RavenSchema" ) ) :
 		/**
 		 * Content for pop-up tooltips
 		 *
-		 * @return ravenSchema
+		 * @param string[] $tooltip current tooltips
+		 * @return string[] new tooltips
 		 */
 		public function get_tooltips( $tooltip = array() ) 
 		{
@@ -478,8 +481,6 @@ if ( !class_exists( "RavenSchema" ) ) :
 	
 		/**
 		 * Display main options page structure
-		 *
-		 * @return ravenSchema
 		 */
 		public function do_page() {
 	
@@ -504,8 +505,8 @@ if ( !class_exists( "RavenSchema" ) ) :
 	
 		/**
 		 * load scripts and style for admin settings page
-		 *
-		 * @return ravenSchema
+		 * 
+		 * @param string $hook the current page hook
 		 */
 		public function admin_scripts( $hook ) {
 			// for post editor
@@ -534,7 +535,8 @@ if ( !class_exists( "RavenSchema" ) ) :
 		/**
 		 * add attribution link to settings page
 		 *
-		 * @return ravenSchema
+		 * @param string $text the current footer text
+		 * @return string the new footer text
 		 */
 		public function schema_footer( $text ) {
 			$current_screen = get_current_screen();
@@ -556,9 +558,12 @@ if ( !class_exists( "RavenSchema" ) ) :
 		}
 	
 		/**
-		 * load body classes
+		 * Load body classes. 
 		 *
-		 * @return ravenSchema
+		 * Outputs itemtype and itemscope when body classes are generated.
+		 *
+		 * @param string[] $classes current body classes
+		 * @return string[] new body classes
 		 */
 		public function body_class( $classes ) {
 	
@@ -590,14 +595,15 @@ if ( !class_exists( "RavenSchema" ) ) :
 		}
 	
 		/**
-		 * load front-end CSS if shortcode is present
+		 * Load front-end CSS if shortcode is present
 		 *
-		 * @return ravenSchema
+		 * @param object[] $posts the posts to display
+		 * @return object[] the posts to display
 		 */
-		public function schema_loader($posts) {
+		public function schema_loader( $posts ) {
 	
 			// no posts present. nothing more to do here
-			if ( empty($posts) )
+			if ( empty( $posts ) )
 				return $posts;
 	
 			// they said they didn't want the CSS. their loss.
@@ -638,9 +644,10 @@ if ( !class_exists( "RavenSchema" ) ) :
 		/**
 		 * wrap content in markup
 		 *
-		 * @return ravenSchema
+		 * @param string $content the post content
+		 * @return string the proccesed post content
 		 */
-		public function schema_wrapper($content) {
+		public function schema_wrapper( $content ) {
 	
 			$schema_options = get_option( 'schema_options' );
 			$wrapper = !isset($schema_options['post']) || ( $schema_options['post'] === true || $schema_options['post'] == 'true' );
@@ -666,7 +673,9 @@ if ( !class_exists( "RavenSchema" ) ) :
 		/**
 		 * Build out shortcode with variable array of options
 		 *
-		 * @return ravenSchema
+		 * @param string $atts shortcode attributes
+		 * @param string $content shortcode content
+		 * @return string processed shortcode
 		 */
 		public function shortcode( $atts, $content = null ) {
 			extract( shortcode_atts( array(
@@ -1379,10 +1388,7 @@ if ( !class_exists( "RavenSchema" ) ) :
 	
 		/**
 		 * Add button to top level media row
-		 *
-		 * @return ravenSchema
 		 */
-	
 		public function media_button() {
 	
 			// don't show on dashboard (QuickPress)
@@ -1414,10 +1420,7 @@ if ( !class_exists( "RavenSchema" ) ) :
 	
 		/**
 		 * Build form and add into footer
-		 *
-		 * @return ravenSchema
 		 */
-	
 		public function schema_form() {
 	
 			// don't load form on non-editing pages
