@@ -60,7 +60,7 @@ if (!class_exists("DJ_SchemaScraper"))
 			//add_filter( 'raven_sc_admin_tooltip', array( $this, 'get_tooltips' ) );
 			add_filter( 'dj_scraper_default_settings', array( $this, 'get_default_settings' ) );
 			
-			add_action( 'raven_sc_default_settings', array( $this, 'default_settings' ) );
+			add_action( 'raven_sc_onactivate', array( $this, 'default_settings' ) );
 			add_action( 'raven_sc_register_settings', array( $this, 'register_settings' ) );
 			add_action( 'raven_sc_options_form', create_function( '', 'settings_fields(\'dj_schemascraper\'); do_settings_sections(\'dj_schemascraper\');' ) );
 		}
@@ -577,7 +577,7 @@ if (!class_exists("DJ_SchemaScraper"))
 	
 			// Fetch defaults.
 			$default = array();
-			$default = apply_filters( 'dj_scraper_default_settings', &$default );
+			$default = apply_filters( 'dj_scraper_default_settings', $default );
 			
 			// Existing optons will override defaults
 			update_option('dj_schemascraper', $default + $options_check);
@@ -586,7 +586,7 @@ if (!class_exists("DJ_SchemaScraper"))
 		/**
 		 * Gets the default settings
 		 */
-		public function get_default_settings( $default ) {
+		public function get_default_settings( $default = array() ) {
 			
 			$default["scrape_url"] = "http://schema.rdfs.org/all.json";
 			$default["cache_path"] = '/cache/';

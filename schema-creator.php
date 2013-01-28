@@ -434,12 +434,12 @@ if ( !class_exists( "RavenSchema" ) ) :
 	
 			// Fetch defaults.
 			$default = array();
-			$default = apply_filters( 'raven_sc_default_settings', &$default );
-			
+			$default = apply_filters( 'raven_sc_default_settings', $default );
+
 			// Existing optons will override defaults
 			update_option('schema_options', $default + $options_check);
 			
-			do_action( 'raven_sc_default_settings' );
+			do_action( 'raven_sc_onactivate' );
 		}
 		
 		/**
