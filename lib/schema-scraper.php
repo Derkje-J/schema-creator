@@ -116,7 +116,7 @@ if (!class_exists("DJ_SchemaScraper"))
 							gmdate("H:i:s", $cache_time),
 							date_i18n("d M Y, H:i:s", $this->timestamp + get_option( 'gmt_offset' ) * 3600 ),
 							gmdate("H:i:s", ($cache_time - ($timestamp_now - $this->timestamp) ) ),
-							date_i18n("d M Y, H:i:s", strtotime( $this->get_validation_date(). " + 1 day") + get_option( 'gmt_offset' ) * 3600 ),
+							date_i18n("d M Y, H:i:s", strtotime( $this->get_validation_date(). " + 2 day") + get_option( 'gmt_offset' ) * 3600 ),
 							gmdate("H:i:s", (strtotime( $this->get_validation_date(). " + 2 days" ) - $timestamp_now) ),
 							date_i18n("d M Y, H:i:s", $timestamp_now + get_option( 'gmt_offset' ) * 3600 ) 
 						);
@@ -624,6 +624,7 @@ if (!class_exists("DJ_SchemaScraper"))
 			add_settings_field( 'scrape_url', __( 'Scrape URL', 'schema' ), array( $this, 'options_scraper_scrapeurl' ), 'dj_schemascraper', 'scraper_section' );
 			add_settings_field( 'cache_path', __( 'Cache Path', 'schema' ), array( $this, 'options_scraper_cachepath' ), 'dj_schemascraper', 'scraper_section' );
 			add_settings_field( 'cache_time', __( 'Cache Time', 'schema' ), array( $this, 'options_scraper_cachetime' ), 'dj_schemascraper', 'scraper_section' );
+			add_settings_field( 'current_timestamp', __( 'Current Cache', 'schema' ), array( $this, 'options_scraper_current_timestamp' ), 'dj_schemascraper', 'scraper_section' );
 			
 		}
 		
@@ -659,6 +660,21 @@ if (!class_exists("DJ_SchemaScraper"))
 		function options_scraper_cachetime() {
 			echo '<input type="textfield" size="5" id="scraper_cache_time" name="dj_schemascraper[cache_time]" class="schema_textfield options-big" 
 				value="'.$this->get_option('cache_time').'"/> <label for="scraper_cache_time">'._x( 'minutes', 'cache time', 'schema' ).'</label>';
+		}
+		
+		function options_scraper_current_timestamp() {
+			
+			$currtime = microtime( true );
+			
+			$cache_time = ( $this->get_option( 'cache_time' ) ?: 60 * 24 ) * 60;
+			$filetime = date_i18n("d M Y, H:i:s", $this->timestamp + get_option( 'gmt_offset' ) * 3600 );
+			$fileexpi = date_i18n("d M Y, H:i:s", ($this->timestamp + get_option( 'gmt_offset' ) * 3600 + $cache_time) );
+			$dataexpi = date_i18n("d M Y, H:i:s", strtotime( $this->get_validation_date(). " + 2 days") );
+			
+			
+			echo 'data timestamp: <code>' . $filetime . '</code>.<br>';
+			echo 'data expiration date: <code>' . $dataexpi . '</code><br>';
+			echo 'file expiration date: <code>' . $fileexpi  . '</code>.';
 		}
 		
 		/**
