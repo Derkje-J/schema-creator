@@ -38,7 +38,7 @@ if (!class_exists("DJ_SchemaScraper"))
 		 * PHP processing stack. This way actions will not be queued duplicately and 
 		 * caching of processed values is not neccesary.
 		 *
-		 * @returns the singleton instance
+		 * @return DJ_SchemaScraper the singleton instance
 		 */
 		public static function singleton() {
 			if ( empty( DJ_SchemaScraper::$singleton ) )
@@ -49,7 +49,7 @@ if (!class_exists("DJ_SchemaScraper"))
 		/**
 		 * Creates a new instance of DJ_SchemaScraper
 		 *
-		 * @remarks use DJ_SchemaScraper::singleton() outside the class hieracrchy
+		 * @link DJ_SchemaScraper::singleton() use outside the class hieracrchy
 		 */
 		protected function __construct() 
 		{	
@@ -67,6 +67,9 @@ if (!class_exists("DJ_SchemaScraper"))
 		
 		/**
 		 * Gets an option value by key
+		 *
+		 * @param string $key the option key
+		 * @return mixed the option value
 		 */
 		public function get_option( $key ) {
 			if ( empty( $options ) )
@@ -154,7 +157,7 @@ if (!class_exists("DJ_SchemaScraper"))
 		}
 		
 		/**
-		 *
+		 * Fetches notices
 		 */
 		public function notice_fetch( ) {
 			echo $this->last_error;
@@ -162,7 +165,10 @@ if (!class_exists("DJ_SchemaScraper"))
 		}
 		
 		/**
-		 *	Gets a document over an HTTP request
+		 * Gets a document over an HTTP request
+		 *
+		 * @param string $url the url to the scrapped database
+		 * @return string|object the body of the document or http error
 		 */
 		public function get_document( $url ) {
 			$response = wp_remote_get( $url );
@@ -174,6 +180,8 @@ if (!class_exists("DJ_SchemaScraper"))
 		
 		/**
 		 * Gets date till witch this schema is valid
+		 *
+		 * @return string strtotime valid timestamp string
 		 */
 		public function get_validation_date() {
 			return isset($this->schema_data->valid) ? $this->schema_data->valid : "today";	
@@ -181,6 +189,8 @@ if (!class_exists("DJ_SchemaScraper"))
 		
 		/**
 		 * Get all the schema types
+		 *
+		 * @return object[] array of objects by type name
 		 */
 		public function get_schemas() {
 			return $this->schema_data->types;	
@@ -188,6 +198,9 @@ if (!class_exists("DJ_SchemaScraper"))
 				
 		/**
 		 * Get the schema for a type
+		 *
+		 * @param string|object $type either string or type object
+		 * @return object the type object
 		 */
 		public function get_schema( $type ) {
 			if ( is_object( $type ) )
@@ -197,6 +210,9 @@ if (!class_exists("DJ_SchemaScraper"))
 		
 		/**
 		 * Gets the schema's id
+		 *
+		 * @param string|object $type either string or type object
+		 * @return object the type id	
 		 */
 		public function get_schema_id( $type ) {
 			$type = is_object( $type ) ? $type : $this->get_schema( $type );
@@ -205,6 +221,8 @@ if (!class_exists("DJ_SchemaScraper"))
 		
 		/**
 		 * Gets the schemas with no parents
+		 * 
+		 * @return string[] the top level schemas
 		 */
 		public function get_top_level_schemas() {
 			$results = array( );
@@ -217,7 +235,11 @@ if (!class_exists("DJ_SchemaScraper"))
 		}
 		
 		/**
-		 *	Get all the ancestors of a type
+		 * Get all the ancestors of a type
+		 *
+		 * @param string|object $type either string or type object
+		 * @param boolean $recursive grap recursively flag
+		 * @return string[] type names of the ancestors
 		 */
 		public function get_schema_ancestors( $type, $recursive = true ) {
 			$schema = is_object( $type ) ? $type : $this->get_schema( $type );
@@ -226,6 +248,10 @@ if (!class_exists("DJ_SchemaScraper"))
 		
 		/**
 		 * Get schema descendants
+		 *
+		 * @param string|object $type either string or type object
+		 * @param boolean $recursive grap recursively flag
+		 * @return string[]|string[][] type names of the descendants
 		 */
 		public function get_schema_descendants( $type, $recursive = true ) {
 			$schema = is_object( $type ) ? $type : $this->get_schema( $type );
@@ -243,6 +269,9 @@ if (!class_exists("DJ_SchemaScraper"))
 		
 		/**
 		 * Gets schema siblings
+		 *
+		 * @param string|object $type either string or type object
+		 * @return string[] type names of the siblings
 		 */
 		public function get_schema_siblings( $type ) 
 		{
@@ -258,6 +287,11 @@ if (!class_exists("DJ_SchemaScraper"))
 		
 		/**
 		 * Get all the properties of a type
+		 *
+		 * @param string|object $type either string or type object
+		 * @param boolean $recursive to grab all the properties of all the ancestors flag
+		 * @param boolean $flat to flatten the results array or per type
+		 * @return string[]|string[][] property names
 		 */
 		public function get_schema_properties( $type, $recursive = true, $flat = false ) {
 			$type = is_object( $type ) ? $type : $this->get_schema( $type );
@@ -280,6 +314,10 @@ if (!class_exists("DJ_SchemaScraper"))
 				
 		/**
 		 * Get the schema comment for a type
+		 *
+		 * @param string|object $type either string or type object
+		 * @param boolean $html to output in html flag
+		 * @return the type comment
 		 */
 		public function get_schema_comment( $type, $html = true ) {
 			$schema = is_object( $type ) ? $type : $this->get_schema( $type );
@@ -288,6 +326,9 @@ if (!class_exists("DJ_SchemaScraper"))
 		
 		/**
 		 * Get the URL of the schema
+		 * 
+		 * @param string|object $type either string or type object
+		 * @return schema url
 		 */
 		public function get_schema_url( $type ) {
 			if ( is_object( $type ) )
@@ -297,6 +338,8 @@ if (!class_exists("DJ_SchemaScraper"))
 		
 		/**
 		 * Gets the properties data
+		 *
+		 * @return object[] the properties data
 		 */
 		public function get_properties( ) {
 			return $this->schema_data->properties;	
@@ -304,6 +347,8 @@ if (!class_exists("DJ_SchemaScraper"))
 		
 		/**
 		 * Gets the property keys
+		 * 
+		 * @return string[] the property names
 		 */
 		public function get_property_keys( ) {
 			$results = array();
@@ -314,6 +359,9 @@ if (!class_exists("DJ_SchemaScraper"))
 		
 		/**
 		 * Gets a property object
+		 *
+		 * @param string|object $property the property id or object
+		 * @return object that property
 		 */
 		public function get_property( $property ) {
 			return isset($this->get_properties()->$property) ? $this->get_properties()->$property : NULL;	
@@ -321,6 +369,9 @@ if (!class_exists("DJ_SchemaScraper"))
 		
 		/**
 		 * Gets the property id
+		 *
+		 * @param string|object $property the property id or object
+		 * @return string the property's id
 		 */
 		public function get_property_id( $property ) {
 			if ( is_object( $property ) )
@@ -330,6 +381,9 @@ if (!class_exists("DJ_SchemaScraper"))
 		
 		/**
 		 * Gets a property english display label
+		 *
+		 * @param string|object $property the property id or object
+		 * @return string the property's label
 		 */
 		public function get_property_label( $property ) {
 			if ( is_object( $property ) )
@@ -339,6 +393,10 @@ if (!class_exists("DJ_SchemaScraper"))
 		
 		/**
 		 * Gets a property description
+		 *
+		 * @param string|object $property the property id or object
+		 * @param boolean $html to output as html flag
+		 * @return string the property's comment
 		 */
 		public function get_property_comment( $property, $html = true ) {
 			$property = is_object( $property ) ? $property : $this->get_property( $property );
@@ -347,6 +405,9 @@ if (!class_exists("DJ_SchemaScraper"))
 		
 		/**
 		 * Get property ranges (what is valid contents)
+		 *
+		 * @param string|object $property the property id or object
+		 * @return string[] the types that are valid input
 		 */
 		public function get_property_ranges( $property ) {
 			if ( is_object( $property ) )
@@ -356,6 +417,9 @@ if (!class_exists("DJ_SchemaScraper"))
 		
 		/**
 		 * Get property domains (where is this used)
+		 *
+		 * @param string|object $property the property id or object
+		 * @return string[] the types that have this property
 		 */
 		public function get_property_domains( $property ) {
 			if ( is_object( $property ) )
@@ -365,6 +429,9 @@ if (!class_exists("DJ_SchemaScraper"))
 		
 		/**
 		 * Returns true if property is defined
+		 *
+		 * @param string|object $property the property id or object
+		 * @return boolean exists
 		 */
 		public function is_property( $property ) {
 			return !is_null( $this->get_property( $property ) );	
@@ -372,6 +439,8 @@ if (!class_exists("DJ_SchemaScraper"))
 		
 		/**
 		 * Get datatypes
+		 *
+		 * @return object[] the datatypes
 		 */
 		public function get_datatypes() {
 			return $this->schema_data->datatypes;	
@@ -379,13 +448,19 @@ if (!class_exists("DJ_SchemaScraper"))
 		
 		/**
 		 * Gets a single datatype
+		 *
+		 * @param string|object $type the datatype id or object
+		 * @return object that datatype
 		 */
 		public function get_datatype( $type ) {
 			return isset($this->get_datatypes()->$type) ? $this->get_datatypes()->$type : NULL;
 		}
 		
 		/**
-		 *
+		 * Gets a datatype's id
+		 *		 
+		 * @param string|object $type the datatype id or object
+		 * @return string the datatype id
 		 */
 		public function get_datatype_id( $type ) {
 			if ( is_object( $type ) )
@@ -394,7 +469,10 @@ if (!class_exists("DJ_SchemaScraper"))
 		}
 		
 		/**
-		 *
+		 * Gets a datatype's label
+		 * 
+		 * @param string|object $type the datatype id or object
+		 * @return string the label of the datatype
 		 */
 		public function get_datatype_label( $type ) {
 			if ( is_object( $type ) )
@@ -404,6 +482,8 @@ if (!class_exists("DJ_SchemaScraper"))
 		
 		/**
 		 * Gets the datatypes with no parents
+		 * 
+		 * @return string[] toplevel datatypes
 		 */
 		public function get_top_level_datatypes() {
 			$results = array( );
@@ -416,7 +496,11 @@ if (!class_exists("DJ_SchemaScraper"))
 		}
 		
 		/**
-		 *	Get all the ancestors of a datatype
+		 * Get all the ancestors of a datatype
+		 *
+		 * @param string|object $type the datatype id or object
+		 * @param boolean $recursive grab all the ancestors of datatype
+		 * @return string[] datatype names
 		 */
 		public function get_datatype_ancestors( $type, $recursive = true ) {
 			$datatype = is_object( $type ) ? $type : $this->get_datatype( $type );
@@ -425,6 +509,10 @@ if (!class_exists("DJ_SchemaScraper"))
 		
 		/**
 		 * Get datatype descendants
+		 * @param string|object $type the datatype id or object
+		 * @param boolean $recursive to grab all the descendant datatypes of all the descendants flag
+		 * @param boolean $flat to flatten the results array or per type
+		 * @return string[]|string[][] datatype names
 		 */
 		public function get_datatype_descendants( $type, $recursive = true, $flat = false ) {
 			$datatype = is_object( $type ) ? $type : $this->get_datatype( $type );
@@ -449,6 +537,9 @@ if (!class_exists("DJ_SchemaScraper"))
 		
 		/**
 		 * Gets datatype siblings
+		 * 
+		 * @param string|object $type the datatype id or object
+		 * @return string[] the siblings
 		 */
 		public function get_datatype_siblings( $type ) 
 		{
@@ -464,6 +555,11 @@ if (!class_exists("DJ_SchemaScraper"))
 		
 		/**
 		 * Get all the properties of a datatype
+		 *
+		 * @param string|object $type either string or datatype object
+		 * @param boolean $recursive to grab all the properties of all the ancestors flag
+		 * @param boolean $flat to flatten the results array or per type
+		 * @return string[]|string[][] property names
 		 */
 		public function get_datatype_properties( $type, $recursive = true, $flat = false ) {
 			$datatype = is_object( $type ) ? $type : $this->get_datatype( $type );
@@ -486,6 +582,10 @@ if (!class_exists("DJ_SchemaScraper"))
 		
 		/**
 		 * Gets a datatype comment
+		 * 
+		 * @param string|object $type the datatype id or object
+		 * @param boolean $html output as html flag
+		 * @return string the comment
 		 */
 		public function get_datatype_comment( $type, $html = true ) {
 			$datatype = is_object( $type ) ? $type : $this->get_datatype( $type );
@@ -494,6 +594,9 @@ if (!class_exists("DJ_SchemaScraper"))
 		
 		/**
 		 * Gets the datatype url
+		 * 
+		 * @param string|object $type the datatype id or object
+		 * @return string the url to the datatype
 		 */
 		public function get_datatype_url( $type ) {
 			if ( is_object( $type ) )
@@ -503,6 +606,8 @@ if (!class_exists("DJ_SchemaScraper"))
 		
 		/**
 		 * Returns true if type is defined
+		 * 
+		 * @return boolean datatype exists
 		 */
 		public function is_datatype( $type ) {
 			return !is_null( $this->get_datatype( $type ) );
@@ -558,6 +663,9 @@ if (!class_exists("DJ_SchemaScraper"))
 		
 		/**
 		 * Validates the options
+		 *
+		 * @param mixed[] $input the to be processed option values
+		 * @return mixed[] the processed option values
 		 */
 		function options_validate( $input ) {
 			//$input["scrape_url"]
@@ -585,6 +693,9 @@ if (!class_exists("DJ_SchemaScraper"))
 		
 		/**
 		 * Gets the default settings
+		 *
+		 * @param mixed[] $default the current defaults
+		 * @return mixed[] the defaults
 		 */
 		public function get_default_settings( $default = array() ) {
 			
