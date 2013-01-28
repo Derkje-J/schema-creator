@@ -1213,6 +1213,7 @@ if ( !class_exists( "RavenSchema" ) ) :
 	
 			<script type="text/javascript">
 				function InsertSchema() {
+					return;
 					//select field options
 					var type			= jQuery('#schema_builder select#schema_type').val();
 					
