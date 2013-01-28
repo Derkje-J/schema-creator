@@ -426,20 +426,31 @@ if ( !class_exists( "RavenSchema" ) ) :
 		 * Set default settings
 		 * @return ravenSchema
 		 */
+		/**
+		 * Set default settings
+		 * @return ravenSchema
+		 */
 		public function default_settings( ) 
 		{
 			$options_check	= get_option('schema_options');
-			if(empty( $options_check ))
-				$options_check = array();
-	
-			// Fetch defaults.
-			$default = array();
-			$default = apply_filters( 'raven_sc_default_settings', $default );
-
-			// Existing optons will override defaults
-			update_option('schema_options', $default + $options_check);
+			$default = apply_filters( 'raven_sc_default_settings', array() );
 			
-			do_action( 'raven_sc_onactivate' );
+			if( is_null( $options_check ) ) {
+				
+				$options_check = array();
+				
+			} else {
+				
+				// Upgrade options, not very forward compatible since new options
+				// are always false. This is due to the face that old false values
+				// where not properly saved.
+				foreach( $default as $option => $value )
+					$options_check[ $option ] = isset( $options_check[ $option ] ) && $options_check[ $option ] === 'true';
+					
+			}
+			
+			// Existing options will override defaults
+			update_option('schema_options', $options_check + $default );
 		}
 		
 		/**
