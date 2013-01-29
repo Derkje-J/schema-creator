@@ -1,11 +1,11 @@
 <?php
 /*
-Plugin Name: Schema Creator by Raven
+Plugin Name: Schema Creator by Derk-Jan and Raven
 Plugin URI: http://schema-creator.org/?utm_source=wp&utm_medium=plugin&utm_campaign=schema
 Description: Insert schema.org microdata into posts and pages
-Version: 1.042
-Author: Raven Internet Marketing Tools
-Author URI: http://raventools.com/?utm_source=wp&utm_medium=plugin&utm_campaign=schema
+Version: 1.0
+Author: Derk-Jan Karrenbeld.info
+Author URI: http://derk-jan.com/
 License: GPL v2
 
     This program is free software; you can redistribute it and/or modify
