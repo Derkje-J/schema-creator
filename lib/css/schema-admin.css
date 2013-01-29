@@ -39,6 +39,31 @@ div.schema_options span.ap_tooltip:hover, span.ap_tooltip:hover {
 	background-position:0 -16px;
 }
 
+.clone_field, .remove_field {
+	text-indent:-9999px;
+	background:url(../img/show_hide.png) no-repeat 0 0;
+	height:16px;
+	width:16px;
+	display:inline-block;
+	text-decoration:none;
+	margin:0 0 0 7px;
+	cursor:pointer;
+	text-align: left;
+}
+
+.remove_field {
+	background-position: 0 -16px;
+}
+
+.clone_field:hover {
+	background-position: -16px 0;
+}
+
+.remove_field:hover {
+	background-position: -16px -16px;
+}
+
+
 /* post metabox */
 
 p.schema-post-option label {
