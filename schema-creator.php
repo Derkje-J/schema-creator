@@ -953,6 +953,28 @@ if ( !class_exists( "RavenSchema" ) ) :
 			return $coutries;
 		}
 		
+		/*public function get_countries_input( $_argument = '', $ajax = true ) {
+			<label for="schema_country"><?php _e('Country', 'schema'); ?></label>
+            <select name="schema_country" id="schema_country" class="schema_drop schema_thindrop">
+                <option class="holder" value="none">(<?php _e('Select a Country', 'schema'); ?>)</option>
+                <option value="US"><?php _e('United States', 'schema'); ?></option>
+                <option value="CA"><?php _e('Canada', 'schema'); ?></option>
+                <option value="MX"><?php _e('Mexico', 'schema'); ?></option>
+                <option value="GB"><?php _e('United Kingdom', 'schema'); ?></option>
+                <?php
+                $countries = $this->get_countries();
+                unset($countries["US"]);
+                unset($countries["CA"]);
+                unset($countries["MX"]);
+                unset($countries["GB"]);
+                // set array of each item
+                foreach ($countries as $country_key => $country_name) {
+                    echo "\n\t<option value='{$country_key}'>{$country_name}</option>";
+                }
+                ?>
+            </select>
+         }*/
+		
 		/**
 		 * Gets the schema datatypes
 		 *
@@ -965,7 +987,7 @@ if ( !class_exists( "RavenSchema" ) ) :
 				check_ajax_referer( 'schema_ajax_nonce', 'security' );
 			endif;
 			
-			$prefix = isset( $_POST['prefix'] ) && !empty( $_POST['prefix'] ) ? $_POST['prefix'] : '';
+			$prefix = isset( $_REQUEST['prefix'] ) && !empty( $_REQUEST['prefix'] ) ? $_REQUEST['prefix'] : '';
 			$scraper = $this->get_scraper();
 		
 			// Get datatypes
@@ -1006,29 +1028,45 @@ if ( !class_exists( "RavenSchema" ) ) :
 			$children = array();
 			$siblings = array();
 			$parents = array();
-			$starred = array( 'Person', 'Product', 'Event', 'Organization', 'Movie', 'Book', 'Review', 'Recipe' ); // TODO filter or option
+			$starred = array( 'Person', 'Product', 'Event', 'Organization', 'Movie', 'Book', 'Review', 'Recipe' ); // TODO filter or option or both
 			
 			// Get selected schema
 			$top_level = $scraper->get_top_level_schemas();
-			$type = isset( $_POST[ 'type' ] ) ? $_POST[ 'type' ] : array_shift( $top_level );
+			$type = isset( $_REQUEST[ 'type' ] ) ? $_REQUEST[ 'type' ] : array_shift( $top_level );
 			$schema = $scraper->get_schema( $type );
+			
+			$allow_parents = isset( $_REQUEST[ 'parents' ] ) ? $_REQUEST[ 'parents' ] : true;
+			$allow_siblings = isset( $_REQUEST[ 'siblings' ] ) ? $_REQUEST[ 'siblings' ] : true;
+			$allow_children = isset( $_REQUEST[ 'children' ] ) ? $_REQUEST[ 'children' ] : true;
+			$allow_starred = isset( $_REQUEST[ 'starred'] )  ? $_REQUEST[ 'starred' ] : true; 
+			
 			if ( empty( $schema ) ) $type = array_shift( $top_level );
 			
 			// Get descendants
-			foreach( $scraper->get_schema_descendants( $type, false ) as $child )
-				$children[]= array( 'id' => $scraper->get_schema_id( $child ) ); //, 'desc' => $this->get_i18n( $scraper->get_schema_comment( $child ) ) );
+			if ( $allow_children ) :
+				foreach( $scraper->get_schema_descendants( $type, false ) as $child )
+					$children[]= array( 'id' => $scraper->get_schema_id( $child ) ); //, 'desc' => $this->get_i18n( $scraper->get_schema_comment( $child ) ) );
+			endif;
 				
 			// Get siblings
-			foreach( $scraper->get_schema_siblings( $type ) as $sibling )
-				$siblings[]= array( 'id' => $scraper->get_schema_id( $sibling ) ); //, 'desc' => $this->get_i18n( $scraper->get_schema_comment( $sibling ) ) );
+			if ( $allow_siblings ) :
+				foreach( $scraper->get_schema_siblings( $type ) as $sibling )
+					$siblings[]= array( 'id' => $scraper->get_schema_id( $sibling ) ); //, 'desc' => $this->get_i18n( $scraper->get_schema_comment( $sibling ) ) );
+			endif;
 				
 			// Get ancestors
-			foreach( $scraper->get_schema_ancestors( $type, false) as $parent )
-				$parents[]= array( 'id' => $scraper->get_schema_id( $parent ) ); //, 'desc' => $this->get_i18n( $scraper->get_schema_comment( $parent ) ) );
+			if ( $allow_parents ) :
+				foreach( $scraper->get_schema_ancestors( $type, false) as $parent )
+					$parents[]= array( 'id' => $scraper->get_schema_id( $parent ) ); //, 'desc' => $this->get_i18n( $scraper->get_schema_comment( $parent ) ) );
+			endif;
 				
 			// Get starred
-			foreach( $starred as &$star )
-				$star = array( 'id' => $scraper->get_schema_id( $star ) ); //, 'desc' => $this->get_i18n( $scraper->get_schema_comment( $star ) ) );
+			if ( $allow_starred ) :
+				foreach( $starred as &$star )
+					$star = array( 'id' => $scraper->get_schema_id( $star ) ); //, 'desc' => $this->get_i18n( $scraper->get_schema_comment( $star ) ) );
+			else :
+				$starred = '';
+			endif;
 			
 			$results = array( 
 				'types' => array(
@@ -1063,7 +1101,7 @@ if ( !class_exists( "RavenSchema" ) ) :
 			$properties = array();
 			
 			$scraper = $this->get_scraper();
-			$schema = $scraper->get_schema( $_POST['type'] );
+			$schema = $scraper->get_schema( $_REQUEST['type'] );
 						
 			//var_dump( $scraper->get_schema_properties( $schema, true ) );
 			foreach( $scraper->get_schema_properties( $schema, true ) as $type => $t_properties )  :
@@ -1214,31 +1252,10 @@ if ( !class_exists( "RavenSchema" ) ) :
 			$scraper = $this->get_scraper();
 			?>
 	
-			<script type="text/javascript">
-				function InsertSchema() {
-					return;
-					//select field options
-					var type			= jQuery('#schema_builder select#schema_type').val();
-					
-					// output setups
-					output = '[schema ';
-					output += 'type="' + type + '" ';
-					output += ']';
-	
-					window.send_to_editor(output);
-				}
-			</script>
-	
 			<div id="schema_build_form" style="display:none;">
 				<div id="schema_builder" class="schema_wrap">
 					<!-- schema type dropdown -->
-					<div id="sc_type">
-                    	<?php 
-							$current_type = "Thing";
-							$chain_tracker = array();
-							$need_optgroup  = false;
-						?>
-						
+					<div id="sc_type">						
 						<label for="schema_type"><?php _e('Schema Type', 'schema'); ?></label>
 						<select name="schema_type" id="schema_type" class="schema_drop schema_thindrop">
 							<option class="holder" value="">(<?php _e('Select a Type', 'schema'); ?>)</option>    
@@ -1251,223 +1268,19 @@ if ( !class_exists( "RavenSchema" ) ) :
 					</div>
 					<!-- end schema type dropdown -->
                     
+                    <input type="hidden" id="schema_display" value="sc_properties" />
                     <div id="sc_properties">
           			
                     </div>
                     
-					<div id="sc_country" class="sc_option" style="display:none">
-						<label for="schema_country"><?php _e('Country', 'schema'); ?></label>
-						<select name="schema_country" id="schema_country" class="schema_drop schema_thindrop">
-							<option class="holder" value="none">(<?php _e('Select a Country', 'schema'); ?>)</option>
-							<option value="US"><?php _e('United States', 'schema'); ?></option>
-							<option value="CA"><?php _e('Canada', 'schema'); ?></option>
-							<option value="MX"><?php _e('Mexico', 'schema'); ?></option>
-							<option value="GB"><?php _e('United Kingdom', 'schema'); ?></option>
-							<?php
-							$countries = $this->get_countries();
-							unset($countries["US"]);
-							unset($countries["CA"]);
-							unset($countries["MX"]);
-							unset($countries["GB"]);
-							// set array of each item
-							foreach ($countries as $country_key => $country_name) {
-								echo "\n\t<option value='{$country_key}'>{$country_name}</option>";
-							}
-							?>
-						</select>
-					</div>
-			
-					<div id="sc_email" class="sc_option" style="display:none">
-						<label for="schema_email"><?php _e('Email Address', 'schema'); ?></label>
-						<input type="text" name="schema_email" class="form_full" value="" id="schema_email" />
-					</div>
-			
-					<div id="sc_phone" class="sc_option" style="display:none">
-						<label for="schema_phone"><?php _e('Telephone', 'schema'); ?></label>
-						<input type="text" name="schema_phone" class="form_half" value="" id="schema_phone" />
-					</div>
-			
-					<div id="sc_fax" class="sc_option" style="display:none">
-						<label for="schema_fax"><?php _e('Fax', 'schema'); ?></label>
-						<input type="text" name="schema_fax" class="form_half" value="" id="schema_fax" />
-					</div>
-			
-					<div id="sc_brand" class="sc_option" style="display:none">
-						<label for="schema_brand"><?php _e('Brand', 'schema'); ?></label>
-						<input type="text" name="schema_brand" class="form_full" value="" id="schema_brand" />
-					</div>
-			
-					<div id="sc_manfu" class="sc_option" style="display:none">
-						<label for="schema_manfu"><?php _e('Manufacturer', 'schema'); ?></label>
-						<input type="text" name="schema_manfu" class="form_full" value="" id="schema_manfu" />
-					</div>
-			
-					<div id="sc_model" class="sc_option" style="display:none">
-						<label for="schema_model"><?php _e('Model', 'schema'); ?></label>
-						<input type="text" name="schema_model" class="form_full" value="" id="schema_model" />
-					</div>
-			
-					<div id="sc_prod_id" class="sc_option" style="display:none">
-						<label for="schema_prod_id"><?php _e('Product ID', 'schema'); ?></label>
-						<input type="text" name="schema_prod_id" class="form_full" value="" id="schema_prod_id" />
-					</div>
-			
-					<div id="sc_ratings" class="sc_option" style="display:none">
-						<label for="sc_ratings"><?php _e('Aggregate Rating', 'schema'); ?></label>
-						<div class="labels_inline">
-						<label for="schema_single_rating"><?php _e('Avg Rating', 'schema'); ?></label>
-						<input type="text" name="schema_single_rating" class="form_eighth schema_numeric" value="" id="schema_single_rating" />
-						<label for="schema_agg_rating"><?php _e('based on', 'schema'); ?> </label>
-						<input type="text" name="schema_agg_rating" class="form_eighth schema_numeric" value="" id="schema_agg_rating" />
-						<label><?php _e('reviews', 'schema'); ?></label>
-						</div>
-					</div>
-			
-					<div id="sc_reviews" class="sc_option" style="display:none">
-						<label for="sc_reviews"><?php _e('Rating', 'schema'); ?></label>
-						<div class="labels_inline">
-						<label for="schema_user_review"><?php _e('Rating', 'schema'); ?></label>
-						<input type="text" name="schema_user_review" class="form_eighth schema_numeric" value="" id="schema_user_review" />
-						<label for="schema_min_review"><?php _e('Minimum', 'schema'); ?></label>
-						<input type="text" name="schema_min_review" class="form_eighth schema_numeric" value="" id="schema_min_review" />
-						<label for="schema_max_review"><?php _e('Minimum', 'schema'); ?></label>
-						<input type="text" name="schema_max_review" class="form_eighth schema_numeric" value="" id="schema_max_review" />
-						</div>
-					</div>
-			
-			
-					<div id="sc_price" class="sc_option" style="display:none">
-						<label for="schema_price"><?php _e('Price', 'schema'); ?></label>
-						<input type="text" name="schema_price" class="form_third sc_currency" value="" id="schema_price" />
-					</div>
-			
-					<div id="sc_condition" class="sc_option" style="display:none">
-						<label for="schema_condition"><?php _ex('Condition', 'product', 'schema'); ?></label>
-						<select name="schema_condition" id="schema_condition" class="schema_drop">
-							<option class="holder" value="none">(<?php _e('Select', 'schema'); ?>)</option>
-							<option value="New"><?php _e('New', 'schema'); ?></option>
-							<option value="Used"><?php _e('Used', 'schema'); ?></option>
-							<option value="Refurbished"><?php _e('Refurbished', 'schema'); ?></option>
-							<option value="Damaged"><?php _e('Damaged', 'schema'); ?></option>
-						</select>
-					</div>
-			
-					<div id="sc_author" class="sc_option" style="display:none">
-						<label for="schema_author"><?php _e('Author', 'schema'); ?></label>
-						<input type="text" name="schema_author" class="form_full" value="" id="schema_author" />
-					</div>
-			
-					<div id="sc_publisher" class="sc_option" style="display:none">
-						<label for="schema_publisher"><?php _e('Publisher', 'schema'); ?></label>
-						<input type="text" name="schema_publisher" class="form_full" value="" id="schema_publisher" />
-					</div>
-			
-					<div id="sc_pubdate" class="sc_option" style="display:none">
-						<label for="schema_pubdate"><?php _e('Published Date', 'schema'); ?></label>
-						<input type="text" id="schema_pubdate" name="schema_pubdate" class="schema_datepicker form_third" value="" />
-						<input type="hidden" id="schema_pubdate-format" class="schema_datepicker-format" value="" />
-					</div>
-			
-					<div id="sc_edition" class="sc_option" style="display:none">
-						<label for="schema_edition"><?php _e('Edition', 'schema'); ?></label>
-						<input type="text" name="schema_edition" class="form_full" value="" id="schema_edition" />
-					</div>
-			
-					<div id="sc_isbn" class="sc_option" style="display:none">
-						<label for="schema_isbn"><?php _e('ISBN', 'schema'); ?></label>
-						<input type="text" name="schema_isbn" class="form_full" value="" id="schema_isbn" />
-					</div>
-			
-					<div id="sc_formats" class="sc_option" style="display:none">
-						<label class="list_label"><?php _e('Formats', 'schema'); ?></label>
-						<div class="form_list">
-							<span>
-								<input type="checkbox" class="schema_check" id="schema_ebook" name="schema_ebook" value="ebook" />
-								<label for="schema_ebook" rel="checker"><?php _e('Ebook', 'schema'); ?></label>
-							</span>
-							<span>
-								<input type="checkbox" class="schema_check" id="schema_paperback" name="schema_paperback" value="paperback" />
-								<label for="schema_paperback" rel="checker"><?php _e('Paperback', 'schema'); ?></label>
-							</span>
-							<span>
-								<input type="checkbox" class="schema_check" id="schema_hardcover" name="schema_hardcover" value="hardcover" />
-								<label for="schema_hardcover" rel="checker"><?php _e('Hardcover', 'schema'); ?></label>
-						   </span>
-						</div>
-					</div>
-			
-					<div id="sc_revdate" class="sc_option" style="display:none">
-						<label for="schema_revdate"><?php _e('Review Date', 'schema'); ?></label>
-						<input type="text" id="schema_revdate" name="schema_revdate" class="schema_datepicker form_third" value="" />
-						<input type="hidden" id="schema_revdate-format" class="schema_datepicker-format" value="" />
-					</div>
-			
-					<div id="sc_preptime" class="sc_option" style="display:none">
-						<label for="sc_preptime"><?php _e('Prep Time', 'schema'); ?></label>
-						<div class="labels_inline">
-							<label for="schema_prep_hours"><?php _e('Hours', 'schema'); ?></label>
-							<input type="text" name="schema_prep_hours" class="form_eighth schema_numeric" value="" id="schema_prep_hours" />
-							<label for="schema_prep_mins"><?php _e('Minutes', 'schema'); ?></label>
-							<input type="text" name="schema_prep_mins" class="form_eighth schema_numeric" value="" id="schema_prep_mins" />
-						</div>
-					</div>
-			
-					<div id="sc_cooktime" class="sc_option" style="display:none">
-						<label for="sc_cooktime"><?php _e('Cook Time', 'schema'); ?></label>
-						<div class="labels_inline">
-							<label for="schema_cook_hours"><?php _e('Hours', 'schema'); ?></label>
-							<input type="text" name="schema_cook_hours" class="form_eighth schema_numeric" value="" id="schema_cook_hours" />
-							<label for="schema_cook_mins"><?php _e('Minutes', 'schema'); ?></label>
-							<input type="text" name="schema_cook_mins" class="form_eighth schema_numeric" value="" id="schema_cook_mins" />
-						</div>
-					</div>
-			
-					<div id="sc_yield" class="sc_option" style="display:none">
-						<label for="schema_yield"><?php _e('Yield', 'schema'); ?></label>
-						<input type="text" name="schema_yield" class="form_third" value="" id="schema_yield" />
-						<label class="additional">(<?php _e('serving size', 'schema'); ?>)</label>
-					</div>
-			
-					<div id="sc_calories" class="sc_option" style="display:none">
-						<label for="schema_calories"><?php _e('Calories', 'schema'); ?></label>
-						<input type="text" name="schema_calories" class="form_third schema_numeric" value="" id="schema_calories" />
-					</div>
-			
-					<div id="sc_fatcount" class="sc_option" style="display:none">
-						<label for="schema_fatcount"><?php _e('Fat', 'schema'); ?></label>
-						<input type="text" name="schema_fatcount" class="form_third schema_numeric" value="" id="schema_fatcount" />
-						<label class="additional">(<?php _e('in grams', 'schema'); ?>)</label>
-					</div>
-			
-					<div id="sc_sugarcount" class="sc_option" style="display:none">
-						<label for="schema_sugarcount"><?php _e('Sugar', 'schema'); ?></label>
-						<input type="text" name="schema_sugarcount" class="form_third schema_numeric" value="" id="schema_sugarcount" />
-						<label class="additional">(<?php _e('in grams', 'schema'); ?>)</label>
-					</div>
-			
-					<div id="sc_saltcount" class="sc_option" style="display:none">
-						<label for="schema_saltcount"><?php _e('Sodium', 'schema'); ?></label>
-						<input type="text" name="schema_saltcount" class="form_third schema_numeric" value="" id="schema_saltcount" />
-						<label class="additional">(<?php _e('in milligrams', 'schema'); ?>)</label>
-					</div>
-			
-					<div id="sc_ingrt_1" class="sc_option sc_ingrt sc_repeater ig_repeat" style="display:none">
-						<label for="schema_ingrt_1"><?php _e('Ingredient', 'schema'); ?></label>
-						<input type="text" name="schema_ingrt_1" class="form_half ingrt_input" value="" id="schema_ingrt_1" />
-						<label class="additional">(<?php _e('include both type and amount', 'schema'); ?>)</label>
-					</div>
-			
-					<input type="button" class="clone_button" id="clone_ingrt" value="<?php _e('Add Another Ingredient', 'schema'); ?>" style="display:none;" />
-			
-					<div id="sc_instructions" class="sc_option" style="display:none">
-						<label for="schema_instructions"><?php _e('Instructions', 'schema'); ?></label>
-						<textarea name="schema_instructions" id="schema_instructions"></textarea>
-					</div>
-			
+                    <div id="sc_embeds">
+                    
+                    </div>
+                    
 					<!-- button for inserting -->
 					<div class="insert_button">
-						<input class="schema_insert button button-primary" type="button" value="<?php _e('Insert'); ?>" onclick="InsertSchema();"/>
-						<input class="schema_cancel button" type="button" value="<?php _e('Cancel'); ?>" onclick="tb_remove(); return false;"/>
+						<input id="sc_insert_button" class="schema_insert button button-primary" type="button" value="<?php _e('Insert'); ?>"/>
+						<input id="sc_cancel_button" class="schema_cancel button" type="button" value="<?php _e('Cancel'); ?>"/>
 					</div>
 			
 					<!-- various messages -->
