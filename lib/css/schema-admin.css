@@ -1,7 +1,7 @@
 
 /* Settings Page */
 
-div#icon-schema {
+#icon-schema {
 	background:url(../img/schema_icon_32.png) no-repeat 0 0;
 }
 
@@ -38,6 +38,31 @@ div.schema_options span.ap_tooltip, span.ap_tooltip {
 div.schema_options span.ap_tooltip:hover, span.ap_tooltip:hover {
 	background-position:0 -16px;
 }
+
+.clone_field, .remove_field {
+	text-indent:-9999px;
+	background:url(../img/show_hide.png) no-repeat 0 0;
+	height:16px;
+	width:16px;
+	display:inline-block;
+	text-decoration:none;
+	margin:0 0 0 7px;
+	cursor:pointer;
+	text-align: left;
+}
+
+.remove_field {
+	background-position: 0 -16px;
+}
+
+.clone_field:hover {
+	background-position: -16px 0;
+}
+
+.remove_field:hover {
+	background-position: -16px -16px;
+}
+
 
 /* post metabox */
 
@@ -127,6 +152,16 @@ div#TB_ajaxContent {
 #schema_builder .sc_type_header {
 	border-top: 2px solid #ddd;
 	margin-top: 10px;
+}
+
+#sc_breadcrumbs, #sc_breadcrumbs li {
+	list-style: none;
+	margin: 0;
+	padding: 0;	
+}
+
+#sc_breadcrumbs li  {
+	display: inline;	
 }
 
 #schema_builder input.button {
