@@ -40,19 +40,19 @@ Actions Hooks:
 Filters:
 	raven_sc_default_settings	: gets default settings values
 	raven_sc_admin_tooltip		: gets the tooltips for admin pages
+	
+
 */
 
 if ( !class_exists( "RavenSchema" ) ) :
 
 	define('SC_BASE', plugin_basename(__FILE__) );
-	define('SC_VER', '1.042');
+	define('SC_VER', '1.0');
 
 	class RavenSchema
 	{
 		/**
-		 * This is our constructor
-		 *
-		 * @return ravenSchema
+		 * Constructs a new RavenSchema
 		 */
 		public function __construct() {		
 			// Text domain
@@ -64,7 +64,7 @@ if ( !class_exists( "RavenSchema" ) ) :
 			add_action( 'save_post', array( $this, 'save_metabox' ) );
 			add_filter( 'media_buttons', array( $this, 'schema_media_button' ), 31 );
 			add_action( 'admin_footer',	array( $this, 'schema_media_form'	) );
-
+			
 			// Plugins page
 			add_filter( 'plugin_action_links', array( $this, 'quick_link' ), 10, 2 );
 			
@@ -73,25 +73,23 @@ if ( !class_exists( "RavenSchema" ) ) :
 			add_action( 'admin_menu', array( $this, 'add_pages' )	);
 			add_action( 'admin_init', array( $this, 'register_settings' ) );
 			add_filter( 'raven_sc_default_settings', array( $this, 'get_default_settings' ) );
-			add_filter( 'raven_sc_admin_tooltip', array( $this, 'get_tooltips' ) );
 			add_filter( 'admin_footer_text', array( $this, 'admin_footer_attribution' ) );
+			add_filter( 'raven_sc_admin_tooltip', array( $this, 'get_tooltips' ) );
 			register_activation_hook( __FILE__, array( $this, 'default_settings' ) );
-			
+		
 			// Admin bar
 			add_action( 'admin_bar_menu', array( $this, 'admin_bar_schema_test' ), 9999 );
-			
 			// Content
 			add_filter( 'body_class', array( $this, 'body_class' ) );
 			add_filter( 'the_content', array( $this, 'schema_wrapper' ) );
-			
 			add_shortcode( 'schema', array( $this, 'shortcode' ) );
 			
 			// Ajax actions
 			add_action( 'wp_ajax_get_schema_types', array( $this, 'get_schema_types' ) );
 			add_action( 'wp_ajax_get_schema_properties', array( $this, 'get_schema_properties' ) );
 			add_action( 'wp_ajax_get_schema_datatypes', array( $this, 'get_schema_datatypes' ) );
+			
 		}
-		
 	
 		/**
 		 * Load textdomain for international goodness
@@ -101,23 +99,33 @@ if ( !class_exists( "RavenSchema" ) ) :
 		}
 	
 		/**
-		 * Show settings link on plugins page
+		 * Shows the settings option on the plugins page
+		 * 
+		 * @param string[] $links current links for plugin
+		 * @param string $file plugin file links being fetched for
 		 *
-		 * @return modified links
+		 * @return string[] the links for the plugin
 		 */
 		public function quick_link( $links, $file ) {
+			static $this_plugin;
 	
-			// Check to make sure we are on the correct plugin
-			if ($file === plugin_basename(__FILE__)) {
+			if ( !$this_plugin ) {
+				$this_plugin = plugin_basename( __FILE__ );
+			}
+	
+			// check to make sure we are on the correct plugin
+			if ( $file == $this_plugin ) {
 				$settings_link	= '<a href="' . menu_page_url( 'schema-creator', 0 ) . '">' . _x( 'Settings', 'link to page', 'schema' ) . '</a>';
-				array_unshift($links, $settings_link);
+				array_unshift( $links, $settings_link );
 			}
 	
 			return $links;
 		}
 	
 		/**
-		 * Add link to admin toolbar for testing
+		 * Adds the `test schema` link to the admin toolbar
+		 *
+		 * @param object $wp_admin_bar the current admin bar
 		 */
 		public function admin_bar_schema_test( $wp_admin_bar ) {
 			// No link on admin panel, only load on singles
@@ -125,6 +133,7 @@ if ( !class_exists( "RavenSchema" ) ) :
 				return;
 	
 			//get some variables
+			global $post;
 			$link = get_permalink( get_the_ID() );
 	
 			// set args for tab
@@ -146,7 +155,10 @@ if ( !class_exists( "RavenSchema" ) ) :
 		}
 	
 		/**
-		 * Display metabox
+		 * Display metabox for schemas
+		 *
+		 * @param string $page current page hook
+		 * @param string $context current metabox context
 		 */
 		public function metabox_schema( $page, $context ) {
 			// only add on side
@@ -209,6 +221,9 @@ if ( !class_exists( "RavenSchema" ) ) :
 	
 		/**
 		 * Save the data
+		 *
+		 * @param int $post_id the current post id
+		 * @return int|void the post id or void
 		 */
 		public function save_metabox( $post_id = 0 )
 		{	
@@ -231,16 +246,15 @@ if ( !class_exists( "RavenSchema" ) ) :
 			update_post_meta( $post_id, '_schema_disable_body', $db_check );
 			update_post_meta( $post_id, '_schema_disable_post', $dp_check );
 			delete_post_meta( $post_id, '_raven_schema_load' );
-					
 			
 			do_action( 'raven_sc_save_metabox' );
 		}
 		
 		/**
 		 * Gets the options value for a key
-		 *
-		 * @key option key
-		 * @returns option value
+		 * 
+		 * @param string $key the option key
+		 * @return mixed the option value
 		 */
 		function get_option( $key ) {
 			$schema_options	= get_option( 'schema_options' );	
@@ -250,8 +264,8 @@ if ( !class_exists( "RavenSchema" ) ) :
 		/**
 		 * Gets the tooltip value for a key
 		 *
-		 * @key tooltip key
-		 * @returns tooltip value
+		 * @param string $key the tooltip key
+		 * @return string the tooltip value
 		 */
 		function get_tooltip( $key ) {
 			$tooltips = apply_filters( 'raven_sc_admin_tooltip', array() );
@@ -259,7 +273,7 @@ if ( !class_exists( "RavenSchema" ) ) :
 		}
 	
 		/**
-		 * Register settings page
+		 * Build settings page
 		 */
 		public function add_pages() {
 			
@@ -268,9 +282,9 @@ if ( !class_exists( "RavenSchema" ) ) :
 				 __('Schema Creator', 'schema'), 
 				'manage_options', 
 				$this->get_page_slug(), 
+
 				array( $this, 'do_page' )
 			);
-			
 		}
 		
 		/**
@@ -387,6 +401,7 @@ if ( !class_exists( "RavenSchema" ) ) :
 				</label>
 				<span class="ap_tooltip" tooltip="'.$this->get_tooltip( 'body_class' ).'">'._x('(?)', 'tooltip button', 'schema').'</span>
 			';
+			
 		}
 		
 		/** 
@@ -406,6 +421,9 @@ if ( !class_exists( "RavenSchema" ) ) :
 		
 		/**
 		 * Validates input
+		 *
+		 * @param mixed[] $input the to be processed new values
+		 * @return mixed the processed new values
 		 */
 		function options_validate( $input ) {
 			do_action_ref_array( 'raven_sc_options_validate', array( &$input ) );
@@ -424,11 +442,6 @@ if ( !class_exists( "RavenSchema" ) ) :
 	
 		/**
 		 * Set default settings
-		 * @return ravenSchema
-		 */
-		/**
-		 * Set default settings
-		 * @return ravenSchema
 		 */
 		public function default_settings( ) 
 		{
@@ -455,6 +468,9 @@ if ( !class_exists( "RavenSchema" ) ) :
 		
 		/**
 		 * Gets the default settings
+		 *
+		 * @param mixed[] $default current defaults
+		 * @return mixed[] new defaults
 		 */
 		public function get_default_settings( $default = array() ) 
 		{
@@ -467,6 +483,9 @@ if ( !class_exists( "RavenSchema" ) ) :
 	
 		/**
 		 * Content for pop-up tooltips
+		 *
+		 * @param string[] $tooltip current tooltips
+		 * @return string[] new tooltips
 		 */
 		public function get_tooltips( $tooltip = array() ) 
 		{
@@ -480,6 +499,7 @@ if ( !class_exists( "RavenSchema" ) ) :
 	
 			return $tooltip;
 		}
+
 		
 		/**
 		 * Adds ajax headers
@@ -506,6 +526,7 @@ if ( !class_exists( "RavenSchema" ) ) :
 						<?php settings_fields( 'schema_options' ); ?>		
 	 					<?php do_settings_sections( 'schema_options' ); ?>
                         <?php do_action( 'raven_sc_options_form' ); ?>
+	                    
 	                    <p class="submit">
                         	<input name="Submit" type="submit" class="button-primary" value="<?php esc_attr_e('Save Changes'); ?>" />
                     	</p>	
@@ -517,9 +538,12 @@ if ( !class_exists( "RavenSchema" ) ) :
 	
 		/**
 		 * Load scripts and style for admin settings page
+		 * 
+		 * @param string $hook the current page hook
 		 */
 		public function admin_scripts( $hook ) {
 			
+
 			$post_screen = $hook == 'post-new.php' || $hook == 'post.php';
 			$settings_screen = 'settings_page_' . $this->get_page_slug() == $hook;
 			
@@ -549,12 +573,18 @@ if ( !class_exists( "RavenSchema" ) ) :
 					wp_localize_script( 'schema-admin-ajax', 'schema_ajax', array( 'nonce' => wp_create_nonce( 'schema_ajax_nonce' ) ) );
 					
 				endif;
+
+
+
 			endif;
 		}
 	
 	
 		/**
 		 * Add attribution link to settings page
+		 *
+		 * @param string $text the current footer text
+		 * @return string the new footer text
 		 */
 		public function admin_footer_attribution( $text ) {
 			$current_screen = get_current_screen();
@@ -577,6 +607,11 @@ if ( !class_exists( "RavenSchema" ) ) :
 	
 		/**
 		 * Load body classes
+		 *
+		 * Outputs itemtype and itemscope when body classes are generated.
+		 *
+		 * @param string[] $classes current body classes
+		 * @return string[] new body classes
 		 */
 		public function body_class( $classes ) {
 	
@@ -609,6 +644,9 @@ if ( !class_exists( "RavenSchema" ) ) :
 	
 		/**
 		 * Load front-end CSS if shortcode is present
+		 *
+		 * @param object[] $posts the posts to display
+		 * @return object[] the posts to display
 		 */
 		public function schema_loader( $posts ) {
 	
@@ -650,20 +688,21 @@ if ( !class_exists( "RavenSchema" ) ) :
 						break;
 				endif;
 			endforeach;
-	
+
 			// A post has one
 			if ( $found == true ) : 
 				wp_enqueue_style( 'schema-style', plugins_url( '/lib/css/schema-style.css' , __FILE__ ), array(), SC_VER, 'all' );
 				do_action( 'raven_sc_enqueue_schemapost' );
 			endif;
-				
+
 			return $posts;
 		}
 	
 		/**
 		 * wrap content in markup
 		 *
-		 * @return ravenSchema
+		 * @param string $content the post content
+		 * @return string the proccesed post content
 		 */
 		public function schema_wrapper( $content ) {
 	
@@ -687,7 +726,7 @@ if ( !class_exists( "RavenSchema" ) ) :
 		return $content;
 	
 		}
-		
+
 		public function get_i18n( $string ) {
 			return $string;
 		}
@@ -975,10 +1014,15 @@ if ( !class_exists( "RavenSchema" ) ) :
             </select>
          }*/
 		
+
 		/**
 		 * Gets the schema datatypes
+
 		 *
 		 * @returns JSON encoded array datatypes
+
+
+
 		 */
 		public function get_schema_datatypes( $_argument = '', $ajax = true ) {
 			
@@ -1011,8 +1055,8 @@ if ( !class_exists( "RavenSchema" ) ) :
 			
 			return $results;
 		}
-		
-		/**
+	
+			/**
 		 * Gets the schema types
 		 *
 		 * @returns JSON encoded array of siblings, parents, children and select type of a type
@@ -1059,7 +1103,6 @@ if ( !class_exists( "RavenSchema" ) ) :
 				foreach( $scraper->get_schema_ancestors( $type, false) as $parent )
 					$parents[]= array( 'id' => $scraper->get_schema_id( $parent ) ); //, 'desc' => $this->get_i18n( $scraper->get_schema_comment( $parent ) ) );
 			endif;
-				
 			// Get starred
 			if ( $allow_starred ) :
 				foreach( $starred as &$star )
@@ -1107,15 +1150,23 @@ if ( !class_exists( "RavenSchema" ) ) :
 			foreach( $scraper->get_schema_properties( $schema, true ) as $type => $t_properties )  :
 				$type_id = $scraper->get_schema_id( $type );
 				$properties[ $type_id ] = array();
-				foreach( $t_properties as $t_property ) 
+					
+				foreach( $t_properties as $t_property ) :
+					
+					$t_comment = $scraper->get_property_comment( $t_property, false );
+					if ( strpos( $t_comment, 'legacy spelling' ) !== false )
+						continue;
+						
 					array_push( $properties[ $type_id ], 
 						array(
 							'id' => $scraper->get_property_id( $t_property ),
 							'label' => $scraper->get_property_label( $t_property ),
-							'desc' => $scraper->get_property_comment( $t_property, false ),
+							'desc' =>  $this->get_i18n( $t_comment ),
 							'ranges' => $scraper->get_property_ranges( $t_property ),
 						)
 					);
+					
+				endforeach;
 			endforeach;
 			
 			$results = array( 
@@ -1211,6 +1262,7 @@ if ( !class_exists( "RavenSchema" ) ) :
 			$current_screen = get_current_screen();
 			if ( 'dashboard' == $current_screen->base )
 				return;
+
 	
 			// don't display button for users who don't have access
 			if ( ! current_user_can('edit_posts') && ! current_user_can('edit_pages') )
@@ -1306,3 +1358,6 @@ endif;
 foreach ( glob( plugin_dir_path(__FILE__) . "/lib/*.php" ) as $filename )
     include_once $filename;
 
+
+
+				
