@@ -671,7 +671,6 @@ if (!class_exists("DJ_SchemaScraper"))
 			$fileexpi = date_i18n("d M Y, H:i:s", ($this->timestamp + get_option( 'gmt_offset' ) * 3600 + $cache_time) );
 			$dataexpi = date_i18n("d M Y, H:i:s", strtotime( $this->get_validation_date(). " + 2 days") );
 			
-			
 			echo 'data timestamp: <code>' . $filetime . '</code>.<br>';
 			echo 'data expiration date: <code>' . $dataexpi . '</code><br>';
 			echo 'file expiration date: <code>' . $fileexpi  . '</code>.';
