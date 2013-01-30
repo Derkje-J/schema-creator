@@ -1173,15 +1173,70 @@ if ( !class_exists( "RavenSchema" ) ) :
 		
 		public function shortcode_recursive( $content ) {
 			
-			$matches = array();
-			
 			/*[scprop prop="duration" range="Duration" content=""][/scprop][scmbed embed="location" value="Place" ][scprop prop="url" range="sc_Link" value=""][/scprop][/scmbed]*/
-			var_dump( $content );
-			preg_match( 
-			'/\[(scprop|scmbed|scmeta)(\s|\&nbsp;)*(?:([^\s=\/\]]+)(?:=[\'"]([^\'"]*?)[\'"]|))*(?:\/\]|\](.*)\[\/\1\])/', $content, $matches );
+			$matches = array();
+			$sc_build = '';
 
-			var_dump( $matches );
+			var_dump( $content );
+			while( preg_match( '/(.*?)(\[(scprop|scmbed|scmeta)\s*(.*?)\s*(?:\/\]|\](.*)\[\/\3\]))/', $content, $matches ) ) :
 			
+				// Readout base
+				$sc_type = $matches[3];
+				$properties = $matches[4];
+				$inner_content = $matches[5];
+				
+				// Remove from content
+				if ( !empty( $matches[1] ) ) :
+					$sc_build .= $matches[1];
+					$content = str_replace( $matches[1], '', $content );
+				endif;
+				$content = str_replace( $matches[2], '', $content );
+				
+				// Readout properties
+				$sc_properties = array();
+				while( strlen( $properties ) ) :
+					if ( preg_match( '/^(([^=\s\/\]]+)(?:=([\'"])([^\3]*?)\3)?\s*)/', $properties, $matches ) ) :
+						$sc_properties[ $matches[2] ] = $matches[4];
+						$properties = str_replace( $matches[1], '', $properties );
+					else :
+						break;
+					endif;
+				endwhile;
+				
+				if ( !empty( $inner_content ) )
+					$inner_content = $this->shortcode_recursive( $inner_content );
+				
+				//var_dump( $sc_type );
+				//var_dump( $sc_properties );
+				
+				switch( $sc_type ) {
+					case 'scprop' :
+						
+						// todo range/prop checking
+					
+						$sc_build .= '
+						<div> [' .
+							$sc_properties['prop'] . ': ' .
+							$sc_properties['value'] . '] ' .
+							$inner_content . '
+						</div>';
+					break;
+					case 'scmeta' :
+						$sc_build .= '<meta itemprop="' . esc_attr( $sc_properties['prop'] ) .'"
+							content="' . esc_attr( $sc_properties['value'] ) . '">';
+						$sc_build .= $inner_content;
+					break;			
+					case 'scmbed' :
+						$sc_build .= 'not implemented'; //$inner_content;
+					break;		
+				}
+				
+				
+			endwhile;
+			
+			$sc_build .= $content;
+			
+			return $sc_build;
 		}
 	
 		/**
