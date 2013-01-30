@@ -57,7 +57,6 @@ if (!class_exists("DJ_SchemaScraper"))
 		
 			add_filter( 'dj_schemascraper_scrapeurl', array( $this, 'get_scrapeurl' ) );
 			add_filter( 'dj_schemascraper_cachepath', array( $this, 'get_cachepath' ) );			
-			//add_filter( 'raven_sc_admin_tooltip', array( $this, 'get_tooltips' ) );
 			add_filter( 'dj_scraper_default_settings', array( $this, 'get_default_settings' ) );
 			
 			add_action( 'raven_sc_onactivate', array( $this, 'default_settings' ) );

@@ -255,7 +255,7 @@ if ( !class_exists( "RavenSchema" ) ) :
 		 */
 		function get_tooltip( $key ) {
 			$tooltips = apply_filters( 'raven_sc_admin_tooltip', array() );
-			return isset($tooltips[ $key ]) ? $tooltips[ $key ] : NULL;
+			return isset($tooltips[ $key ]) ? htmlentities( $tooltips[ $key ] ) : NULL;
 		}
 	
 		/**
@@ -997,7 +997,7 @@ if ( !class_exists( "RavenSchema" ) ) :
 					'id' => $scraper->get_datatype_id( $datatype ), 
 					'label' => $scraper->get_datatype_label( $datatype ), 
 					'subtypes' => $scraper->get_datatype_descendants( $datatype, true, true ), 
-					'desc' => $this->get_i18n( $scraper->get_datatype_comment( $datatype, false ) ),
+					'desc' => $this->get_i18n( htmlentities( $scraper->get_datatype_comment( $datatype ) ) ),
 					'button' => $this->get_i18n( $scraper->get_datatype_label( $datatype ) ),
 				);
 			}
@@ -1070,7 +1070,7 @@ if ( !class_exists( "RavenSchema" ) ) :
 			
 			$results = array( 
 				'types' => array(
-					'' => array( array( 'id' => $type, 'desc' => $this->get_i18n( $scraper->get_schema_comment( $type, false ) ) ) ),
+					'' => array( array( 'id' => $type, 'desc' => $this->get_i18n( htmlentities( $scraper->get_schema_comment( $type ) ) ) ) ),
 					esc_attr__( 'Children', 'schema' ) => $children,
 					esc_attr__( 'Siblings', 'schema' ) => $siblings,
 					esc_attr__( 'Parents', 'schema' ) => $parents,
@@ -1103,19 +1103,22 @@ if ( !class_exists( "RavenSchema" ) ) :
 			$scraper = $this->get_scraper();
 			$schema = $scraper->get_schema( $_REQUEST['type'] );
 						
-			//var_dump( $scraper->get_schema_properties( $schema, true ) );
 			foreach( $scraper->get_schema_properties( $schema, true ) as $type => $t_properties )  :
 				$type_id = $scraper->get_schema_id( $type );
 				$properties[ $type_id ] = array();
-				foreach( $t_properties as $t_property ) 
+				foreach( $t_properties as $t_property ) :
+					$t_comment = htmlentities( $scraper->get_property_comment( $t_property ) );
+					if ( strpos( $t_comment, 'legacy spelling' ) !== false )
+						continue;
 					array_push( $properties[ $type_id ], 
 						array(
 							'id' => $scraper->get_property_id( $t_property ),
 							'label' => $scraper->get_property_label( $t_property ),
-							'desc' => $scraper->get_property_comment( $t_property, false ),
+							'desc' => $this->get_i18n( $t_comment ),
 							'ranges' => $scraper->get_property_ranges( $t_property ),
 						)
 					);
+				endforeach;
 			endforeach;
 			
 			$results = array( 
@@ -1154,17 +1157,19 @@ if ( !class_exists( "RavenSchema" ) ) :
 					'class' => 'schema',
 					'embed_class' => 'schema',
 					'id' => '',
+					'style' => '',
 				), $atts );
 				
 			extract( $attributes );
 				
 			$scraper = $this->get_scraper();
 			$schema = $scraper->get_schema( $type );
-			$class = explode(' ', $class ) + array( strtolower( 'schema-'.$type ) );
-			$id = !empty( $id ) ? 'id="' + esc_attr( $id ) + '" ' : '';
+			$class = array_merge( explode(' ', $class ), array( strtolower( 'schema-'.$type ) ) );
+			$id = !empty( $id ) ? 'id="' . esc_attr( $id ) . '" ' : '';
+			$style = !empty( $style ) ? 'style="'. esc_attr( $style ) . '" ' : '';
 			
 			// wrap schema build out
-			$sc_build = '<div ' . $id . 'class="'. esc_attr( implode( ' ', $class ) ) . '" itemscope itemtype="' . esc_attr( esc_url( $scraper->get_schema_url( $schema ) ) ) . '">';
+			$sc_build = '<div ' . $id . $style . 'class="'. esc_attr( implode( ' ', $class ) ) . '" itemscope itemtype="' . esc_attr( esc_url( $scraper->get_schema_url( $schema ) ) ) . '">';
 			$sc_build .= $this->shortcode_recursive( $content ?: '', $embed_class );
 			$sc_build .= '</div>';
 
@@ -1381,7 +1386,7 @@ if ( !class_exists( "RavenSchema" ) ) :
 							// Displays as <time>. Uses date format if no inner content.	
 							case 'sc_Date' :
 								$tagtype = 'time';
-								$insulate[ 'value' ] = esc_attr( $element->attributes[ 'value' ] );
+								$insulate[ 'datetime' ] = esc_attr( $element->attributes[ 'value' ] );
 								if ( $element->no_inner )
 									$element->inner_content = date_i18n( !empty( $element->attributes[ 'format' ] ) ?
 										$element->attributes[ 'format' ]  : $datetime_format, 
