@@ -1,4 +1,4 @@
-#schema_block {
+.schema {
 	clear:both;
 	margin:0 auto 10px auto;
 	background: #EEEEEE;
@@ -7,37 +7,37 @@
     overflow: hidden;
 }
 
-#schema_block div {
+.schema div {
 	margin-bottom:10px;
 }
 
-#schema_block p {
+.schema p {
 	margin: 0 0 7px;
 	padding: 0;
 }
 
-#schema_block p.stacked {
+.schema p.stacked {
 	margin: 0 0 2px 0;
 	padding: 0;
 }
 
-#schema_block .schema_name {
+.schema .schema_name {
 	font-weight:700;
 	margin-bottom:10px;
 }
 
-#schema_block .schema_strong {
+.schema .schema_strong {
 	font-weight:700;
 }
 
-#schema_block .schema_description,
-#schema_block .schema_instructions {
+.schema .schema_description,
+.schema .schema_instructions {
 	margin-bottom:10px;
 }
 
 /* a few things for recipes */
 
-#schema_block .header_type {
+.schema .header_type {
 	font-size:110%;
 	font-weight:700;
 }
@@ -47,12 +47,12 @@
 	font-weight:400;
 }
 
-#schema_block span.desc_type {
+.schema span.desc_type {
 	font-size:95%;
 	font-weight:700;
 }
 
-#schema_block img.schema_image {
+.schema img.schema_image {
 	float: right;
 	margin: 0 0 10px 10px
 }
