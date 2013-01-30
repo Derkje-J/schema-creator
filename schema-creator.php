@@ -1178,12 +1178,15 @@ if ( !class_exists( "RavenSchema" ) ) :
 			$sc_build = '';
 
 			var_dump( $content );
-			while( preg_match( '/(.*?)(\[(scprop|scmbed|scmeta)\s*(.*?)\s*(?:\/\]|\](.*)\[\/\3\]))/', $content, $matches ) ) :
+			while( preg_match( '/(.*?)(\[(scprop|scmbed|scmeta)\s*(.*?)\s*(?:\/\]|\](.*)\[\/\3\]))/sm', $content, $matches ) ) :
+			
+				// TODO: rewrite regex to use atomic groups and \R so it captures nested. Then travel multi dimensional array
 			
 				// Readout base
 				$sc_type = $matches[3];
 				$properties = $matches[4];
 				$inner_content = $matches[5];
+				var_dump( $matches );
 				
 				// Remove from content
 				if ( !empty( $matches[1] ) ) :
@@ -1195,7 +1198,7 @@ if ( !class_exists( "RavenSchema" ) ) :
 				// Readout properties
 				$sc_properties = array();
 				while( strlen( $properties ) ) :
-					if ( preg_match( '/^(([^=\s\/\]]+)(?:=([\'"])([^\3]*?)\3)?\s*)/', $properties, $matches ) ) :
+					if ( preg_match( '/^(([^=\s\/\]]+)(?:=([\'"])([^\3]*?)\3)?\s*)/sm', $properties, $matches ) ) :
 						$sc_properties[ $matches[2] ] = $matches[4];
 						$properties = str_replace( $matches[1], '', $properties );
 					else :
