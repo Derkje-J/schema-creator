@@ -1045,25 +1045,25 @@ if ( !class_exists( "RavenSchema" ) ) :
 			// Get descendants
 			if ( $allow_children ) :
 				foreach( $scraper->get_schema_descendants( $type, false ) as $child )
-					$children[]= array( 'id' => $scraper->get_schema_id( $child ) ); //, 'desc' => $this->get_i18n( $scraper->get_schema_comment( $child ) ) );
+					$children[]= array( 'id' => $scraper->get_schema_id( $child ) );
 			endif;
 				
 			// Get siblings
 			if ( $allow_siblings ) :
 				foreach( $scraper->get_schema_siblings( $type ) as $sibling )
-					$siblings[]= array( 'id' => $scraper->get_schema_id( $sibling ) ); //, 'desc' => $this->get_i18n( $scraper->get_schema_comment( $sibling ) ) );
+					$siblings[]= array( 'id' => $scraper->get_schema_id( $sibling ) );
 			endif;
 				
 			// Get ancestors
 			if ( $allow_parents ) :
 				foreach( $scraper->get_schema_ancestors( $type, false) as $parent )
-					$parents[]= array( 'id' => $scraper->get_schema_id( $parent ) ); //, 'desc' => $this->get_i18n( $scraper->get_schema_comment( $parent ) ) );
+					$parents[]= array( 'id' => $scraper->get_schema_id( $parent ) ); 
 			endif;
 				
 			// Get starred
 			if ( $allow_starred ) :
 				foreach( $starred as &$star )
-					$star = array( 'id' => $scraper->get_schema_id( $star ) ); //, 'desc' => $this->get_i18n( $scraper->get_schema_comment( $star ) ) );
+					$star = array( 'id' => $scraper->get_schema_id( $star ) );
 			else :
 				$starred = '';
 			endif;
@@ -1152,6 +1152,7 @@ if ( !class_exists( "RavenSchema" ) ) :
 				array( 
 					'type' => '' ,
 					'class' => 'schema',
+					'embed_class' => 'schema',
 					'id' => '',
 				), $atts );
 				
@@ -1164,82 +1165,317 @@ if ( !class_exists( "RavenSchema" ) ) :
 			
 			// wrap schema build out
 			$sc_build = '<div ' . $id . 'class="'. esc_attr( implode( ' ', $class ) ) . '" itemscope itemtype="' . esc_attr( esc_url( $scraper->get_schema_url( $schema ) ) ) . '">';
-			$sc_build .= $this->shortcode_recursive( $content ?: '' );
+			$sc_build .= $this->shortcode_recursive( $content ?: '', $embed_class );
 			$sc_build .= '</div>';
-	
+
+			// Remove all empty paragraphs ( WordPress adds these in filters after WYSIWYG )
+			//$sc_build = preg_replace('{(<p([^>]*)?(/\>|\></p>))+}i', '', $sc_build);
+			
 			// return entire build array
 			return $sc_build;
 		}
 		
-		public function shortcode_recursive( $content ) {
+		/**
+		 * Outputs shortcode recursively
+		 *
+		 * @param string $content content to process
+		 * @param string $embed_class class to style embeds with
+		 * @return string processed content
+		 */
+		public function shortcode_recursive( $content, $embed_class = '' ) {
 			
-			/*[scprop prop="duration" range="Duration" content=""][/scprop][scmbed embed="location" value="Place" ][scprop prop="url" range="sc_Link" value=""][/scprop][/scmbed]*/
 			$matches = array();
 			$sc_build = '';
 
-			var_dump( $content );
-			while( preg_match( '/(.*?)(\[(scprop|scmbed|scmeta)\s*(.*?)\s*(?:\/\]|\](.*)\[\/\3\]))/sm', $content, $matches ) ) :
+			// Remove all breaks (sorry, they cause problems!)
+			$content = preg_replace('{(<br([^>]*/)?\>|&nbsp;)+}i', '', $content);
 			
-				// TODO: rewrite regex to use atomic groups and \R so it captures nested. Then travel multi dimensional array
-			
-				// Readout base
-				$sc_type = $matches[3];
-				$properties = $matches[4];
-				$inner_content = $matches[5];
-				var_dump( $matches );
+			// Matches 
+			$pattern = "/\[(?P<type>scprop|scmbed|scmeta)(?P<props>[^\]]*?)((?P<tagclose>[\s]*\/\])|".
+			"(](?P<inner>(([^\[]*?|\[\!\-\-.*?\-\-\])|(?R))*)\[\/\\1[\s]*\]))/sm";
+			if ( !preg_match_all($pattern, $content, $matches, PREG_OFFSET_CAPTURE) )
+				return $content;
+
+			$elements = array();
+			foreach ( $matches[0] as $key => $match ) {
+				array_push( $elements, (object)array(
+					'node' => $match[0],
+					'type' => $matches['type'][$key][0],
+					'attributes_raw' => !empty( $matches['props'][$key][0] ) ? $matches['props'][$key][0] : '',
+					'attributes' => array(),
+					'no_inner' => (boolean)($matches['tagclose'][$key][1] > -1),
+					'inner_content' => !empty( $matches['inner'][$key][0] ) ? $matches['inner'][$key][0] : ''
+				) );
+
+				// Remove the match from the contents
+				$content = trim( str_replace( trim( $match[0] ), '', $content ) );
 				
-				// Remove from content
-				if ( !empty( $matches[1] ) ) :
-					$sc_build .= $matches[1];
-					$content = str_replace( $matches[1], '', $content );
-				endif;
-				$content = str_replace( $matches[2], '', $content );
-				
-				// Readout properties
-				$sc_properties = array();
-				while( strlen( $properties ) ) :
-					if ( preg_match( '/^(([^=\s\/\]]+)(?:=([\'"])([^\3]*?)\3)?\s*)/sm', $properties, $matches ) ) :
-						$sc_properties[ $matches[2] ] = $matches[4];
-						$properties = str_replace( $matches[1], '', $properties );
-					else :
-						break;
-					endif;
-				endwhile;
-				
-				if ( !empty( $inner_content ) )
-					$inner_content = $this->shortcode_recursive( $inner_content );
-				
-				//var_dump( $sc_type );
-				//var_dump( $sc_properties );
-				
-				switch( $sc_type ) {
-					case 'scprop' :
-						
-						// todo range/prop checking
+				// Is there non schema data after this element? Output!
+				$nosc_matches = array();
+				if ( preg_match( '/^(?P<inner>[^\[]*)/sm', $content, $nosc_matches ) ) :
+					array_push( $elements, (object)array(	
+						'node' => $nosc_matches[0],
+						'type' => 'nosc',
+						'inner_content' => $nosc_matches['inner'],
+						'no_inner' => false
+					) );
 					
-						$sc_build .= '
-						<div> [' .
-							$sc_properties['prop'] . ': ' .
-							$sc_properties['value'] . '] ' .
-							$inner_content . '
-						</div>';
+					$content = trim( str_replace( trim( $nosc_matches[0] ), '', $content ) );
+				endif;
+			}
+
+			// Anything left was before the first match. So output here please.
+			$sc_build.= $content;
+
+			// Get defaults
+			$date_format = get_option( 'date_format' );
+			$time_format = get_option( 'time_format' );
+			$datetime_format = $date_format . ' ' . $time_format;
+			
+			// Get scraper
+			$scraper = $this->get_scraper();
+			
+			while( ( $element = array_shift( $elements ) ) ) :
+			
+				// Early bail if not schema content
+				if ( $element->type == 'nosc' ) :
+					$sc_build .= $element->inner_content;
+					continue;
+				endif;
+			
+				// Readout properties or bail early
+				$pattern = '/\s*(?P<key>[^\s=\'"]+)(?:=(?:([\'"])(?P<value>[^\'"]+)[\'"])|\s|$)\s*/sm';
+				if ( !preg_match_all( $pattern, $element->attributes_raw, $matches, PREG_OFFSET_CAPTURE ) ) :
+					$sc_build .= $element->inner_content;
+					continue;
+				endif;
+					
+				foreach ( $matches[0] as $key => $match )
+					$element->attributes[ $matches['key'][$key][0] ] = $matches['value'][$key][0];
+				
+				// Fallbacks and error checking
+				if ( !$element->no_inner ) :
+
+					if ( $element->type == 'scprop' ) :
+						// No value? The inner content must be the value
+						if ( !isset( $element->attributes[ 'value' ] ) ) :
+							$element->attributes[ 'value' ] = $element->inner_content;
+							$element->inner_content = '';
+							$element->no_inner = true;
+						endif;
+					endif;
+					
+					// Parse inner contents (TODO: tail-recursive?)
+					if ( !empty( $element->inner_content ) )
+						$element->inner_content = $this->shortcode_recursive( $element->inner_content );
+				endif;
+				
+				if ( $element->type != 'scmbed') :
+					
+					// Default range please. That's text!
+					if ( empty( $element->attributes[ 'range' ] ) )
+						$element->attributes[ 'range' ] = 'sc_Text';	
+						
+					// No property defined? We can't process this, so just do inner				
+					if ( empty( $element->attributes[ 'prop' ] ) ) :
+						$sc_build .= $element->inner_content;
+						continue;
+					endif;
+					
+					if ( $element->type == 'scmeta' ) :
+						// No content defined? Maybe you typed it as value
+						if ( !isset( $element->attributes[ 'content' ] ) ) :
+							$element->attributes[ 'content' ] = $element->attributes[ 'value' ];
+							$element->attributes[ 'value' ] = '';
+						endif;
+					endif;
+					
+				else :
+				
+					// No embed property? Maybe you typed it as prop
+					if ( !isset( $element->attributes[ 'embed' ] ) ) :
+						$element->attributes[ 'embed' ] = $element->attributes[ 'prop' ];
+						$element->attributes[ 'prop' ] = '';
+					endif;
+					
+					// No embed type? Maybe you typed it as type
+					if ( !isset( $element->attributes[ 'value' ] ) ) :
+						$element->attributes[ 'value' ] = $element->attributes[ 'type' ];
+						$element->attributes[ 'value' ] = '';
+					endif;
+					
+				endif;
+				
+				// These attributes are always allowed
+				$insulate = array();
+				$insulate_allowed = array ( 'id', 'class', 'title', 'alt', 'style' );
+				foreach( $insulate_allowed as $attr )
+					if ( !empty( $element->attributes[ $attr ] ) )
+						$insulate[ $attr ] = $element->attributes[ $attr ];
+						
+				// These tags can encapsulate the property
+				$encapsulate = "%s";
+				foreach( array( 'span', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'li', 'div' ) as $tag )
+					if ( isset( $element->attributes[ $tag ] ) ) 
+						$encapsulate = sprintf( '<%1$s>%2$s</%1$s>', $tag,  $encapsulate );
+
+				switch( $element->type ) :
+					
+					// Actual output of properties
+					case 'scprop' :
+
+						$scprop = '';
+						// The tagtype will tell what kind of element we are dealing with
+						// The insulate array contains all the properties
+						
+						// Switch by property type (name)
+						switch( $element->attributes[ 'prop' ] ) :
+							
+							// Images
+							case 'image' :
+							case 'photo' :
+								$tagtype = 'img';
+								$insulate[ 'src' ] = esc_url( $element->attributes[ 'value' ] );
+								$element->attributes[ 'range' ] = 'sc_Image';
+							break;
+							
+							// Url ( always in conjunction with name or family/given name )
+							case 'url' :
+								if ( !$element->no_inner ) :
+								 	$format = '<span itemprop="name" class="name name-sc_link">%s</span>';
+									$element->inner_content = sprintf( $format, $element->inner_content );
+								endif;								
+								break;
+							break;
+							
+						endswitch;
+						
+						// Build class for this element
+						$prop_class = strtolower(  $element->attributes[ 'prop' ] );
+						$range_class = strtolower( $element->attributes[ 'range' ] );
+						$insulate[ 'class' ] = implode( ' ', 
+							array_merge( 
+								explode( ' ' , $prop_class ),
+								explode( ' ' , $range_class ),  
+								explode( ' ' , $prop_class . '-' . $range_class ),  
+								( empty( $insulate[ 'class' ] ) ? array() : 
+									explode( ' ', $insulate[ 'class' ] )
+								)
+							)
+						);
+						
+						// Switch by property value type (range)
+						switch( $element->attributes[ 'range' ] ) :
+						
+							// Displays as <a>
+							case 'sc_Link':
+							case 'sc_URL':
+								$tagtype = 'a';
+								$insulate[ 'href' ] = esc_url( $element->attributes[ 'value' ] );
+								break;
+							
+							// Displays as <img>	
+							case 'sc_Image':
+								break;
+								
+							// Displays as <time>. Uses date format if no inner content.	
+							case 'sc_Date' :
+								$tagtype = 'time';
+								$insulate[ 'value' ] = esc_attr( $element->attributes[ 'value' ] );
+								if ( $element->no_inner )
+									$element->inner_content = date_i18n( !empty( $element->attributes[ 'format' ] ) ?
+										$element->attributes[ 'format' ]  : $datetime_format, 
+										strtotime( $element->attributes[ 'value' ] )
+									);
+								break;
+								
+							case 'sc_Text' :
+								$tagtype = 'span';
+								$element->inner_content = $element->attributes[ 'value' ];
+								break;
+								
+							default: 
+								$tagtype = 'div';
+								$element->inner_content = '[' .
+									$element->attributes[ 'prop' ] . ': ' .
+									$element->attributes[ 'value' ] . '] ' .
+									$element->inner_content . '
+								';
+								break;
+						endswitch;
+						
+						$format = '<%1$s %2$sitemprop="%3$s">%4$s</%1$s>';
+						$sc_build .= sprintf( $encapsulate, 
+							sprintf( $format,
+								!empty( $element->attributes[ 'as' ] ) ? $element->attributes[ 'as' ] : $tagtype, 
+								$this->shortcode_build_attributes( $insulate ), 
+								$element->attributes[ 'prop' ],
+								$element->inner_content 
+							) 
+						);
+						
 					break;
+					
+					// Actual output of meta properties
 					case 'scmeta' :
-						$sc_build .= '<meta itemprop="' . esc_attr( $sc_properties['prop'] ) .'"
-							content="' . esc_attr( $sc_properties['value'] ) . '">';
-						$sc_build .= $inner_content;
-					break;			
-					case 'scmbed' :
-						$sc_build .= 'not implemented'; //$inner_content;
+						$format = '<%1$s %2$sitemprop="%3$s" content="%4$s"/>%5$s';
+						$sc_build .= sprintf( $encapsulate, 
+							sprintf( $format,
+								!empty( $element->attributes[ 'as' ] ) ? $element->attributes[ 'as' ] : 'meta', 
+								$this->shortcode_build_attributes( $insulate ), 
+								$element->attributes[ 'prop' ],
+								$element->attributes[ 'content' ],
+								$element->inner_content 
+							) 
+						);
 					break;		
-				}
-				
-				
+					
+					// Actual output of embedded items	
+					case 'scmbed' :
+						
+						// Fetch schema data
+						$embed_type  = $element->attributes[ 'value' ];
+						$embed_schema = $scraper->get_schema( $embed_type );
+						$insulate[ 'class' ] = implode( ' ', 
+							array_merge( 
+								explode( ' ' , $embed_class ),
+								array( 'schema-embed' ),
+								array( strtolower( 'schema-'.$embed_type ) ),
+								( empty( $insulate[ 'class' ] ) ? array() : 
+									explode( ' ', $insulate[ 'class' ] )
+								)
+							)
+						);
+						
+						$format = '<%1$s %2$sitemprop="%3$s" itemscope itemtype="%5$s">%4$s</%1$s>';
+						$sc_build .= sprintf( $encapsulate, 
+							sprintf( $format,
+								!empty( $element->attributes[ 'as' ] ) ? $element->attributes[ 'as' ] : 'div', 
+								$this->shortcode_build_attributes( $insulate ), 
+								$element->attributes[ 'embed' ],
+								$element->inner_content,
+								esc_attr( esc_url( $scraper->get_schema_url( $embed_schema ) ) )
+							) 
+						);
+					break;		
+					
+				endswitch;
+							
 			endwhile;
 			
-			$sc_build .= $content;
-			
 			return $sc_build;
+		}
+	
+		/**
+		 * Builds attributes for the shortcode processing
+		 *
+		 * @param string[] $insulate key value array with attributes
+		 * @return string attributes string
+		 */
+		public function shortcode_build_attributes( $insulate ) {
+			foreach ( $insulate as $key => &$value )
+				$value = sprintf( '%s="%s" ', $key, esc_attr( $value ) );
+			return implode( '', $insulate );
 		}
 	
 		/**
