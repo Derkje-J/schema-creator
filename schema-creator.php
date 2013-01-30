@@ -1135,71 +1135,53 @@ if ( !class_exists( "RavenSchema" ) ) :
 		/** 
 		 * Gets the scraper class
 		 *
-		 * @returns the scraper singleton instance
+		 * @return self the scraper singleton instance
 		 */
 		public function get_scraper() {
 			return DJ_SchemaScraper::singleton();	
 		}
 		
 		/**
-		 * Gets an array of shortcode properties
-		 *
-		 * @returns an array of available shortcode properties, all set with default to NULL
-		 */
-		public function get_shortcode_properties() {
-			$scraper = $this->get_scraper();
-			$properties = $scraper->get_property_keys();
-			
-			$results = array();
-			foreach($properties as $property)
-				$results[ $scraper->get_property_id( $property ) ] = NULL;
-			return $results;
-		}
-	
-		/**
-		 * Gets the output for a schema
-		 *
-		 * @returns schema output for that type and data
-		 */
-		public function get_schema_output( $type, $data ) 
-		{
-			// Get the scraper, schema and its properties
-			$scraper = $this->get_scraper();
-			$schema = $scraper->get_schema( $type );
-			$properties = $scraper->get_schema_properties( $type, true, true ) ?: array();
-			
-			$sc_build = '<div class="'.esc_attr( strtolower( 'schema-'.$type ) ).'" itemscope itemtype="'.esc_url( $scraper->get_schema_url( $schema ) ).'">';
-			while ( $property_key = array_shift( $properties ) ) :
-				// go through props
-				$property = $scraper->get_property( $property_key );
-				$property_id = $scraper->get_property_id( $property );
-				if ( !isset( $data[$property_id] ) || empty( $data[$property_id] ) )
-					continue;
-					
-				// TODO: per property formatting
-				$sc_build .= sprintf("%s: %s<br>", $property_id, $data[$property_id]);
-			endwhile;
-			
-			$sc_build .= '</div>';
-			return $sc_build;
-		}
-		
-		/**
 		 * Build out shortcode with variable array of options
 		 *
-		 * @return the replacement
+		 * @return string the replacement
 		 */
 		public function shortcode( $atts, $content = NULL ) 
 		{
-			$attributes = shortcode_atts( $this->get_shortcode_properties() + array( 'type' => '' ), $atts );
+			$attributes = shortcode_atts( 
+				array( 
+					'type' => '' ,
+					'class' => 'schema',
+					'id' => '',
+				), $atts );
 				
+			extract( $attributes );
+				
+			$scraper = $this->get_scraper();
+			$schema = $scraper->get_schema( $type );
+			$class = explode(' ', $class ) + array( strtolower( 'schema-'.$type ) );
+			$id = !empty( $id ) ? 'id="' + esc_attr( $id ) + '" ' : '';
+			
 			// wrap schema build out
-			$sc_build  = '<div id="schema_block">';
-			$sc_build .= $this->get_schema_output( $attributes["type"], $attributes );
+			$sc_build = '<div ' . $id . 'class="'. esc_attr( implode( ' ', $class ) ) . '" itemscope itemtype="' . esc_attr( esc_url( $scraper->get_schema_url( $schema ) ) ) . '">';
+			$sc_build .= $this->shortcode_recursive( $content ?: '' );
 			$sc_build .= '</div>';
 	
 			// return entire build array
 			return $sc_build;
+		}
+		
+		public function shortcode_recursive( $content ) {
+			
+			$matches = array();
+			
+			/*[scprop prop="duration" range="Duration" content=""][/scprop][scmbed embed="location" value="Place" ][scprop prop="url" range="sc_Link" value=""][/scprop][/scmbed]*/
+			var_dump( $content );
+			preg_match( 
+			'/\[(scprop|scmbed|scmeta)(\s|\&nbsp;)*(?:([^\s=\/\]]+)(?:=[\'"]([^\'"]*?)[\'"]|))*(?:\/\]|\](.*)\[\/\1\])/', $content, $matches );
+
+			var_dump( $matches );
+			
 		}
 	
 		/**
