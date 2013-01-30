@@ -42,7 +42,16 @@ Filters:
 	raven_sc_admin_tooltip		: gets the tooltips for admin pages
 	
 
+
 */
+// "This will intercept the version check and increment the current version number by 3.
+// It's the quick and dirty way to do it without messing with the settings directly..."
+function my_refresh_mce($ver) {
+  $ver += 3;
+  return $ver;
+}
+
+add_filter( 'tiny_mce_version', 'my_refresh_mce');
 
 if ( !class_exists( "RavenSchema" ) ) :
 
@@ -565,20 +574,25 @@ if ( !class_exists( "RavenSchema" ) ) :
 					wp_enqueue_script( 'jquery-timepicker', plugins_url( '/lib/js/jquery.timepicker.js', __FILE__) , array( 'jquery' ), SC_VER, true );
 					wp_enqueue_script( 'format-currency', plugins_url( '/lib/js/jquery.currency.min.js', __FILE__) , array( 'jquery' ), SC_VER, true );
 					wp_enqueue_script( 'schema-admin-form', plugins_url( '/lib/js/schema.admin.form.js', __FILE__) , array( 'jquery' ), SC_VER, true );
-					wp_enqueue_script( 'schema-admin-ajax', plugins_url( '/lib/js/schema.admin.ajax.js', __FILE__) , array( 'jquery' ), SC_VER, true );
+					wp_enqueue_script( 'schema-admin-ajax', plugins_url( '/lib/js/schema.admin.ajax.js', __FILE__) , array( 'jquery', 'schema-admin-form' ), SC_VER, true );
 					
+					add_filter( 'mce_external_plugins', array( $this, 'mce_plugin' ) );
+
 					wp_localize_script( 'schema-admin-form', 'schema_i18n', array( 
 						'numeric_only' => __( 'No non-numeric characters allowed', 'schema' )
 					) );
 					wp_localize_script( 'schema-admin-ajax', 'schema_ajax', array( 'nonce' => wp_create_nonce( 'schema_ajax_nonce' ) ) );
 					
 				endif;
-
-
-
 			endif;
 		}
 	
+		/**
+		*/
+		function mce_plugin( $plugins_array ) {
+			$plugins_array['schemaadmineditor'] = plugins_url( '/lib/js/schema-admin-editor/editor_plugin.js', __FILE__);
+			return $plugins_array;
+		}
 	
 		/**
 		 * Add attribution link to settings page
