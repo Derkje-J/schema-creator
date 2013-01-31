@@ -634,7 +634,7 @@ if ( !class_exists( "DJ_SchemaCreator" ) ) :
 					wp_enqueue_script( 'jquery-timepicker', plugins_url( '/lib/js/jquery.timepicker.js', __FILE__) , array( 'jquery' ), DJ_SCHEMACREATOR_VERSION, true );
 					wp_enqueue_script( 'format-currency', plugins_url( '/lib/js/jquery.currency.min.js', __FILE__) , array( 'jquery' ), DJ_SCHEMACREATOR_VERSION, true );
 					wp_enqueue_script( 'dj-schema-admin-form', plugins_url( '/lib/js/schema.admin.form.js', __FILE__) , array( 'jquery' ), DJ_SCHEMACREATOR_VERSION, true );
-					wp_enqueue_script( 'dj-schema-admin-ajax', plugins_url( '/lib/js/schema.admin.ajax.js', __FILE__) , array( 'jquery', 'schema-admin-form' ), DJ_SCHEMACREATOR_VERSION, true );
+					wp_enqueue_script( 'dj-schema-admin-ajax', plugins_url( '/lib/js/schema.admin.ajax.js', __FILE__) , array( 'jquery', 'dj-schema-admin-form' ), DJ_SCHEMACREATOR_VERSION, true );
 					
 					add_filter( 'mce_external_plugins', array( $this, 'mce_plugin' ) );
 
