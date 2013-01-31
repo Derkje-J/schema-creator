@@ -81,7 +81,6 @@ if (!class_exists("DJ_SchemaScraper"))
 		 */
 		public function get_schema_data() 
 		{
-			print  $this->schema_data;
 			if ( !empty( $this->schema_data ) && is_object( $this->schema_data ) )
 				return $this->schema_data;
 			
