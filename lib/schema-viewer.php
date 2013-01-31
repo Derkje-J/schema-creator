@@ -88,8 +88,6 @@ if (!class_exists("DJ_SchemaViewer"))
 		
 		/**
 		 * build out settings page
-		 *
-		 * @return ravenSchema
 		 */
 		public function add_pages() {
 			

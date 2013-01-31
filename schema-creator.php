@@ -29,17 +29,17 @@ License: GPL v2
 	http://www.google.com/webmasters/tools/richsnippets
 	
 Actions Hooks:
-	raven_sc_register_settings	: runs when the settings are registered
-	raven_sc_default_settings	: runs when plugin is activated
-	raven_sc_options_validate	: runs when the settings are saved ( &array )
-	raven_sc_options_form		: runs when the settings form is outputted
-	raven_sc_metabox			: runs when the metabox is outputted
-	raven_sc_save_metabox		: runs when the metabox is saved
-	raven_sc_enqueue_schemapost	: runs when showing a post with a schema
+	dj_sc_register_settings	: runs when the settings are registered
+	dj_sc_default_settings	: runs when plugin is activated
+	dj_sc_options_validate	: runs when the settings are saved ( &array )
+	dj_sc_options_form		: runs when the settings form is outputted
+	dj_sc_metabox			: runs when the metabox is outputted
+	dj_sc_save_metabox		: runs when the metabox is saved
+	dj_sc_enqueue_schemapost	: runs when showing a post with a schema
 	
 Filters:
-	raven_sc_default_settings	: gets default settings values
-	raven_sc_admin_tooltip		: gets the tooltips for admin pages
+	dj_sc_default_settings	: gets default settings values
+	dj_sc_admin_tooltip		: gets the tooltips for admin pages
 	
 
 
@@ -53,19 +53,37 @@ function my_refresh_mce($ver) {
 
 add_filter( 'tiny_mce_version', 'my_refresh_mce');
 
-if ( !class_exists( "RavenSchema" ) ) :
+if ( !class_exists( "DJ_SchemaCreator" ) ) :
 
-	define('SC_BASE', plugin_basename(__FILE__) );
-	define('SC_VER', '1.0');
+	define('DJ_SCHEMACREATOR_BASE', plugin_basename(__FILE__) );
+	define('DJ_SCHEMACREATOR_VERSION', '1.0');
 
-	class RavenSchema
+	class DJ_SchemaCreator
 	{
+		private static $singleton;
 		public $debug = false;
 		
 		/**
-		 * Constructs a new RavenSchema
+		 * Gets a singleton of this class
+		 *
+		 * DJ_SchemaCreator::singleton() will always return the same instance during a
+		 * PHP processing stack. This way actions will not be queued duplicately and 
+		 * caching of processed values is not neccesary.
+		 *
+		 * @return DJ_SchemaCreator the singleton instance
 		 */
-		public function __construct() {		
+		public static function singleton() {
+			if ( empty( DJ_SchemaCreator::$singleton ) )
+				DJ_SchemaCreator::$singleton = new DJ_SchemaCreator();
+			return DJ_SchemaCreator::$singleton;
+		}
+		
+		/**
+		 * Creates a new instance of DJ_SchemaCreator
+		 *
+		 * @link DJ_SchemaCreator::singleton() use outside the class hieracrchy
+		 */
+		protected function __construct() {		
 			// Text domain
 			add_action( 'plugins_loaded', array( $this, 'plugin_textdomain' ) );
 			
@@ -81,19 +99,22 @@ if ( !class_exists( "RavenSchema" ) ) :
 			
 			// Settings Page
 			add_action( 'admin_enqueue_scripts', array( $this, 'admin_scripts' ) );
-			add_action( 'admin_menu', array( $this, 'add_pages' )	);
-			add_action( 'admin_init', array( $this, 'register_settings' ) );
-			add_filter( 'raven_sc_default_settings', array( $this, 'get_default_settings' ) );
+			
+			add_action( 'admin_menu', array( $this, 'add_pages' ) );
+			add_action( 'admin_init', array( $this, 'register_settings' ) );					
+			add_filter( 'dj_sc_default_settings', array( $this, 'get_default_settings' ) );
+			add_filter( 'dj_sc_admin_tooltip', array( $this, 'get_tooltips' ) );
 			add_filter( 'admin_footer_text', array( $this, 'admin_footer_attribution' ) );
-			add_filter( 'raven_sc_admin_tooltip', array( $this, 'get_tooltips' ) );
 			register_activation_hook( __FILE__, array( $this, 'default_settings' ) );
-		
+
 			// Admin bar
 			add_action( 'admin_bar_menu', array( $this, 'admin_bar_schema_test' ), 9999 );
 			// Content
 			add_filter( 'body_class', array( $this, 'body_class' ) );
 			add_filter( 'the_content', array( $this, 'schema_wrapper' ) );
-			add_shortcode( 'schema', array( $this, 'shortcode' ) );
+			
+			$the_shorcode = $this->get_option( 'shortcode' ) ?: 'schema';
+			add_shortcode( $the_shorcode , array( $this, 'shortcode' ) );
 			
 			// Ajax actions
 			add_action( 'wp_ajax_get_schema_types', array( $this, 'get_schema_types' ) );
@@ -126,7 +147,7 @@ if ( !class_exists( "RavenSchema" ) ) :
 	
 			// check to make sure we are on the correct plugin
 			if ( $file == $this_plugin ) {
-				$settings_link	= '<a href="' . menu_page_url( 'schema-creator', 0 ) . '">' . _x( 'Settings', 'link to page', 'schema' ) . '</a>';
+				$settings_link	= '<a href="' . menu_page_url( 'dj-schema-creator', 0 ) . '">' . _x( 'Settings', 'link to page', 'schema' ) . '</a>';
 				array_unshift( $links, $settings_link );
 			}
 	
@@ -177,7 +198,7 @@ if ( !class_exists( "RavenSchema" ) ) :
 				return;
 				
 			// check to see if they have options first
-			$schema_options	= get_option('schema_options');
+			$schema_options	= $this->get_options();
 	
 			// they haven't enabled this? THEN YOU LEAVE NOW
 			if( empty( $schema_options['body'] ) && empty( $schema_options['post'] ) )
@@ -213,7 +234,7 @@ if ( !class_exists( "RavenSchema" ) ) :
 			$disable_post = $disable_post === true || $disable_post == 'true' || $disable_post == '1';
 	
 			// use nonce for security
-			wp_nonce_field( SC_BASE, 'schema_nonce' );
+			wp_nonce_field( DJ_SCHEMACREATOR_BASE, 'schema_nonce' );
 			?>
 			
 			<p class="schema-post-option">
@@ -227,7 +248,9 @@ if ( !class_exists( "RavenSchema" ) ) :
 			</p>
 			<?php
 			
-			do_action( 'raven_sc_metabox' );
+			do_action( 'dj_sc_metabox' );
+			if ( $this->get_option( 'raven_fallback' ) === true )
+				do_action( 'raven_sc_metabox' );
 		}
 	
 		/**
@@ -244,7 +267,7 @@ if ( !class_exists( "RavenSchema" ) ) :
 			if ( "auto-draft" == $post_status ) 
 				return $post_id;
 	
-			if ( isset( $_POST['schema_nonce'] ) && !wp_verify_nonce( $_POST['schema_nonce'], SC_BASE ) )
+			if ( isset( $_POST['schema_nonce'] ) && !wp_verify_nonce( $_POST['schema_nonce'], DJ_SCHEMACREATOR_BASE ) )
 				return;
 	
 			if ( !current_user_can( 'edit_post', $post_id ) )
@@ -256,9 +279,11 @@ if ( !class_exists( "RavenSchema" ) ) :
 	
 			update_post_meta( $post_id, '_schema_disable_body', $db_check );
 			update_post_meta( $post_id, '_schema_disable_post', $dp_check );
-			delete_post_meta( $post_id, '_raven_schema_load' );
+			delete_post_meta( $post_id, '_dj_schema_load' );
 			
-			do_action( 'raven_sc_save_metabox' );
+			do_action( 'dj_sc_save_metabox' );
+			if ( $this->get_option( 'raven_fallback' ) === true )
+				do_action( 'raven_sc_save_metabox' );
 		}
 		
 		/**
@@ -268,8 +293,18 @@ if ( !class_exists( "RavenSchema" ) ) :
 		 * @return mixed the option value
 		 */
 		function get_option( $key ) {
-			$schema_options	= get_option( 'schema_options' );	
-			return isset($schema_options[$key]) ? $schema_options[$key] : NULL;
+			$schema_options = $this->get_options();
+			return isset( $schema_options[$key] ) ? $schema_options[$key] : NULL;
+		}
+		
+		/**
+		 * Gets the options
+		 * @return mixed[] the options;
+		 **/
+		function get_options() {
+			$schema_options	= get_option( 'dj_schema_options' ) ?: array();	
+			$schema_options = array_merge( get_option( 'schema_options' ) ?: array(), $schema_options );
+			return $schema_options;
 		}
 		
 		/**
@@ -279,7 +314,9 @@ if ( !class_exists( "RavenSchema" ) ) :
 		 * @return string the tooltip value
 		 */
 		function get_tooltip( $key ) {
-			$tooltips = apply_filters( 'raven_sc_admin_tooltip', array() );
+			$tooltips = apply_filters( 'dj_sc_admin_tooltip', array() );
+			if ( $this->get_option( 'raven_fallback' ) === true )
+				$tooltips = apply_filters( 'raven_sc_admin_tooltip', $tooltips );
 			return isset($tooltips[ $key ]) ? htmlentities( $tooltips[ $key ] ) : NULL;
 		}
 	
@@ -304,29 +341,31 @@ if ( !class_exists( "RavenSchema" ) ) :
 		 * @returns the page slug
 		 */
 		public function get_page_slug() {
-			return 'schema-creator';
+			return 'dj-schema-creator';
 		}
 	
 		/**
 		 * Register settings
 		 */
 		public function register_settings() {
-			register_setting( 'schema_options', 'schema_options', array($this, 'options_validate' ) );
+			register_setting( 'dj_schema_options', 'dj_schema_options', array($this, 'options_validate' ) );
 			
 			// Information
-			add_settings_section('info_section', __('Information', 'schema'), array($this, 'options_info_section'), 'schema_options');
-			add_settings_field( 'info_version', __('Plugin Version', 'schema'), array($this, 'options_info_version'), 'schema_options', 'info_section');
+			add_settings_section('info_section', __('Information', 'schema'), array($this, 'options_info_section'), 'dj_schema_options');
+			add_settings_field( 'info_version', __('Plugin Version', 'schema'), array($this, 'options_info_version'), 'dj_schema_options', 'info_section');
 			
 			// CSS output
-			add_settings_section( 'display_section', __('Display', 'schema'), array( $this, 'options_display_section' ), 'schema_options' );
-			add_settings_field( 'css', __( 'CSS output', 'schema' ), array( $this, 'options_display_css' ), 'schema_options', 'display_section' );
+			add_settings_section( 'display_section', __('Display', 'schema'), array( $this, 'options_display_section' ), 'dj_schema_options' );
+			add_settings_field( 'css', __( 'CSS output', 'schema' ), array( $this, 'options_display_css' ), 'dj_schema_options', 'display_section' );
 			
 			// HTML data applying
-			add_settings_section( 'data_section', __('Data', 'schema'), array( $this, 'options_data_section' ), 'schema_options' );
-			add_settings_field( 'body', __( 'Body Tag', 'schema' ), array( $this, 'options_data_body' ), 'schema_options', 'data_section' );
-			add_settings_field( 'post', __( 'Content Wrapper', 'schema' ), array( $this, 'options_data_post' ), 'schema_options', 'data_section' );
+			add_settings_section( 'data_section', __('Data', 'schema'), array( $this, 'options_data_section' ), 'dj_schema_options' );
+			add_settings_field( 'body', __( 'Body Tag', 'schema' ), array( $this, 'options_data_body' ), 'dj_schema_options', 'data_section' );
+			add_settings_field( 'post', __( 'Content Wrapper', 'schema' ), array( $this, 'options_data_post' ), 'dj_schema_options', 'data_section' );
 
-			do_action( 'raven_sc_register_settings' );
+			do_action( 'dj_sc_register_settings' );
+			if ( $this->get_option( 'raven_fallback' ) === true )
+				do_action( 'raven_sc_register_settings' );
 		}
 		
 		/**
@@ -338,7 +377,7 @@ if ( !class_exists( "RavenSchema" ) ) :
                 <p>
 				<?php 
 					printf(
-						__( 'By default, the %s plugin by %s includes unique CSS IDs and classes. You can reference the CSS to control the style of the HTML that the Schema Creator plugin outputs.' , 'schema' ).'<br>',
+						__( 'By default, the %s plugin by %s and %s includes unique CSS IDs and classes. You can reference the CSS to control the style of the HTML that the Schema Creator plugin outputs.' , 'schema' ).'<br>',
 						
 						// the plugin 
 						'<a target="_blank" 
@@ -346,6 +385,10 @@ if ( !class_exists( "RavenSchema" ) ) :
 							title="' . esc_attr( _x( 'Schema Creator', 'plugin name', 'schema' ) ) . '">'. _x( 'Schema Creator' , 'plugin name', 'schema') . '</a>', 
 						
 						// the author
+						'<a target="_blank" 
+							href="' . esc_url( _x( 'http://derk-jan.com', 'author uri', 'schema' ) ) . '" 
+							title="' . esc_attr( _x('Derk-Jan.com | Derk-Jan Karrenbeld', 'author', 'schema' ) ) . '"> ' . _x( 'Derk-Jan Karrenbeld' , 'author', 'schema') . '</a>',
+							
 						'<a target="_blank" 
 							href="' . esc_url( _x( 'http://raventools.com/?utm_source=wp&utm_medium=plugin&utm_campaign=schema', 'author uri', 'schema' ) ) . '" 
 							title="' . esc_attr( _x('Raven Internet Marketing Tools', 'author', 'schema' ) ) . '"> ' . _x( 'Raven Internet Marketing Tools' , 'author', 'schema') . '</a>'
@@ -371,7 +414,7 @@ if ( !class_exists( "RavenSchema" ) ) :
 		 */
 		function options_info_version() 
 		{ 
-			echo "<code id='info_version'>".SC_VER."</code>";
+			echo "<code id='info_version'>".DJ_SCHEMACREATOR_VERSION."</code>";
 		}
 					
 		/**
@@ -437,7 +480,11 @@ if ( !class_exists( "RavenSchema" ) ) :
 		 * @return mixed the processed new values
 		 */
 		function options_validate( $input ) {
-			do_action_ref_array( 'raven_sc_options_validate', array( &$input ) );
+			
+			if ( $this->get_option( 'raven_fallback' ) === true )
+				do_action_ref_array( 'raven_sc_options_validate', array( &$input ) );
+			do_action_ref_array( 'dj_sc_options_validate', array( &$input ) );
+			
 			
 			/* example: 
 			 * $input['some_value'] =  wp_filter_nohtml_kses($input['some_value']);	
@@ -456,8 +503,13 @@ if ( !class_exists( "RavenSchema" ) ) :
 		 */
 		public function default_settings( ) 
 		{
-			$options_check	= get_option('schema_options');
-			$default = apply_filters( 'raven_sc_default_settings', array() );
+			$options_check	= get_option( 'dj_schema_options' );
+			
+			$default = apply_filters( 'dj_sc_default_settings' );
+			if ( $this->get_option( 'raven_fallback' ) === true ) :
+				$options_check = array_merge( get_option( 'schema_options' ), $options_check );
+				$default = apply_filters( 'raven_sc_default_settings', $default );
+			endif;
 			
 			if( is_null( $options_check ) ) {
 				
@@ -474,7 +526,7 @@ if ( !class_exists( "RavenSchema" ) ) :
 			}
 			
 			// Existing options will override defaults
-			update_option('schema_options', $options_check + $default );
+			update_option( 'dj_schema_options', $options_check + $default );
 		}
 		
 		/**
@@ -485,6 +537,7 @@ if ( !class_exists( "RavenSchema" ) ) :
 		 */
 		public function get_default_settings( $default = array() ) 
 		{
+			$default['raven_fallback'] = false;
 			$default['css']	= false;
 			$default['body'] = true;
 			$default['post'] = true;
@@ -500,13 +553,13 @@ if ( !class_exists( "RavenSchema" ) ) :
 		 */
 		public function get_tooltips( $tooltip = array() ) 
 		{
-			$tooltip = $tooltip + array(
+			$tooltip = array_merge( $tooltip, array(
 				'default_css'	=> __('Check to remove Schema Creator CSS from the microdata HTML output.', 'schema'),
 				'body_class'	=> __('Check to add the <code>http://schema.org/Blog</code> schema itemtype to the BODY element on your pages and posts. Your theme must have the <code>body_class</code> template tag for this to work.', 'schema'),
 				'post_class'	=> __('Check to add the <code>http://schema.org/BlogPosting</code> schema itemtype to the content wrapper on your pages and posts.', 'schema'),
 	
 				// end tooltip content
-			);
+			) );
 	
 			return $tooltip;
 		}
@@ -534,9 +587,13 @@ if ( !class_exists( "RavenSchema" ) ) :
 				<h2><?php _e('Schema Creator Settings', 'schema'); ?></h2>
                 <div class="schema_options">
                 	<form action="options.php" method="post">
-						<?php settings_fields( 'schema_options' ); ?>		
-	 					<?php do_settings_sections( 'schema_options' ); ?>
-                        <?php do_action( 'raven_sc_options_form' ); ?>
+						<?php 
+							settings_fields( 'dj_schema_options' );	
+	 						do_settings_sections( 'dj_schema_options' );
+                        	do_action( 'dj_sc_options_form' );
+							if ( $this->get_option( 'raven_fallback' ) === true ) 
+								do_action( 'raven_sc_options_form' ); 
+                        ?>
 	                    
 	                    <p class="submit">
                         	<input name="Submit" type="submit" class="button-primary" value="<?php esc_attr_e('Save Changes'); ?>" />
@@ -554,18 +611,17 @@ if ( !class_exists( "RavenSchema" ) ) :
 		 */
 		public function admin_scripts( $hook ) {
 			
-
 			$post_screen = $hook == 'post-new.php' || $hook == 'post.php';
 			$settings_screen = 'settings_page_' . $this->get_page_slug() == $hook;
 			
 			if ( $post_screen || $settings_screen ) :
 				
 				// Style
-				wp_enqueue_style( 'schema-admin', plugins_url('/lib/css/schema-admin.css', __FILE__), array(), SC_VER, 'all' );
+				wp_enqueue_style( 'dj-schema-admin', plugins_url('/lib/css/schema-admin.css', __FILE__), array(), DJ_SCHEMACREATOR_VERSION, 'all' );
 				
 				// Tooltip
-				wp_enqueue_script( 'jquery-qtip', plugins_url('/lib/js/jquery.qtip.min.js', __FILE__) , array('jquery'), SC_VER, true );
-				wp_enqueue_script( 'schema-admin', plugins_url('/lib/js/schema.admin.js', __FILE__) , array('jquery'), SC_VER, true );
+				wp_enqueue_script( 'jquery-qtip', plugins_url('/lib/js/jquery.qtip.min.js', __FILE__) , array('jquery'), DJ_SCHEMACREATOR_VERSION, true );
+				wp_enqueue_script( 'schema-admin', plugins_url('/lib/js/schema.admin.js', __FILE__) , array('jquery'), DJ_SCHEMACREATOR_VERSION, true );
 	
 				if ( $post_screen ) :
 				
@@ -573,17 +629,17 @@ if ( !class_exists( "RavenSchema" ) ) :
 					wp_enqueue_script( 'jquery-ui-core' );
 					wp_enqueue_script( 'jquery-ui-datepicker');
 					wp_enqueue_script( 'jquery-ui-slider');
-					wp_enqueue_script( 'jquery-timepicker', plugins_url( '/lib/js/jquery.timepicker.js', __FILE__) , array( 'jquery' ), SC_VER, true );
-					wp_enqueue_script( 'format-currency', plugins_url( '/lib/js/jquery.currency.min.js', __FILE__) , array( 'jquery' ), SC_VER, true );
-					wp_enqueue_script( 'schema-admin-form', plugins_url( '/lib/js/schema.admin.form.js', __FILE__) , array( 'jquery' ), SC_VER, true );
-					wp_enqueue_script( 'schema-admin-ajax', plugins_url( '/lib/js/schema.admin.ajax.js', __FILE__) , array( 'jquery', 'schema-admin-form' ), SC_VER, true );
+					wp_enqueue_script( 'jquery-timepicker', plugins_url( '/lib/js/jquery.timepicker.js', __FILE__) , array( 'jquery' ), DJ_SCHEMACREATOR_VERSION, true );
+					wp_enqueue_script( 'format-currency', plugins_url( '/lib/js/jquery.currency.min.js', __FILE__) , array( 'jquery' ), DJ_SCHEMACREATOR_VERSION, true );
+					wp_enqueue_script( 'dj-schema-admin-form', plugins_url( '/lib/js/schema.admin.form.js', __FILE__) , array( 'jquery' ), DJ_SCHEMACREATOR_VERSION, true );
+					wp_enqueue_script( 'dj-schema-admin-ajax', plugins_url( '/lib/js/schema.admin.ajax.js', __FILE__) , array( 'jquery', 'schema-admin-form' ), DJ_SCHEMACREATOR_VERSION, true );
 					
 					add_filter( 'mce_external_plugins', array( $this, 'mce_plugin' ) );
 
-					wp_localize_script( 'schema-admin-form', 'schema_i18n', array( 
+					wp_localize_script( 'dj-schema-admin-form', 'schema_i18n', array( 
 						'numeric_only' => __( 'No non-numeric characters allowed', 'schema' )
 					) );
-					wp_localize_script( 'schema-admin-ajax', 'schema_ajax', array( 'nonce' => wp_create_nonce( 'schema_ajax_nonce' ) ) );
+					wp_localize_script( 'dj-schema-admin-ajax', 'schema_ajax', array( 'nonce' => wp_create_nonce( 'dj_schema_ajax_nonce' ) ) );
 					
 				endif;
 			endif;
@@ -609,12 +665,19 @@ if ( !class_exists( "RavenSchema" ) ) :
 				return $text;
 	
 			$text = '<span id="footer-thankyou">' . 
-				sprintf( __('This plugin brought to you by the fine folks at %s', 'schema'), 
+				sprintf( __('This plugin brought to you by the fine folks at %s and was based on %s.', 'schema'),
 					'<a target="_blank" 
-						href="' . esc_url( _x( 'http://raventools.com/?utm_source=wp&utm_medium=plugin&utm_campaign=schema', 'plugin url', 'schema' ) ).'" 
-						title="' . esc_attr__( 'Internet Marketing Tools for SEO and Social Media', 'schema' )  . '"> '. 
-						_x('Raven Internet Marketing Tools', 'author', 'schema') . '
-					</a>'
+							href="' . esc_url( _x( 'http://derk-jan.com', 'plugin url', 'schema' ) ).'" 
+							title="' . esc_attr__( 'Derk-Jan.com | Derk-Jan Karrenbeld', 'schema' )  . '"> '. 
+							_x('Derk-Jan Karrenbeld', 'author', 'schema') . '
+					</a>',
+					sprintf( __( 'Schema Creator by %s', 'schema' ),
+						'<a target="_blank" 
+							href="' . esc_url( _x( 'http://raventools.com/?utm_source=wp&utm_medium=plugin&utm_campaign=schema', 'plugin url', 'schema' ) ).'" 
+							title="' . esc_attr__( 'Internet Marketing Tools for SEO and Social Media', 'schema' )  . '"> '. 
+							_x('Raven', 'author', 'schema') . '
+						</a>'
+					)
 				) . 
 			'</span>';
 	
@@ -681,7 +744,7 @@ if ( !class_exists( "RavenSchema" ) ) :
 	
 			// search through each post
 			foreach ( $posts as $post ) :
-				$meta_check	= get_post_meta( $post->ID, '_raven_schema_load', array() );
+				$meta_check	= get_post_meta( $post->ID, '_dj_schema_load', array() );
 				//printf( "%d is %s, %s, %s<br>", $post->ID, var_export( $meta_check, true ), var_export( !count( $meta_check ), true ), var_export( !empty( $meta_check[0] ), true ) );
 				if ( !count( $meta_check ) ) :
 				
@@ -692,7 +755,7 @@ if ( !class_exists( "RavenSchema" ) ) :
 						$found |= true;
 						$local_found |= true;
 					} 
-					update_post_meta( $post->ID, '_raven_schema_load', $local_found );
+					update_post_meta( $post->ID, '_dj_schema_load', $local_found );
 					
 					if ( $local_found ) :
 						break;
@@ -707,8 +770,11 @@ if ( !class_exists( "RavenSchema" ) ) :
 
 			// A post has one
 			if ( $found == true ) : 
-				wp_enqueue_style( 'schema-style', plugins_url( '/lib/css/schema-style.css' , __FILE__ ), array(), SC_VER, 'all' );
-				do_action( 'raven_sc_enqueue_schemapost' );
+				wp_enqueue_style( 'schema-style', plugins_url( '/lib/css/schema-style.css' , __FILE__ ), array(), DJ_SCHEMACREATOR_VERSION, 'all' );
+				
+				do_action( 'dj_sc_enqueue_schemapost' );
+				if ( $this->get_option( 'raven_fallback' ) === true )
+					do_action( 'raven_sc_enqueue_schemapost' );
 			endif;
 
 			return $posts;
@@ -722,8 +788,8 @@ if ( !class_exists( "RavenSchema" ) ) :
 		 */
 		public function schema_wrapper( $content ) {
 	
-			$schema_options = get_option( 'schema_options' );
-			$wrapper = !isset($schema_options['post']) || ( $schema_options['post'] === true || $schema_options['post'] == 'true' );
+			$schema_options = $this->get_options();
+			$wrapper = !isset( $schema_options['post']) || ( $schema_options['post'] === true || $schema_options['post'] == 'true' );
 	
 			// user disabled content wrapper. just return the content as usual
 			if ($wrapper === false)
@@ -1044,7 +1110,7 @@ if ( !class_exists( "RavenSchema" ) ) :
 			
 			if ( $ajax ) :
 				$this->do_ajax();
-				check_ajax_referer( 'schema_ajax_nonce', 'security' );
+				check_ajax_referer( 'dj_schema_ajax_nonce', 'security' );
 			endif;
 			
 			$prefix = isset( $_REQUEST['prefix'] ) && !empty( $_REQUEST['prefix'] ) ? $_REQUEST['prefix'] : '';
@@ -1081,7 +1147,7 @@ if ( !class_exists( "RavenSchema" ) ) :
 			
 			if ( $ajax ) :
 				$this->do_ajax();
-				check_ajax_referer( 'schema_ajax_nonce', 'security' );
+				check_ajax_referer( 'dj_schema_ajax_nonce', 'security' );
 			endif;
 			
 			$scraper = $this->get_scraper();
@@ -1154,7 +1220,7 @@ if ( !class_exists( "RavenSchema" ) ) :
 		function get_schema_properties( $_argument = '', $ajax = true ) {
 			if ( $ajax ) :
 				$this->do_ajax();
-				check_ajax_referer( 'schema_ajax_nonce', 'security' );
+				check_ajax_referer( 'dj_schema_ajax_nonce', 'security' );
 			endif;
 			
 			$properties = array();
@@ -1745,7 +1811,7 @@ if ( !class_exists( "RavenSchema" ) ) :
 	}
 	
 	// Instantiate our class
-	$ravenSchema = new RavenSchema();
+	$DJ_SchemaCreator = DJ_SchemaCreator::singleton();
 endif;
 // Include modules
 foreach ( glob( plugin_dir_path(__FILE__) . "/lib/*.php" ) as $filename )
