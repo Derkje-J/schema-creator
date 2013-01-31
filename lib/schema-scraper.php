@@ -17,8 +17,8 @@
 
 if (!class_exists("DJ_SchemaScraper")) 
 {
-	define("DJ_SCRAPE_BASE", plugin_basename(__FILE__));
-	define("DJ_SCRAPE_VERSION", '1.0');
+	define("DJ_SCHEMASCRAPE_BASE", plugin_basename(__FILE__));
+	define("DJ_SCHEMASCRAPE_VERSION", '1.0');
 	
     if( !class_exists( 'WP_Http' ) )
         include_once( ABSPATH . WPINC. '/class-http.php' );
@@ -59,9 +59,9 @@ if (!class_exists("DJ_SchemaScraper"))
 			add_filter( 'dj_schemascraper_cachepath', array( $this, 'get_cachepath' ) );			
 			add_filter( 'dj_scraper_default_settings', array( $this, 'get_default_settings' ) );
 			
-			add_action( 'raven_sc_onactivate', array( $this, 'default_settings' ) );
-			add_action( 'raven_sc_register_settings', array( $this, 'register_settings' ) );
-			add_action( 'raven_sc_options_form', create_function( '', 'settings_fields(\'dj_schemascraper\'); do_settings_sections(\'dj_schemascraper\');' ) );
+			add_action( 'dj_sc_onactivate', array( $this, 'default_settings' ) );
+			add_action( 'dj_sc_register_settings', array( $this, 'register_settings' ) );
+			add_action( 'dj_sc_options_form', create_function( '', 'settings_fields(\'dj_schemascraper\'); do_settings_sections(\'dj_schemascraper\');' ) );
 		}
 		
 		/**
