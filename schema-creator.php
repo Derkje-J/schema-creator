@@ -60,6 +60,8 @@ if ( !class_exists( "RavenSchema" ) ) :
 
 	class RavenSchema
 	{
+		public $debug = false;
+		
 		/**
 		 * Constructs a new RavenSchema
 		 */
@@ -1258,6 +1260,9 @@ if ( !class_exists( "RavenSchema" ) ) :
 			"(](?P<inner>(([^\[]*?|\[\!\-\-.*?\-\-\])|(?R))*)\[\/\\1[\s]*\]))/sm";
 			if ( !preg_match_all($pattern, $content, $matches, PREG_OFFSET_CAPTURE) )
 				return $content;
+				
+			if ( $this->debug )
+				printf( '<h2>Entered shortcode_recursive</h2>' );
 
 			$elements = array();
 			foreach ( $matches[0] as $key => $match ) {
@@ -1270,13 +1275,27 @@ if ( !class_exists( "RavenSchema" ) ) :
 					'inner_content' => !empty( $matches['inner'][$key][0] ) ? $matches['inner'][$key][0] : ''
 				) );
 
+				if ( $this->debug )
+					printf( '<br>Processing element: <code>%s</code><br>', $match[0] );
+
 				// Remove the match from the contents
 				foreach(  array( $match[0], trim( $match[0] ) ) as $needle) :
 					if ( empty( $needle ) )
 						break;
 					$pos = strpos( $content, $needle );
+					
+					if ( $this->debug ) :
+						printf( 'Looking for [elem]: <code>%s</code> and <b>pos is %s</b><br>', 
+							var_export( $needle, true ), 
+							var_export( $pos, true ) 
+						);
+					endif;
+					
 					if ( $pos !== false ) :
 						$content = substr_replace( $content, '', $pos, strlen( $needle ) );
+						
+						if ( $this->debug )
+							printf( 'After replacement: <code>%s</code><br>', $content );
 						break;
 					endif;
 				endforeach;
@@ -1296,6 +1315,14 @@ if ( !class_exists( "RavenSchema" ) ) :
 						if ( empty( $needle ) )
 							break;
 						$pos = strpos( $content, $needle );
+						
+						if ( $this->debug ) :
+							printf( 'Looking for [non]: %s and pos is %s<br>', 
+								var_export( $needle, true ), 
+								var_export( $pos, true ) 
+							);
+						endif;
+						
 						if ( $pos !== false ) :
 							$content = substr_replace( $content, '', $pos, strlen( $needle ) );
 							break;
@@ -1304,8 +1331,13 @@ if ( !class_exists( "RavenSchema" ) ) :
 				endif;
 			}
 
-			// Anything left was before the first match. So output here please.
-			$sc_build.= $content;
+			// The content left was not in this element. But we are doing this recursively
+			// so it will be outputted by the overlaying element.
+			if ( $this->debug ) :
+				if ( !empty( $content ) ) :
+					printf( 'Content left is: %s<br>', var_export( $content, true ) );
+				endif;
+			endif;
 
 			// Get defaults
 			$date_format = get_option( 'date_format' );
