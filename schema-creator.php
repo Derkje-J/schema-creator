@@ -16,7 +16,7 @@ License: GPL v2
     but WITHOUT ANY WARRANTY; without even the implied warranty of
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
     GNU General Public License for more details.
-
+s
     You should have received a copy of the GNU General Public License
     along with this program; if not, write to the Free Software
     Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
@@ -811,11 +811,15 @@ if ( !class_exists( "DJ_SchemaCreator" ) ) :
 	
 		}
 
+		/**
+		 * Gets the i18n translation of the string
+		 */
 		public function get_i18n( $string ) {
+			
+			global $schema_scraper_i18n_strings;
 			if ( !empty( $schema_scraper_i18n_strings[ addslashes( $string ) ] ) )
 				return stripslashes( $schema_scraper_i18n_strings[ addslashes( $string ) ] );
-				
-			print 'not_found' ;
+			
 			return $string;
 		}
 		
