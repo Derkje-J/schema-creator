@@ -8,8 +8,6 @@
   
 */
 
-include_once "schema-scraper.php";
-
 if (!class_exists("DJ_SchemaViewer")) 
 {
 	define("DJ_SCHEMAVIEWER_BASE", plugin_basename(__FILE__));
