@@ -1264,7 +1264,7 @@ if ( !class_exists( "DJ_SchemaCreator" ) ) :
 		/** 
 		 * Gets the scraper class
 		 *
-		 * @return self the scraper singleton instance
+		 * @return DJ_SchemaScraper the scraper singleton instance
 		 */
 		public function get_scraper() {
 			return DJ_SchemaScraper::singleton();	
