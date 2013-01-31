@@ -42,7 +42,16 @@ Filters:
 	raven_sc_admin_tooltip		: gets the tooltips for admin pages
 	
 
+
 */
+// "This will intercept the version check and increment the current version number by 3.
+// It's the quick and dirty way to do it without messing with the settings directly..."
+function my_refresh_mce($ver) {
+  $ver += 3;
+  return $ver;
+}
+
+add_filter( 'tiny_mce_version', 'my_refresh_mce');
 
 if ( !class_exists( "RavenSchema" ) ) :
 
@@ -51,6 +60,8 @@ if ( !class_exists( "RavenSchema" ) ) :
 
 	class RavenSchema
 	{
+		public $debug = false;
+		
 		/**
 		 * Constructs a new RavenSchema
 		 */
@@ -269,7 +280,7 @@ if ( !class_exists( "RavenSchema" ) ) :
 		 */
 		function get_tooltip( $key ) {
 			$tooltips = apply_filters( 'raven_sc_admin_tooltip', array() );
-			return isset($tooltips[ $key ]) ? $tooltips[ $key ] : NULL;
+			return isset($tooltips[ $key ]) ? htmlentities( $tooltips[ $key ] ) : NULL;
 		}
 	
 		/**
@@ -565,20 +576,25 @@ if ( !class_exists( "RavenSchema" ) ) :
 					wp_enqueue_script( 'jquery-timepicker', plugins_url( '/lib/js/jquery.timepicker.js', __FILE__) , array( 'jquery' ), SC_VER, true );
 					wp_enqueue_script( 'format-currency', plugins_url( '/lib/js/jquery.currency.min.js', __FILE__) , array( 'jquery' ), SC_VER, true );
 					wp_enqueue_script( 'schema-admin-form', plugins_url( '/lib/js/schema.admin.form.js', __FILE__) , array( 'jquery' ), SC_VER, true );
-					wp_enqueue_script( 'schema-admin-ajax', plugins_url( '/lib/js/schema.admin.ajax.js', __FILE__) , array( 'jquery' ), SC_VER, true );
+					wp_enqueue_script( 'schema-admin-ajax', plugins_url( '/lib/js/schema.admin.ajax.js', __FILE__) , array( 'jquery', 'schema-admin-form' ), SC_VER, true );
 					
+					add_filter( 'mce_external_plugins', array( $this, 'mce_plugin' ) );
+
 					wp_localize_script( 'schema-admin-form', 'schema_i18n', array( 
 						'numeric_only' => __( 'No non-numeric characters allowed', 'schema' )
 					) );
 					wp_localize_script( 'schema-admin-ajax', 'schema_ajax', array( 'nonce' => wp_create_nonce( 'schema_ajax_nonce' ) ) );
 					
 				endif;
-
-
-
 			endif;
 		}
 	
+		/**
+		*/
+		function mce_plugin( $plugins_array ) {
+			$plugins_array['schemaadmineditor'] = plugins_url( '/lib/js/schema-admin-editor/editor_plugin.js', __FILE__);
+			return $plugins_array;
+		}
 	
 		/**
 		 * Add attribution link to settings page
@@ -1041,7 +1057,7 @@ if ( !class_exists( "RavenSchema" ) ) :
 					'id' => $scraper->get_datatype_id( $datatype ), 
 					'label' => $scraper->get_datatype_label( $datatype ), 
 					'subtypes' => $scraper->get_datatype_descendants( $datatype, true, true ), 
-					'desc' => $this->get_i18n( $scraper->get_datatype_comment( $datatype, false ) ),
+					'desc' => $this->get_i18n( htmlentities( $scraper->get_datatype_comment( $datatype ) ) ),
 					'button' => $this->get_i18n( $scraper->get_datatype_label( $datatype ) ),
 				);
 			}
@@ -1089,31 +1105,31 @@ if ( !class_exists( "RavenSchema" ) ) :
 			// Get descendants
 			if ( $allow_children ) :
 				foreach( $scraper->get_schema_descendants( $type, false ) as $child )
-					$children[]= array( 'id' => $scraper->get_schema_id( $child ) ); //, 'desc' => $this->get_i18n( $scraper->get_schema_comment( $child ) ) );
+					$children[]= array( 'id' => $scraper->get_schema_id( $child ) );
 			endif;
 				
 			// Get siblings
 			if ( $allow_siblings ) :
 				foreach( $scraper->get_schema_siblings( $type ) as $sibling )
-					$siblings[]= array( 'id' => $scraper->get_schema_id( $sibling ) ); //, 'desc' => $this->get_i18n( $scraper->get_schema_comment( $sibling ) ) );
+					$siblings[]= array( 'id' => $scraper->get_schema_id( $sibling ) );
 			endif;
 				
 			// Get ancestors
 			if ( $allow_parents ) :
 				foreach( $scraper->get_schema_ancestors( $type, false) as $parent )
-					$parents[]= array( 'id' => $scraper->get_schema_id( $parent ) ); //, 'desc' => $this->get_i18n( $scraper->get_schema_comment( $parent ) ) );
+					$parents[]= array( 'id' => $scraper->get_schema_id( $parent ) ); 
 			endif;
 			// Get starred
 			if ( $allow_starred ) :
 				foreach( $starred as &$star )
-					$star = array( 'id' => $scraper->get_schema_id( $star ) ); //, 'desc' => $this->get_i18n( $scraper->get_schema_comment( $star ) ) );
+					$star = array( 'id' => $scraper->get_schema_id( $star ) );
 			else :
 				$starred = '';
 			endif;
 			
 			$results = array( 
 				'types' => array(
-					'' => array( array( 'id' => $type, 'desc' => $this->get_i18n( $scraper->get_schema_comment( $type, false ) ) ) ),
+					'' => array( array( 'id' => $type, 'desc' => $this->get_i18n( htmlentities( $scraper->get_schema_comment( $type ) ) ) ) ),
 					esc_attr__( 'Children', 'schema' ) => $children,
 					esc_attr__( 'Siblings', 'schema' ) => $siblings,
 					esc_attr__( 'Parents', 'schema' ) => $parents,
@@ -1146,26 +1162,22 @@ if ( !class_exists( "RavenSchema" ) ) :
 			$scraper = $this->get_scraper();
 			$schema = $scraper->get_schema( $_REQUEST['type'] );
 						
-			//var_dump( $scraper->get_schema_properties( $schema, true ) );
 			foreach( $scraper->get_schema_properties( $schema, true ) as $type => $t_properties )  :
 				$type_id = $scraper->get_schema_id( $type );
 				$properties[ $type_id ] = array();
-					
 				foreach( $t_properties as $t_property ) :
-					
-					$t_comment = $scraper->get_property_comment( $t_property, false );
+					$t_comment = htmlentities( $scraper->get_property_comment( $t_property ) );
 					if ( strpos( $t_comment, 'legacy spelling' ) !== false )
 						continue;
-						
+
 					array_push( $properties[ $type_id ], 
 						array(
 							'id' => $scraper->get_property_id( $t_property ),
 							'label' => $scraper->get_property_label( $t_property ),
-							'desc' =>  $this->get_i18n( $t_comment ),
+							'desc' => $this->get_i18n( $t_comment ),
 							'ranges' => $scraper->get_property_ranges( $t_property ),
 						)
 					);
-					
 				endforeach;
 			endforeach;
 			
@@ -1186,71 +1198,452 @@ if ( !class_exists( "RavenSchema" ) ) :
 		/** 
 		 * Gets the scraper class
 		 *
-		 * @returns the scraper singleton instance
+		 * @return self the scraper singleton instance
 		 */
 		public function get_scraper() {
 			return DJ_SchemaScraper::singleton();	
 		}
 		
 		/**
-		 * Gets an array of shortcode properties
+		 * Build out shortcode with variable array of options
 		 *
-		 * @returns an array of available shortcode properties, all set with default to NULL
+		 * @return string the replacement
 		 */
-		public function get_shortcode_properties() {
-			$scraper = $this->get_scraper();
-			$properties = $scraper->get_property_keys();
-			
-			$results = array();
-			foreach($properties as $property)
-				$results[ $scraper->get_property_id( $property ) ] = NULL;
-			return $results;
-		}
-	
-		/**
-		 * Gets the output for a schema
-		 *
-		 * @returns schema output for that type and data
-		 */
-		public function get_schema_output( $type, $data ) 
+		public function shortcode( $atts, $content = NULL ) 
 		{
-			// Get the scraper, schema and its properties
+			$attributes = shortcode_atts( 
+				array( 
+					'type' => '' ,
+					'class' => 'schema',
+					'embed_class' => 'schema',
+					'id' => '',
+					'style' => '',
+				), $atts );
+				
+			extract( $attributes );
+				
 			$scraper = $this->get_scraper();
 			$schema = $scraper->get_schema( $type );
-			$properties = $scraper->get_schema_properties( $type, true, true ) ?: array();
+			$class = array_merge( explode(' ', $class ), array( strtolower( 'schema-'.$type ) ) );
+			$id = !empty( $id ) ? 'id="' . esc_attr( $id ) . '" ' : '';
+			$style = !empty( $style ) ? 'style="'. esc_attr( $style ) . '" ' : '';
 			
-			$sc_build = '<div class="'.esc_attr( strtolower( 'schema-'.$type ) ).'" itemscope itemtype="'.esc_url( $scraper->get_schema_url( $schema ) ).'">';
-			while ( $property_key = array_shift( $properties ) ) :
-				// go through props
-				$property = $scraper->get_property( $property_key );
-				$property_id = $scraper->get_property_id( $property );
-				if ( !isset( $data[$property_id] ) || empty( $data[$property_id] ) )
-					continue;
-					
-				// TODO: per property formatting
-				$sc_build .= sprintf("%s: %s<br>", $property_id, $data[$property_id]);
-			endwhile;
-			
+			// wrap schema build out
+			$sc_build = '<div ' . $id . $style . 'class="'. esc_attr( implode( ' ', $class ) ) . '" itemscope itemtype="' . esc_attr( esc_url( $scraper->get_schema_url( $schema ) ) ) . '">';
+			$sc_build .= $this->shortcode_recursive( $content ?: '', $embed_class );
 			$sc_build .= '</div>';
+
+			// Remove all empty paragraphs ( WordPress adds these in filters after WYSIWYG )
+			//$sc_build = preg_replace('{(<p([^>]*)?(/\>|\></p>))+}i', '', $sc_build);
+			
+			// return entire build array
 			return $sc_build;
 		}
 		
 		/**
-		 * Build out shortcode with variable array of options
+		 * Outputs shortcode recursively
 		 *
-		 * @return the replacement
+		 * @param string $content content to process
+		 * @param string $embed_class class to style embeds with
+		 * @return string processed content
 		 */
-		public function shortcode( $atts, $content = NULL ) 
-		{
-			$attributes = shortcode_atts( $this->get_shortcode_properties() + array( 'type' => '' ), $atts );
+		public function shortcode_recursive( $content, $embed_class = '' ) {
+			
+			$matches = array();
+			$sc_build = '';
+
+			// Remove all breaks (sorry, they cause problems!)
+			$content = preg_replace('{(<br([^>]*/)?\>|&nbsp;)+}i', '', $content);
+			
+			// Matches 
+			$pattern = "/\[(?P<type>scprop|scmbed|scmeta|schtml)(?P<props>[^\]]*?)((?P<tagclose>[\s]*\/\])|".
+			"(](?P<inner>(([^\[]*?|\[\!\-\-.*?\-\-\])|(?R))*)\[\/\\1[\s]*\]))/sm";
+			if ( !preg_match_all($pattern, $content, $matches, PREG_OFFSET_CAPTURE) )
+				return $content;
 				
-			// wrap schema build out
-			$sc_build  = '<div id="schema_block">';
-			$sc_build .= $this->get_schema_output( $attributes["type"], $attributes );
-			$sc_build .= '</div>';
-	
-			// return entire build array
+			if ( $this->debug )
+				printf( '<h2>Entered shortcode_recursive</h2>' );
+
+			$elements = array();
+			foreach ( $matches[0] as $key => $match ) {
+				array_push( $elements, (object)array(
+					'node' => $match[0],
+					'type' => $matches['type'][$key][0],
+					'attributes_raw' => !empty( $matches['props'][$key][0] ) ? $matches['props'][$key][0] : '',
+					'attributes' => array(),
+					'no_inner' => (boolean)($matches['tagclose'][$key][1] > -1),
+					'inner_content' => !empty( $matches['inner'][$key][0] ) ? $matches['inner'][$key][0] : ''
+				) );
+
+				if ( $this->debug )
+					printf( '<br>Processing element: <code>%s</code><br>', $match[0] );
+
+				// Remove the match from the contents
+				foreach(  array( $match[0], trim( $match[0] ) ) as $needle) :
+					if ( empty( $needle ) )
+						break;
+					$pos = strpos( $content, $needle );
+					
+					if ( $this->debug ) :
+						printf( 'Looking for [elem]: <code>%s</code> and <b>pos is %s</b><br>', 
+							var_export( $needle, true ), 
+							var_export( $pos, true ) 
+						);
+					endif;
+					
+					if ( $pos !== false ) :
+						$content = substr_replace( $content, '', $pos, strlen( $needle ) );
+						
+						if ( $this->debug )
+							printf( 'After replacement: <code>%s</code><br>', $content );
+						break;
+					endif;
+				endforeach;
+				
+				// Is there non schema data after this element? Output!
+				$nosc_matches = array();
+				if ( preg_match( '/^(?P<inner>[^\[]*)/sm', $content, $nosc_matches ) ) :
+					array_push( $elements, (object)array(	
+						'node' => $nosc_matches[0],
+						'type' => 'nosc',
+						'inner_content' => $nosc_matches['inner'],
+						'no_inner' => false
+					) );
+					
+					// Remove the match from the contents
+					foreach(  array( $nosc_mathces[0], trim( $nosc_matches[0] ) ) as $needle) :
+						if ( empty( $needle ) )
+							break;
+						$pos = strpos( $content, $needle );
+						
+						if ( $this->debug ) :
+							printf( 'Looking for [non]: %s and pos is %s<br>', 
+								var_export( $needle, true ), 
+								var_export( $pos, true ) 
+							);
+						endif;
+						
+						if ( $pos !== false ) :
+							$content = substr_replace( $content, '', $pos, strlen( $needle ) );
+							break;
+						endif;
+					endforeach;
+				endif;
+			}
+
+			// The content left was not in this element. But we are doing this recursively
+			// so it will be outputted by the overlaying element.
+			if ( $this->debug ) :
+				if ( !empty( $content ) ) :
+					printf( 'Content left is: %s<br>', var_export( $content, true ) );
+				endif;
+			endif;
+
+			// Get defaults
+			$date_format = get_option( 'date_format' );
+			$time_format = get_option( 'time_format' );
+			$datetime_format = $date_format . ' ' . $time_format;
+			
+			// Get scraper
+			$scraper = $this->get_scraper();
+			
+			while( ( $element = array_shift( $elements ) ) ) :
+			
+				// Early bail if not schema content
+				if ( $element->type == 'nosc' ) :
+					$sc_build .= $element->inner_content;
+					continue;
+				endif;
+			
+				// Readout properties or bail early
+				$pattern = '/\s*(?P<key>[^\s=\'"]+)(?:=(?:([\'"])(?P<value>[^\'"]+)[\'"])|\s|$)\s*/sm';
+				if ( !preg_match_all( $pattern, $element->attributes_raw, $matches, PREG_OFFSET_CAPTURE ) ) :
+					$sc_build .= $element->inner_content;
+					continue;
+				endif;
+					
+				// Save attributes
+				foreach ( $matches[0] as $key => $match )
+					$element->attributes[ $matches['key'][$key][0] ] = $matches['value'][$key][0];
+				
+				// These attributes are always allowed as html attributes
+				$insulate = array();
+				foreach( array ( 'id', 'class', 'title', 'alt', 'style', 'onClick' ) as $attr )
+					if ( !empty( $element->attributes[ $attr ] ) )
+						$insulate[ $attr ] = $element->attributes[ $attr ];
+						
+				// These tags can encapsulate the property
+				$encapsulate = "%s";
+				$encapsulate_allowed = array( 'span', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'li', 'div', 'ul', 
+					'fieldset', 'legend', 'nav', 'header', 'footer', 'section', 'aside', 'ol', 'dt', 'dl',
+					'p', 'em', 'strong', 'blockquote', 'form' );
+				foreach( array_keys( $element->attributes ) as $tag )
+					if ( in_array( $tag, $encapsulate_allowed ) )
+						$encapsulate = sprintf( '<%1$s>%2$s</%1$s>', $tag,  $encapsulate );
+				
+				// Recursive  processing
+				if ( !$element->no_inner ) :
+
+					if ( $element->type == 'scprop' ) :
+						// No value? The inner content must be the value
+						if ( !isset( $element->attributes[ 'value' ] ) ) :
+							$element->attributes[ 'value' ] = $element->inner_content;
+							$element->inner_content = '';
+							$element->no_inner = true;
+						endif;
+					endif;
+					
+					// Parse inner contents (TODO: tail-recursive?)
+					if ( !empty( $element->inner_content ) )
+						$element->inner_content = $this->shortcode_recursive( $element->inner_content );
+				endif;
+				
+				// Just wrap inner in html
+				if ( $element->type == 'schtml' ) :
+					
+					if ( empty( $element->attributes ) ) :
+						
+						// Just inner content
+						$sc_build .= $element->inner_content;
+						
+					else :
+					
+						// Inner content in tags
+						$encapsulate = preg_replace( '/^\<([^\>]+)\>(.*)$/', '<${1} %s>${2}', $encapsulate );
+						$sc_build .= sprintf( $encapsulate, 
+							$this->shortcode_build_attributes( $insulate ),
+							$element->inner_content
+						);
+						
+					endif;
+					continue;
+									
+				endif;
+
+				if ( $element->type != 'scmbed' ) :
+					
+					// Default range please. That's text!
+					if ( empty( $element->attributes[ 'range' ] ) )
+						$element->attributes[ 'range' ] = 'sc_Text';	
+						
+					// No property defined? We can't process this, so just do inner				
+					if ( empty( $element->attributes[ 'prop' ] ) ) :
+						$sc_build .= $element->inner_content;
+						continue;
+					endif;
+					
+					if ( $element->type == 'scmeta' ) :
+						// No content defined? Maybe you typed it as value
+						if ( !isset( $element->attributes[ 'content' ] ) ) :
+							$element->attributes[ 'content' ] = $element->attributes[ 'value' ];
+							$element->attributes[ 'value' ] = '';
+						endif;
+					endif;
+					
+				else :
+				
+					// No embed property? Maybe you typed it as prop
+					if ( !isset( $element->attributes[ 'embed' ] ) ) :
+						$element->attributes[ 'embed' ] = $element->attributes[ 'prop' ];
+						$element->attributes[ 'prop' ] = '';
+					endif;
+					
+					// No embed type? Maybe you typed it as type
+					if ( !isset( $element->attributes[ 'value' ] ) ) :
+						$element->attributes[ 'value' ] = $element->attributes[ 'type' ];
+						$element->attributes[ 'value' ] = '';
+					endif;
+					
+				endif;
+
+				switch( $element->type ) :
+					
+					// Actual output of properties
+					case 'scprop' :
+
+						$scprop = '';
+						// The tagtype will tell what kind of element we are dealing with
+						// The insulate array contains all the properties
+						
+						// Switch by property type (name)
+						switch( $element->attributes[ 'prop' ] ) :
+							
+							// Images
+							case 'image' :
+							case 'photo' :
+								$tagtype = 'img';
+								$insulate[ 'src' ] = esc_url( $element->attributes[ 'value' ] );
+								$element->attributes[ 'range' ] = 'sc_Image';
+							break;
+							
+							// Url ( always in conjunction with name or family/given name )
+							case 'url' :
+								if ( !$element->no_inner ) :
+								 	$format = '<span itemprop="name" class="name name-sc_link">%s</span>';
+									$element->inner_content = sprintf( $format, $element->inner_content );
+								endif;								
+								break;
+							break;
+							
+							// paragraphs
+							case 'description' :
+								$tagtype = 'p';
+								$element->attributes[ 'range' ] = 'sc_Paragraph';
+							break;
+							
+						endswitch;
+						
+						// Build class for this element
+						$prop_class = strtolower(  $element->attributes[ 'prop' ] );
+						$range_class = strtolower( $element->attributes[ 'range' ] );
+						$insulate[ 'class' ] = trim( 
+							implode( ' ', 
+								array_merge( 
+									explode( ' ' , $prop_class ),
+									explode( ' ' , $range_class ),  
+									explode( ' ' , $prop_class . '-' . $range_class ),  
+									( empty( $insulate[ 'class' ] ) ? array() : 
+										explode( ' ', $insulate[ 'class' ] )
+									)
+								)
+							)
+						);
+						
+						// Switch by property value type (range)
+						switch( $element->attributes[ 'range' ] ) :
+						
+							// Displays as <a>
+							case 'sc_Link':
+							case 'sc_URL':
+								$tagtype = 'a';
+								$insulate[ 'href' ] = esc_url( $element->attributes[ 'value' ] );
+								break;
+							
+							// Displays as <img>	
+							case 'sc_Image':
+								break;
+								
+							// Displays as <time>. Uses date format if no inner content.	
+							case 'sc_Date' :
+								$tagtype = 'time';
+								$insulate[ 'datetime' ] = esc_attr( $element->attributes[ 'value' ] );
+								if ( $element->no_inner )
+									$element->inner_content = date_i18n( !empty( $element->attributes[ 'format' ] ) ?
+										$element->attributes[ 'format' ]  : $datetime_format, 
+										strtotime( $element->attributes[ 'value' ] )
+									);
+								break;
+								
+							// For text and paragraphs, the inner content is the value
+							case 'sc_Text' :
+								$tagtype = 'span';
+								
+							case 'sc_Paragraph':
+								$element->inner_content = $element->attributes[ 'value' ];
+								break;
+								
+								
+							// We don't know what todo. So default
+							default: 
+								$tagtype = 'div';
+								$element->inner_content = '[' .
+									$element->attributes[ 'prop' ] . ': ' .
+									$element->attributes[ 'value' ] . '] ' .
+									$element->inner_content . '[/' . $element->attributes[ 'prop' ] . ']
+								';
+								break;
+						endswitch;
+						
+						// Output
+						$format = '<%1$s %2$sitemprop="%3$s">%4$s</%1$s>';
+						$sc_build .= sprintf( $encapsulate, 
+							sprintf( '%s%s%s' , 
+								$element->attributes[ 'before' ], 
+								sprintf( $format,
+									!empty( $element->attributes[ 'as' ] ) ? $element->attributes[ 'as' ] : $tagtype, 
+									$this->shortcode_build_attributes( $insulate ), 
+									$element->attributes[ 'prop' ],
+									$element->inner_content 
+								),
+								$element->attributes[ 'after' ]
+							)
+						);
+						
+					break;
+					
+					// Actual output of meta properties
+					case 'scmeta' :
+						
+						// Output
+						$format = '<%1$s %2$sitemprop="%3$s" content="%4$s"/>%5$s';
+						$sc_build .= sprintf( $encapsulate, 
+							sprintf( '%s%s%s', 
+								$element->attributes[ 'before' ], 
+								sprintf( $format,
+									!empty( $element->attributes[ 'as' ] ) ? $element->attributes[ 'as' ] : 'meta', 
+									$this->shortcode_build_attributes( $insulate ), 
+									$element->attributes[ 'prop' ],
+									$element->attributes[ 'content' ],
+									$element->inner_content 
+								), 
+								$element->attributes[ 'after' ]
+							)
+						);
+					break;		
+					
+					// Actual output of embedded items	
+					case 'scmbed' :
+						
+						// Fetch schema data
+						$embed_type  = $element->attributes[ 'value' ];
+						$embed_schema = $scraper->get_schema( $embed_type );
+						$insulate[ 'class' ] = trim( 
+							implode( ' ', 
+								array_merge( 
+									explode( ' ' , $embed_class ),
+									array( 'schema-embed' ),
+									array( strtolower( 'schema-'.$embed_type ) ),
+									( empty( $insulate[ 'class' ] ) ? array() : 
+										explode( ' ', $insulate[ 'class' ] )
+									)
+								)
+							)
+						);
+												
+						// Output
+						$format = '<%1$s %2$sitemprop="%3$s" itemscope itemtype="%5$s">%4$s</%1$s>';
+						$sc_build .= sprintf( $encapsulate, 
+							sprintf( '%s%s%s' , 
+								$element->attributes[ 'before' ], 
+								sprintf( $format,
+									!empty( $element->attributes[ 'as' ] ) ? $element->attributes[ 'as' ] : 'div', 
+									$this->shortcode_build_attributes( $insulate ), 
+									$element->attributes[ 'embed' ],
+									$element->inner_content,
+									esc_attr( esc_url( $scraper->get_schema_url( $embed_schema ) ) )
+								) ,
+								$element->attributes[ 'after' ]
+							)
+						);
+					break;		
+					
+				endswitch;
+							
+			endwhile;
+			
 			return $sc_build;
+		}
+	
+		/**
+		 * Builds attributes for the shortcode processing
+		 *
+		 * @param string[] $insulate key value array with attributes
+		 * @return string attributes string
+		 */
+		public function shortcode_build_attributes( $insulate ) {
+			foreach ( $insulate as $key => &$value )
+				$value = sprintf( '%s="%s" ', $key, esc_attr( $value ) );
+			return implode( '', $insulate );
 		}
 	
 		/**

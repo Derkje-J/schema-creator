@@ -57,7 +57,6 @@ if (!class_exists("DJ_SchemaScraper"))
 		
 			add_filter( 'dj_schemascraper_scrapeurl', array( $this, 'get_scrapeurl' ) );
 			add_filter( 'dj_schemascraper_cachepath', array( $this, 'get_cachepath' ) );			
-			//add_filter( 'raven_sc_admin_tooltip', array( $this, 'get_tooltips' ) );
 			add_filter( 'dj_scraper_default_settings', array( $this, 'get_default_settings' ) );
 			
 			add_action( 'raven_sc_onactivate', array( $this, 'default_settings' ) );
@@ -88,17 +87,21 @@ if (!class_exists("DJ_SchemaScraper"))
 			$this->last_error = '';
 			$url  =	$this->get_option( 'scrape_url' );
 			$path = WP_CONTENT_DIR . $this->get_option( 'cache_path' );
-			
+			$fetch_disabled = false;
+
 			// Nope, we need to set options first
-			if ( empty( $url ) || empty( $path ) )
-				return;
-				
-			$file = basename( $url );
+			if ( empty( $url ) || empty( $path ) ) :
+				$file = 'all.json';
+				$path = plugin_dir_path( __FILE__ ) . '';
+				$fetch_disabled = true;
+			else:
+				$file = basename( $url );
+			endif;
 			
 			// Try cached value
 			if ( file_exists( $path ) && file_exists ( $path . $file ) ) :
 				$this->schema_data = @json_decode( file_get_contents( $path . $file ) );
-								
+	
 				if ( is_object( $this->schema_data ) ) :
 					$cache_time = ( $this->get_option( 'cache_time' ) ?: 60 * 24 ) * 60;
 					$this->timestamp = filemtime( $path . $file );
@@ -125,6 +128,9 @@ if (!class_exists("DJ_SchemaScraper"))
 					}
 				endif;
 			endif;
+			
+			if ( $fetch_disabled || empty( $url ) )
+				return;
 			
 			// Nope, we still need to fetch it
 			$fetched_schema = @json_decode( $this->get_document( $url ) );

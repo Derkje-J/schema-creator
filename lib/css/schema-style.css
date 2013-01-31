@@ -1,58 +1,49 @@
-#schema_block {
+.schema {
 	clear:both;
-	margin:0 auto 10px auto;
+	margin:0 auto 12px auto;
 	background: #EEEEEE;
     border: 1px solid #CCCCCC;
-    padding: 1em;
+    padding: 16px;
     overflow: hidden;
+	font-size: 16px;
 }
 
-#schema_block div {
-	margin-bottom:10px;
+.schema div {
+	margin-bottom: 16px;
+	margin-bottom: 1em;
 }
 
-#schema_block p {
-	margin: 0 0 7px;
+.schema p {
+	margin: 0 0 8px;
+	margin: 0 0 .5em;
 	padding: 0;
 }
 
-#schema_block p.stacked {
-	margin: 0 0 2px 0;
-	padding: 0;
-}
-
-#schema_block .schema_name {
-	font-weight:700;
-	margin-bottom:10px;
-}
-
-#schema_block .schema_strong {
-	font-weight:700;
-}
-
-#schema_block .schema_description,
-#schema_block .schema_instructions {
-	margin-bottom:10px;
-}
-
-/* a few things for recipes */
-
-#schema_block .header_type {
-	font-size:110%;
-	font-weight:700;
-}
-
-.schema_recipe .schema_byline {
-	font-size:85%;
-	font-weight:400;
-}
-
-#schema_block span.desc_type {
-	font-size:95%;
-	font-weight:700;
-}
-
-#schema_block img.schema_image {
+.schema img {
 	float: right;
-	margin: 0 0 10px 10px
+	margin-left: 12px;
+	margin-left: .75em;
+}
+
+.schema time {
+	/*margin-right: 4px;
+	margin-right: .25em;	
+	/*font-family: Georgia, "Times New Roman", Times, serif;
+	font-size: 12px;
+	font-size: .75em;*/
+}
+
+.schema .description,
+.schema .instructions {
+	margin-bottom: 12px;
+	margin-bottom: .75em;
+}
+
+.schema ul {
+	margin: 0;	
+}
+
+.schema li.schema-embed {
+	list-style: none;
+	margin: 0;	
 }

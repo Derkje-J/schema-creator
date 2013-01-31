@@ -58,7 +58,7 @@ If your `locale` is not provided in the `/languages/` subfolder, you have to eit
 - `raven_sc_admin_tooltip` gets the tooltips for admin pages. Add filters to add more tooltips. In conjunction with `raven_sc_register_settings`.
 
 
-== Upgrade Notice ==
+== Changelog ==
 
 = 1.0 =
 * Initial Fork
