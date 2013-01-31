@@ -1254,7 +1254,7 @@ if ( !class_exists( "RavenSchema" ) ) :
 			$content = preg_replace('{(<br([^>]*/)?\>|&nbsp;)+}i', '', $content);
 			
 			// Matches 
-			$pattern = "/\[(?P<type>scprop|scmbed|scmeta)(?P<props>[^\]]*?)((?P<tagclose>[\s]*\/\])|".
+			$pattern = "/\[(?P<type>scprop|scmbed|scmeta|schtml)(?P<props>[^\]]*?)((?P<tagclose>[\s]*\/\])|".
 			"(](?P<inner>(([^\[]*?|\[\!\-\-.*?\-\-\])|(?R))*)\[\/\\1[\s]*\]))/sm";
 			if ( !preg_match_all($pattern, $content, $matches, PREG_OFFSET_CAPTURE) )
 				return $content;
@@ -1313,10 +1313,26 @@ if ( !class_exists( "RavenSchema" ) ) :
 					continue;
 				endif;
 					
+				// Save attributes
 				foreach ( $matches[0] as $key => $match )
 					$element->attributes[ $matches['key'][$key][0] ] = $matches['value'][$key][0];
 				
-				// Fallbacks and error checking
+				// These attributes are always allowed as html attributes
+				$insulate = array();
+				foreach( array ( 'id', 'class', 'title', 'alt', 'style', 'onClick' ) as $attr )
+					if ( !empty( $element->attributes[ $attr ] ) )
+						$insulate[ $attr ] = $element->attributes[ $attr ];
+						
+				// These tags can encapsulate the property
+				$encapsulate = "%s";
+				$encapsulate_allowed = array( 'span', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'li', 'div', 'ul', 
+					'fieldset', 'legend', 'nav', 'header', 'footer', 'section', 'aside', 'ol', 'dt', 'dl',
+					'p', 'em', 'strong', 'blockquote', 'form' );
+				foreach( array_keys( $element->attributes ) as $tag )
+					if ( in_array( $tag, $encapsulate_allowed ) )
+						$encapsulate = sprintf( '<%1$s>%2$s</%1$s>', $tag,  $encapsulate );
+				
+				// Recursive  processing
 				if ( !$element->no_inner ) :
 
 					if ( $element->type == 'scprop' ) :
@@ -1333,7 +1349,29 @@ if ( !class_exists( "RavenSchema" ) ) :
 						$element->inner_content = $this->shortcode_recursive( $element->inner_content );
 				endif;
 				
-				if ( $element->type != 'scmbed') :
+				// Just wrap inner in html
+				if ( $element->type == 'schtml' ) :
+					
+					if ( empty( $element->attributes ) ) :
+						
+						// Just inner content
+						$sc_build .= $element->inner_content;
+						
+					else :
+					
+						// Inner content in tags
+						$encapsulate = preg_replace( '/^\<([^\>]+)\>(.*)$/', '<${1} %s>${2}', $encapsulate );
+						$sc_build .= sprintf( $encapsulate, 
+							$this->shortcode_build_attributes( $insulate ),
+							$element->inner_content
+						);
+						
+					endif;
+					continue;
+									
+				endif;
+
+				if ( $element->type != 'scmbed' ) :
 					
 					// Default range please. That's text!
 					if ( empty( $element->attributes[ 'range' ] ) )
@@ -1368,19 +1406,6 @@ if ( !class_exists( "RavenSchema" ) ) :
 					endif;
 					
 				endif;
-				
-				// These attributes are always allowed
-				$insulate = array();
-				$insulate_allowed = array ( 'id', 'class', 'title', 'alt', 'style' );
-				foreach( $insulate_allowed as $attr )
-					if ( !empty( $element->attributes[ $attr ] ) )
-						$insulate[ $attr ] = $element->attributes[ $attr ];
-						
-				// These tags can encapsulate the property
-				$encapsulate = "%s";
-				foreach( array( 'span', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'li', 'div' ) as $tag )
-					if ( isset( $element->attributes[ $tag ] ) ) 
-						$encapsulate = sprintf( '<%1$s>%2$s</%1$s>', $tag,  $encapsulate );
 
 				switch( $element->type ) :
 					
@@ -1411,18 +1436,26 @@ if ( !class_exists( "RavenSchema" ) ) :
 								break;
 							break;
 							
+							// paragraphs
+							case 'description' :
+								$tagtype = 'p';
+								$element->attributes[ 'range' ] = 'sc_Paragraph';
+							break;
+							
 						endswitch;
 						
 						// Build class for this element
 						$prop_class = strtolower(  $element->attributes[ 'prop' ] );
 						$range_class = strtolower( $element->attributes[ 'range' ] );
-						$insulate[ 'class' ] = implode( ' ', 
-							array_merge( 
-								explode( ' ' , $prop_class ),
-								explode( ' ' , $range_class ),  
-								explode( ' ' , $prop_class . '-' . $range_class ),  
-								( empty( $insulate[ 'class' ] ) ? array() : 
-									explode( ' ', $insulate[ 'class' ] )
+						$insulate[ 'class' ] = trim( 
+							implode( ' ', 
+								array_merge( 
+									explode( ' ' , $prop_class ),
+									explode( ' ' , $range_class ),  
+									explode( ' ' , $prop_class . '-' . $range_class ),  
+									( empty( $insulate[ 'class' ] ) ? array() : 
+										explode( ' ', $insulate[ 'class' ] )
+									)
 								)
 							)
 						);
@@ -1452,44 +1485,60 @@ if ( !class_exists( "RavenSchema" ) ) :
 									);
 								break;
 								
+							// For text and paragraphs, the inner content is the value
 							case 'sc_Text' :
 								$tagtype = 'span';
+								
+							case 'sc_Paragraph':
 								$element->inner_content = $element->attributes[ 'value' ];
 								break;
 								
+								
+							// We don't know what todo. So default
 							default: 
 								$tagtype = 'div';
 								$element->inner_content = '[' .
 									$element->attributes[ 'prop' ] . ': ' .
 									$element->attributes[ 'value' ] . '] ' .
-									$element->inner_content . '
+									$element->inner_content . '[/' . $element->attributes[ 'prop' ] . ']
 								';
 								break;
 						endswitch;
 						
+						// Output
 						$format = '<%1$s %2$sitemprop="%3$s">%4$s</%1$s>';
 						$sc_build .= sprintf( $encapsulate, 
-							sprintf( $format,
-								!empty( $element->attributes[ 'as' ] ) ? $element->attributes[ 'as' ] : $tagtype, 
-								$this->shortcode_build_attributes( $insulate ), 
-								$element->attributes[ 'prop' ],
-								$element->inner_content 
-							) 
+							sprintf( '%s%s%s' , 
+								$element->attributes[ 'before' ], 
+								sprintf( $format,
+									!empty( $element->attributes[ 'as' ] ) ? $element->attributes[ 'as' ] : $tagtype, 
+									$this->shortcode_build_attributes( $insulate ), 
+									$element->attributes[ 'prop' ],
+									$element->inner_content 
+								),
+								$element->attributes[ 'after' ]
+							)
 						);
 						
 					break;
 					
 					// Actual output of meta properties
 					case 'scmeta' :
+						
+						// Output
 						$format = '<%1$s %2$sitemprop="%3$s" content="%4$s"/>%5$s';
 						$sc_build .= sprintf( $encapsulate, 
-							sprintf( $format,
-								!empty( $element->attributes[ 'as' ] ) ? $element->attributes[ 'as' ] : 'meta', 
-								$this->shortcode_build_attributes( $insulate ), 
-								$element->attributes[ 'prop' ],
-								$element->attributes[ 'content' ],
-								$element->inner_content 
-							) 
+							sprintf( '%s%s%s', 
+								$element->attributes[ 'before' ], 
+								sprintf( $format,
+									!empty( $element->attributes[ 'as' ] ) ? $element->attributes[ 'as' ] : 'meta', 
+									$this->shortcode_build_attributes( $insulate ), 
+									$element->attributes[ 'prop' ],
+									$element->attributes[ 'content' ],
+									$element->inner_content 
+								), 
+								$element->attributes[ 'after' ]
+							)
 						);
 					break;		
 					
@@ -1499,26 +1548,33 @@ if ( !class_exists( "RavenSchema" ) ) :
 						// Fetch schema data
 						$embed_type  = $element->attributes[ 'value' ];
 						$embed_schema = $scraper->get_schema( $embed_type );
-						$insulate[ 'class' ] = implode( ' ', 
-							array_merge( 
-								explode( ' ' , $embed_class ),
-								array( 'schema-embed' ),
-								array( strtolower( 'schema-'.$embed_type ) ),
-								( empty( $insulate[ 'class' ] ) ? array() : 
-									explode( ' ', $insulate[ 'class' ] )
+						$insulate[ 'class' ] = trim( 
+							implode( ' ', 
+								array_merge( 
+									explode( ' ' , $embed_class ),
+									array( 'schema-embed' ),
+									array( strtolower( 'schema-'.$embed_type ) ),
+									( empty( $insulate[ 'class' ] ) ? array() : 
+										explode( ' ', $insulate[ 'class' ] )
+									)
 								)
 							)
 						);
-						
+												
+						// Output
 						$format = '<%1$s %2$sitemprop="%3$s" itemscope itemtype="%5$s">%4$s</%1$s>';
 						$sc_build .= sprintf( $encapsulate, 
-							sprintf( $format,
-								!empty( $element->attributes[ 'as' ] ) ? $element->attributes[ 'as' ] : 'div', 
-								$this->shortcode_build_attributes( $insulate ), 
-								$element->attributes[ 'embed' ],
-								$element->inner_content,
-								esc_attr( esc_url( $scraper->get_schema_url( $embed_schema ) ) )
-							) 
+							sprintf( '%s%s%s' , 
+								$element->attributes[ 'before' ], 
+								sprintf( $format,
+									!empty( $element->attributes[ 'as' ] ) ? $element->attributes[ 'as' ] : 'div', 
+									$this->shortcode_build_attributes( $insulate ), 
+									$element->attributes[ 'embed' ],
+									$element->inner_content,
+									esc_attr( esc_url( $scraper->get_schema_url( $embed_schema ) ) )
+								) ,
+								$element->attributes[ 'after' ]
+							)
 						);
 					break;		
 					
