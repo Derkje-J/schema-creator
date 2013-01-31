@@ -90,7 +90,7 @@ if (!class_exists("DJ_SchemaScraper"))
 			$fetch_disabled = false;
 
 			// Nope, we need to set options first
-			if ( empty( $url ) || empty( $path ) ) :
+			if ( empty( $url ) || empty( $path ) || $path == WP_CONTENT_DIR ) :
 				$file = 'all.json';
 				$path = plugin_dir_path( __FILE__ ) . '';
 				$fetch_disabled = true;

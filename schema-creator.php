@@ -16,7 +16,7 @@ License: GPL v2
     but WITHOUT ANY WARRANTY; without even the implied warranty of
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
     GNU General Public License for more details.
-
+s
     You should have received a copy of the GNU General Public License
     along with this program; if not, write to the Free Software
     Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
@@ -29,17 +29,18 @@ License: GPL v2
 	http://www.google.com/webmasters/tools/richsnippets
 	
 Actions Hooks:
-	dj_sc_register_settings	: runs when the settings are registered
-	dj_sc_default_settings	: runs when plugin is activated
-	dj_sc_options_validate	: runs when the settings are saved ( &array )
-	dj_sc_options_form		: runs when the settings form is outputted
-	dj_sc_metabox			: runs when the metabox is outputted
-	dj_sc_save_metabox		: runs when the metabox is saved
+	dj_sc_onactivate			: runs when plugin is activated
+	dj_sc_default_settings		: runs when plugin is activated and settings defaults are set
+	dj_sc_register_settings		: runs when the settings are registered
+	dj_sc_options_validate		: runs when the settings are saved ( &array )
+	dj_sc_options_form			: runs when the settings form is outputted
+	dj_sc_metabox				: runs when the metabox is outputted
+	dj_sc_save_metabox			: runs when the metabox is saved
 	dj_sc_enqueue_schemapost	: runs when showing a post with a schema
 	
 Filters:
-	dj_sc_default_settings	: gets default settings values
-	dj_sc_admin_tooltip		: gets the tooltips for admin pages
+	dj_sc_default_settings		: gets default settings values
+	dj_sc_admin_tooltip			: gets the tooltips for admin pages
 	
 
 
@@ -106,6 +107,7 @@ if ( !class_exists( "DJ_SchemaCreator" ) ) :
 			add_filter( 'dj_sc_admin_tooltip', array( $this, 'get_tooltips' ) );
 			add_filter( 'admin_footer_text', array( $this, 'admin_footer_attribution' ) );
 			register_activation_hook( __FILE__, array( $this, 'default_settings' ) );
+			register_activation_hook( __FILE__, create_function( '', 'do_action(\'dj_sc_onactivate\');' ) );
 
 			// Admin bar
 			add_action( 'admin_bar_menu', array( $this, 'admin_bar_schema_test' ), 9999 );
@@ -505,7 +507,7 @@ if ( !class_exists( "DJ_SchemaCreator" ) ) :
 		{
 			$options_check	= get_option( 'dj_schema_options' );
 			
-			$default = apply_filters( 'dj_sc_default_settings' );
+			$default = apply_filters( 'dj_sc_default_settings', array() );
 			if ( $this->get_option( 'raven_fallback' ) === true ) :
 				$options_check = array_merge( get_option( 'schema_options' ), $options_check );
 				$default = apply_filters( 'raven_sc_default_settings', $default );
@@ -809,7 +811,15 @@ if ( !class_exists( "DJ_SchemaCreator" ) ) :
 	
 		}
 
+		/**
+		 * Gets the i18n translation of the string
+		 */
 		public function get_i18n( $string ) {
+			
+			global $schema_scraper_i18n_strings;
+			if ( !empty( $schema_scraper_i18n_strings[ addslashes( $string ) ] ) )
+				return stripslashes( $schema_scraper_i18n_strings[ addslashes( $string ) ] );
+			
 			return $string;
 		}
 		
