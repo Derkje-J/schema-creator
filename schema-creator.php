@@ -1271,7 +1271,15 @@ if ( !class_exists( "RavenSchema" ) ) :
 				) );
 
 				// Remove the match from the contents
-				$content = trim( str_replace( trim( $match[0] ), '', $content ) );
+				foreach(  array( $match[0], trim( $match[0] ) ) as $needle) :
+					if ( empty( $needle ) )
+						break;
+					$pos = strpos( $content, $needle );
+					if ( $pos !== false ) :
+						$content = substr_replace( $content, '', $pos, strlen( $needle ) );
+						break;
+					endif;
+				endforeach;
 				
 				// Is there non schema data after this element? Output!
 				$nosc_matches = array();
@@ -1283,7 +1291,16 @@ if ( !class_exists( "RavenSchema" ) ) :
 						'no_inner' => false
 					) );
 					
-					$content = trim( str_replace( trim( $nosc_matches[0] ), '', $content ) );
+					// Remove the match from the contents
+					foreach(  array( $nosc_mathces[0], trim( $nosc_matches[0] ) ) as $needle) :
+						if ( empty( $needle ) )
+							break;
+						$pos = strpos( $content, $needle );
+						if ( $pos !== false ) :
+							$content = substr_replace( $content, '', $pos, strlen( $needle ) );
+							break;
+						endif;
+					endforeach;
 				endif;
 			}
 
