@@ -1566,9 +1566,11 @@ if ( !class_exists( "DJ_SchemaCreator" ) ) :
 					// For text and paragraphs, the inner content is the value
 					case 'sc_Text' :
 						$tagtype = 'span';
+						$element->inner_content = $element->attributes[ 'value' ] . $element->inner_content;
+					break;
 						
 					case 'sc_Paragraph':
-						$element->inner_content = $element->attributes[ 'value' ];
+						$tagtype = 'p';
 						break;
 						
 						
