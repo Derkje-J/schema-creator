@@ -39,6 +39,8 @@ if (!class_exists("DJ_SchemaScraperI18n"))
 		{
 			add_action( 'dj_schemacraper_fetched', array( $this, 'on_fetch' ) );
 			add_action( 'dj_sc_onactivate', array( $this, 'on_activated' ) );
+			
+			add_action( 'plugins_loaded', array( $this, 'on_plugins_loaded' ) );
 		}
 		
 		/**
@@ -51,15 +53,23 @@ if (!class_exists("DJ_SchemaScraperI18n"))
 			$this->on_fetch( DJ_SchemaScraper::singleton()->get_schema_data() );
 		}
 		
+		public function get_path() {
+			return WP_CONTENT_DIR . DJ_SchemaScraper::singleton()->get_option( 'cache_path' );
+		}
+		
+		public function get_filename() {
+			return 'schema-scraper-i18n-strings.php';	
+		}
+		
 		/**
 		 *
 		 */
 		public function on_fetch( $schema_data ) {
 			
-			$path = WP_CONTENT_DIR . DJ_SchemaScraper::singleton()->get_option( 'cache_path' );
-			$file = 'schema-scraper-i18n-strings.php';
+			$path = $this->get_path();
+			$filename = $this->get_filename();
 			
-			$stream = @fopen( $path . $file, 'w' );
+			$stream = @fopen( $path . $filename, 'w' );
 			
 			if ( !empty( $stream ) ) :
 				fwrite( $stream, '<?php' . "\n" . '$schema_scraper_i18n_strings = array(' . "\n" );
@@ -94,6 +104,20 @@ if (!class_exists("DJ_SchemaScraperI18n"))
 			foreach( $objects as $key )
 				$this->walk_object_for_strings( $object->$key, $stream );
 			unset( $objects );
+		}
+		
+		public function on_plugins_loaded() {
+			$path = $this->get_path();
+			$filename = $this->get_filename();
+
+			global $schema_scraper_i18n_strings;
+			if ( file_exists( $path . $filename ) ) :
+				include_once( $path . $filename );
+				return;
+			endif;
+			
+			$path = plugin_dir_path( __FILE__ ) . 'res/';
+			include_once( $path . $filename );
 		}
 
 	}
