@@ -488,22 +488,9 @@ if ( !class_exists( "DJ_SchemaCreator" ) ) :
 		{
 			$options_check	= get_option( 'dj_schema_options' );
 			$default = apply_filters( 'dj_sc_default_settings', array() );
-			if( is_null( $options_check ) ) {
-				
-				$options_check = array();
-				
-			} else {
-				
-				// Upgrade options, not very forward compatible since new options
-				// are always false. This is due to the face that old false values
-				// where not properly saved.
-				foreach( $default as $option => $value )
-					$options_check[ $option ] = isset( $options_check[ $option ] ) && $options_check[ $option ] === 'true';
-					
-			}
-			
+
 			// Existing options will override defaults
-			update_option( 'dj_schema_options', $options_check + $default );
+			update_option( 'dj_schema_options', array_merge( $default, $options_check ) );
 		}
 		
 		/**
@@ -566,7 +553,7 @@ if ( !class_exists( "DJ_SchemaCreator" ) ) :
 						<?php 
 							settings_fields( 'dj_schema_options' );	
 	 						do_settings_sections( 'dj_schema_options' );
-                        	//do_action( 'dj_sc_options_form' );
+                        	do_action( 'dj_sc_options_form' );
                         ?>
 	                    
 	                    <p class="submit">
