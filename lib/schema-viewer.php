@@ -47,7 +47,7 @@ if (!class_exists("DJ_SchemaViewer"))
 		 * Gets the page slug name
 		 */
 		public function page_slug() {
-			return 'schema-viewer';
+			return 'dj-schema-viewer';
 		}	
 		
 		/**
@@ -69,9 +69,84 @@ if (!class_exists("DJ_SchemaViewer"))
 		 *
 		 */
 		public function get_link( $type, $format = '%s', $classes = 'schema' ) {
-			return '<a class="' . $classes . '" href="' . esc_attr( esc_url( $this->get_url( $type ) ) ) . '" title="' . esc_attr( sprintf( __( 'See the schema for %s', 'schema') , $type ) ) . '">
-                	' . sprintf( $format, $type ) . '
-                </a>';
+			return '<a class="' . $classes . '" href="' . esc_attr( esc_url( $this->get_url( $type ) ) ) . '" title="' . esc_attr( sprintf( __( 'See the schema for %s', 'schema') , $type ) ) . '">' . 
+					sprintf( $format, $type ) . 
+					'</a>';
+		}
+		
+		/**
+		 *
+		 */
+		public function get_starring_link( $type, $format = '%1$s', $link_format = '%s', $classes = 'action' ) {
+			$do = $this->is_starred( $type ) ? 'off' : 'on';
+			
+			return sprintf( $format, 
+					sprintf( 
+						__( '%s is %s.', 'schema'), 
+						$type, 
+						$do == 'on' ? __( 'not starred', 'schema') : __( 'starred', 'schema' )
+					)
+				) .
+				' <a class="' . $classes . '" href="' . esc_attr( esc_url( 
+					$this->get_url( $type ) . '&action=star&do=' . $do 
+					) ) . '" title="' . esc_attr( 
+						sprintf( 
+							__( 'Set starred value of %s to %s', 'schema') , 
+							$type, 
+							$do 
+						) 
+					) . '">' . 
+					sprintf( $link_format, __( 'Toggle', 'schema' ) , $type ) . 
+				'</a>';	
+		}
+		
+		/**
+		 *
+		 */
+		public function is_starred( $type ) {
+			$schema_creator = DJ_SchemaCreator::singleton();
+			$starred = $schema_creator->get_option( 'starred_schemas' );
+			return array_search( $type, $starred ) !== false;
+		}
+		
+		public function get_property_root_toggle( $type, $property ) {
+			$disabled = $this->is_root_disabled( $type, $property );
+			
+			return !$disabled ? '&#9745' : '&#9744'; //checked
+		}
+		
+		public function get_property_embed_toggle( $type, $property ) {
+			$disabled = $this->is_embed_disabled( $type, $property );
+			
+			return !$disabled ? '&#9745' : '&#9744'; //checked
+		}
+		
+		/**
+		 *
+		 */
+		public function is_root_disabled( $type, $property ) {
+			$schema_creator = DJ_SchemaCreator::singleton();
+			$properties = $schema_creator->get_option( 'schema_properties' );
+			if ( !isset( $properties[ $type ] ) )
+				return false;
+			if ( !isset( $properties[ $type ][ $property ] ) )
+				return false;
+			return ( ($properties[ $type ][ $property ] & DJ_SchemaCreator::OptionRootDisabled) ==
+				DJ_SchemaCreator::OptionRootDisabled );
+		}
+		
+		/**
+		 *
+		 */
+		public function is_embed_disabled( $type, $property ) {
+			$schema_creator = DJ_SchemaCreator::singleton();
+			$properties = $schema_creator->get_option( 'schema_properties' );
+			if ( !isset( $properties[ $type ] ) )
+				return false;
+			if ( !isset( $properties[ $type ][ $property ] ) )
+				return false;
+			return ( ($properties[ $type ][ $property ] & DJ_SchemaCreator::OptionEmbedDisabled) ==
+				DJ_SchemaCreator::OptionEmbedDisabled );
 		}
 		
 		/**
@@ -98,6 +173,29 @@ if (!class_exists("DJ_SchemaViewer"))
 			);
 			
 		}
+		
+		/**
+		 *
+		 */
+		public function do_actions() {
+			if ( empty( $_REQUEST[ 'action' ] ) || empty( $_REQUEST[ 'schema' ] ) )
+				return;
+				
+			$schema_creator = DJ_SchemaCreator::singleton();
+			$options = $schema_creator->get_options();
+			$starred = $options[ 'starred_schemas' ];
+			if ( $_REQUEST[ 'do' ] == 'on' ) :
+				$starred = array_unique( array_merge( $starred, array( $_REQUEST[ 'schema' ] ) ) );
+			elseif ( $_REQUEST[ 'do' ] == 'off' ) :
+				$key = array_search( $_REQUEST[ 'schema' ], $starred );
+				if ( $key !== false ) :
+					unset(  $starred[ $key ] );
+					 $starred = array_values(  $starred );
+				endif;
+			endif;
+			$options[ 'starred_schemas' ] = $starred;
+			$schema_creator->set_options( $options );
+		}
 
 		/**
 		 *
@@ -106,6 +204,8 @@ if (!class_exists("DJ_SchemaViewer"))
 		{	
 			if (!current_user_can( 'manage_options' ) )
 				return;
+				
+			$this->do_actions();
 			
 			// Get the scraper
 			$schema_scraper = DJ_SchemaScraper::singleton();
@@ -141,23 +241,27 @@ if (!class_exists("DJ_SchemaViewer"))
 				
 			// Base type
 			$base_types = array( 'URL', 'Text' );
+			
+			// Action time
+			$schema_actions = $this->get_starring_link( $schema_type );
 							
 			// Start page display
 			?> 	
 			<div class="wrap">
 				<div class="icon32" id="icon-schema"><br></div>
                 <h2><?php _e('Schema Viewer', 'schema'); ?></h2>
-                <div class="schema_listing">
+                <div class="schema-listing">
                 	<h2 class="page-title">
 					<?php 
 						$title = array();
+						$star = ' ' . ( $this->is_starred( $schema_type ) ? '&#9733;' : '&#9734' );
 						foreach( $schema_parents as $parent ) 
 							$title[] = $this->get_link( $parent, '%s', $is_datatype ? 'datatype' : 'schema' );
-						$title[] = $this->get_link( $schema_type, '%s', $is_datatype ? 'datatype' : 'schema' ); 
+						$title[] = $this->get_link( $schema_type, '%s', $is_datatype ? 'datatype' : 'schema' ) . $star; 
 						echo implode( ' > ', $title );
 					?>
                     </h2>
-                    <span class="page-description"><?php echo $schema_scraper->get_schema_comment( $schema ); ?></span>
+                    <p class="page-description"><?php echo $schema_scraper->get_schema_comment( $schema ); ?></p>
                     
                     <?php if ( !$is_datatype ) : ?>
                         <table class="definition-table" cellspacing="3">
@@ -166,12 +270,14 @@ if (!class_exists("DJ_SchemaViewer"))
                                     <th><?php _e( 'Property', 'schema' ); ?></th>
                                     <th><?php _e( 'Expected Type', 'schema' );?></th>
                                     <th><?php _e( 'Description', 'schema' ); ?></th>
+                                    <th><?php _e( 'Root', 'schema' ); ?></th>
+                                    <th><?php _e( 'Embed', 'schema' ); ?></th>
                                 </tr>
                             </thead>
                             <?php foreach( $schema_properties as $type => $properties ): ?>
                                 <thead class="<?php if ( $type !== $schema_type ) echo "supertype "; ?>type">
                                     <tr>
-                                        <th class="type-name" colspan="3">
+                                        <th class="type-name" colspan="5">
                                             <?php printf( __( 'Properties from %s', 'schema' ), 
                                                 $this->get_link( $type ) ); ?>
                                         </th>
@@ -201,6 +307,12 @@ if (!class_exists("DJ_SchemaViewer"))
                                             </td>
                                             <td class="prop-desc">
                                                 <?php echo $schema_scraper->get_property_comment( $property ); ?>
+                                            </td>
+                                            <td class="prop-root">
+                                            	<?php echo $this->get_property_root_toggle( $schema_type, $property ); ?>
+                                            </td>
+                                            <td class="prop-embed">
+                                            	<?php echo $this->get_property_embed_toggle( $schema_type, $property ); ?>
                                             </td>
                                         </tr>
                                     <?php endforeach; ?>
@@ -246,6 +358,12 @@ if (!class_exists("DJ_SchemaViewer"))
 							$is_datatype ? __( 'See schema types' , 'schema' ) : __( 'See data types' , 'schema' ), 
 							!$is_datatype ? 'datatype' : 'schema' ); 
 					?>
+                    
+                    <?php if ( !empty( $schema_actions ) ) : ?>
+                    	<h3><?php _e( 'Actions', 'schema' ); ?></h3>
+                        <span class="schema-actions"><?php echo $schema_actions; ?></span>
+                    
+                    <?php endif; ?>
 				</div> <!-- end .schema_listing -->
 			</div> <!-- end .wrap -->
             <?php
