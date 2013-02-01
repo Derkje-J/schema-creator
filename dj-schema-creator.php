@@ -1512,14 +1512,6 @@ if ( !class_exists( "DJ_SchemaCreator" ) ) :
 				// Switch by property type (name)
 				switch( $element->attributes[ 'prop' ] ) :
 					
-					// Images
-					case 'image' :
-					case 'photo' :
-						$tagtype = 'img';
-						$insulate[ 'src' ] = esc_url( $element->attributes[ 'value' ] );
-						$element->attributes[ 'range' ] = 'sc_Image';
-					break;
-					
 					// Url ( always in conjunction with name or family/given name )
 					case 'url' :
 						if ( !$element->no_inner ) :
@@ -1550,6 +1542,8 @@ if ( !class_exists( "DJ_SchemaCreator" ) ) :
 					
 					// Displays as <img>	
 					case 'sc_Image':
+						$tagtype = 'img';
+						$insulate[ 'src' ] = esc_url( $element->attributes[ 'value' ] );
 						break;
 						
 					// Displays as <time>. Uses date format if no inner content.	
@@ -1571,6 +1565,7 @@ if ( !class_exists( "DJ_SchemaCreator" ) ) :
 						
 					case 'sc_Paragraph':
 						$tagtype = 'p';
+						$element->inner_content = $element->attributes[ 'value' ]; 
 						break;
 						
 						
