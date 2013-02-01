@@ -56,6 +56,9 @@ if ( !class_exists( "DJ_SchemaCreator" ) ) :
 		private static $singleton;
 		public $debug = false;
 		
+		const OptionRootDisabled = 1;
+		const OptionEmbedDisabled = 2;
+		
 		/**
 		 * Gets a singleton of this class
 		 *
@@ -294,6 +297,13 @@ if ( !class_exists( "DJ_SchemaCreator" ) ) :
 			$schema_options	= get_option( 'dj_schema_options' ) ?: array();	
 			$schema_options = array_merge( get_option( 'schema_options' ) ?: array(), $schema_options );
 			return $schema_options;
+		}
+		
+		/**
+		 *
+		 */
+		function set_options( $options ) {
+			update_option( 'dj_schema_options', $options );
 		}
 		
 		/**

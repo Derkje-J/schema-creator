@@ -3,57 +3,57 @@ div#icon-schema {
 	background:url(../img/schema_icon_32.png) no-repeat 0 0;
 }
 
-.schema_listing ul li {
+.schema-listing ul li {
     list-style: inherit;
     margin: 0;
     padding: 0 0 0 5px;
 }
 
-.schema_listing a:link {
+.schema-listing a:link {
     border-bottom: 1px dotted #006600;
     color: #006600;
     text-decoration: none;
 }
-.schema_listing a:visited {
+.schema-listing a:visited {
     border-bottom: 1px dotted #009900;
     color: #009900;
     text-decoration: none;
 }
-.schema_listing a:hover {
+.schema-listing a:hover {
     background-color: #006600;
     border-bottom: medium none;
     color: #FFFFFF;
     text-decoration: none;
 }
 
-.schema_listing a.schema:link {
+.schema-listing a.schema:link {
     border-bottom: 1px dotted #660000;
     color: #660000;
     text-decoration: none;
 }
-.schema_listing a.schema:visited {
+.schema-listing a.schema:visited {
     border-bottom: 1px dotted #990000;
     color: #990000;
     text-decoration: none;
 }
-.schema_listing a.schema:hover {
+.schema-listing a.schema:hover {
     background-color: #660000;
     border-bottom: medium none;
     color: #FFFFFF;
     text-decoration: none;
 }
 
-.schema_listing a.datatype:link {
+.schema-listing a.datatype:link {
     border-bottom: 1px dotted #000066;
     color: #000066;
     text-decoration: none;
 }
-.schema_listing a.datatype:visited {
+.schema-listing a.datatype:visited {
     border-bottom: 1px dotted #000099;
     color: #000099;
     text-decoration: none;
 }
-.schema_listing a.datatype:hover {
+.schema-listing a.datatype:hover {
     background-color: #000066;
     border-bottom: medium none;
     color: #FFFFFF;
@@ -62,7 +62,7 @@ div#icon-schema {
 
 
 
-.schema_listing blockquote {
+.schema-listing blockquote {
     border-left: thin dotted #000000;
     float: right;
     margin: 10px 0 10px 15px;
@@ -70,7 +70,7 @@ div#icon-schema {
     width: auto;
 }
 
-.schema_listing .question {
+.schema-listing .question {
     font-weight: bold;
     margin: 1.5em 0 0;
     padding-bottom: 2px;
@@ -121,9 +121,13 @@ table.definition-table {
     text-align: right;
 }
 
-.schema_listing, #footer, #pageHeader h1, .wrapper {
+.schema-listing, #footer, #pageHeader h1, .wrapper {
     margin: 0 auto !important;
     max-width: 960px;
     min-width: 350px;
     padding: 0 40px;
+}
+
+.schema-listing .page-description {
+	margin-top: 0;	
 }
