@@ -242,8 +242,6 @@ if ( !class_exists( "DJ_SchemaCreator" ) ) :
 			<?php
 			
 			do_action( 'dj_sc_metabox' );
-			if ( $this->get_option( 'raven_fallback' ) === true )
-				do_action( 'raven_sc_metabox' );
 		}
 	
 		/**
@@ -275,8 +273,6 @@ if ( !class_exists( "DJ_SchemaCreator" ) ) :
 			delete_post_meta( $post_id, '_dj_schema_load' );
 			
 			do_action( 'dj_sc_save_metabox' );
-			if ( $this->get_option( 'raven_fallback' ) === true )
-				do_action( 'raven_sc_save_metabox' );
 		}
 		
 		/**
@@ -286,7 +282,7 @@ if ( !class_exists( "DJ_SchemaCreator" ) ) :
 		 * @return mixed the option value
 		 */
 		function get_option( $key ) {
-			$schema_options = $this->get_options();
+			$dj_schema_options = $this->get_options();
 			return isset( $dj_schema_options[$key] ) ? $dj_schema_options[$key] : NULL;
 		}
 		
@@ -308,8 +304,6 @@ if ( !class_exists( "DJ_SchemaCreator" ) ) :
 		 */
 		function get_tooltip( $key ) {
 			$tooltips = apply_filters( 'dj_sc_admin_tooltip', array() );
-			if ( $this->get_option( 'raven_fallback' ) === true )
-				$tooltips = apply_filters( 'raven_sc_admin_tooltip', $tooltips );
 			return isset($tooltips[ $key ]) ? htmlentities( $tooltips[ $key ] ) : NULL;
 		}
 	
@@ -357,8 +351,6 @@ if ( !class_exists( "DJ_SchemaCreator" ) ) :
 			add_settings_field( 'post', __( 'Content Wrapper', 'schema' ), array( $this, 'options_data_post' ), 'dj_schema_options', 'data_section' );
 
 			do_action( 'dj_sc_register_settings' );
-			if ( $this->get_option( 'raven_fallback' ) === true )
-				do_action( 'raven_sc_register_settings' );
 		}
 		
 		/**
@@ -474,8 +466,6 @@ if ( !class_exists( "DJ_SchemaCreator" ) ) :
 		 */
 		function options_validate( $input ) {
 			
-			if ( $this->get_option( 'raven_fallback' ) === true )
-				do_action_ref_array( 'raven_sc_options_validate', array( &$input ) );
 			do_action_ref_array( 'dj_sc_options_validate', array( &$input ) );
 			
 			
@@ -497,29 +487,10 @@ if ( !class_exists( "DJ_SchemaCreator" ) ) :
 		public function default_settings( ) 
 		{
 			$options_check	= get_option( 'dj_schema_options' );
-			
 			$default = apply_filters( 'dj_sc_default_settings', array() );
-			if ( $this->get_option( 'raven_fallback' ) === true ) :
-				$options_check = array_merge( get_option( 'schema_options' ), $options_check );
-				$default = apply_filters( 'raven_sc_default_settings', $default );
-			endif;
-			
-			if( is_null( $options_check ) ) {
-				
-				$options_check = array();
-				
-			} else {
-				
-				// Upgrade options, not very forward compatible since new options
-				// are always false. This is due to the face that old false values
-				// where not properly saved.
-				foreach( $default as $option => $value )
-					$options_check[ $option ] = isset( $options_check[ $option ] ) && $options_check[ $option ] === 'true';
-					
-			}
-			
+
 			// Existing options will override defaults
-			update_option( 'dj_schema_options', $options_check + $default );
+			update_option( 'dj_schema_options', array_merge( $default, $options_check ) );
 		}
 		
 		/**
@@ -530,7 +501,6 @@ if ( !class_exists( "DJ_SchemaCreator" ) ) :
 		 */
 		public function get_default_settings( $default = array() ) 
 		{
-			$default['raven_fallback'] = false;
 			$default['css']	= false;
 			$default['body'] = true;
 			$default['post'] = true;
@@ -584,8 +554,6 @@ if ( !class_exists( "DJ_SchemaCreator" ) ) :
 							settings_fields( 'dj_schema_options' );	
 	 						do_settings_sections( 'dj_schema_options' );
                         	do_action( 'dj_sc_options_form' );
-							if ( $this->get_option( 'raven_fallback' ) === true ) 
-								do_action( 'raven_sc_options_form' ); 
                         ?>
 	                    
 	                    <p class="submit">
@@ -766,8 +734,6 @@ if ( !class_exists( "DJ_SchemaCreator" ) ) :
 				wp_enqueue_style( 'schema-style', plugins_url( '/lib/css/schema-style.css' , __FILE__ ), array(), DJ_SCHEMACREATOR_VERSION, 'all' );
 				
 				do_action( 'dj_sc_enqueue_schemapost' );
-				if ( $this->get_option( 'raven_fallback' ) === true )
-					do_action( 'raven_sc_enqueue_schemapost' );
 			endif;
 
 			return $posts;
