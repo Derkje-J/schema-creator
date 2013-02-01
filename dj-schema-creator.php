@@ -1293,8 +1293,8 @@ if ( !class_exists( "DJ_SchemaCreator" ) ) :
 			$content = preg_replace('{(<br([^>]*/)?\>|&nbsp;)+}i', '', $content);
 			
 			// Matches 
-			$pattern = "/\[(?P<type>scprop|scmbed|scmeta|schtml)(?P<props>[^\]]*?)((?P<tagclose>[\s]*\/\])|".
-			"(](?P<inner>(([^\[]*?|\[\!\-\-.*?\-\-\])|(?R))*)\[\/\\1[\s]*\]))/sm";
+			$pattern = "/\[(?P<type>scprop|scmbed|scmeta|schtml)(?P<props>[^\]]*?)((?P<tagclose>\s*\/\])|".
+			"(\](?P<inner>([^\[]*|\<\!\-\-.*?\-\-\>|(?R))*)\[\/\\1\s*\]))/sm";
 			if ( !preg_match_all($pattern, $content, $matches, PREG_OFFSET_CAPTURE) )
 				return $content;
 				
@@ -1443,7 +1443,7 @@ if ( !class_exists( "DJ_SchemaCreator" ) ) :
 				// HTML processing
 				///////////////////////// ///////////////////////// /////////////////////////
 				if ( $element->type == 'schtml' ) :
-					
+
 					if ( empty( $element->attributes ) ) :
 						
 						// Just inner content
@@ -1684,7 +1684,7 @@ if ( !class_exists( "DJ_SchemaCreator" ) ) :
 							
 			endwhile;
 			
-			return $sc_build;
+			return preg_replace( "/\n\n+/", "\n", $sc_build );
 		}
 	
 		/**
