@@ -1287,6 +1287,7 @@ if ( !class_exists( "DJ_SchemaCreator" ) ) :
 		public function shortcode_recursive( $content, $embed_class = '' ) {
 			
 			$matches = array();
+			$elements = array();
 			$sc_build = '';
 
 			// Remove all breaks (sorry, they cause problems!)
@@ -1301,7 +1302,40 @@ if ( !class_exists( "DJ_SchemaCreator" ) ) :
 			if ( $this->debug )
 				printf( '<h2>Entered shortcode_recursive</h2>' );
 
-			$elements = array();
+			// Is there content before the matches?
+			$pattern = "/^(?P<before>(?:[^\[]|\<\!\-\-.*?\-\-\>)+)/sm";
+			$nosc_matches = array();
+			if ( preg_match( $pattern, $content, $nosc_matches ) && 
+				!empty( $nosc_matches['before'] ) ) :
+				var_dump(  $nosc_matches['before'] );
+				array_push( $elements, (object)array(	
+					'node' => $nosc_matches['before'],
+					'type' => 'nosc',
+					'inner_content' => $nosc_matches['before'],
+					'no_inner' => false
+				) );
+				
+				// Remove the match from the contents
+				foreach(  array( $nosc_matches['before'], trim( $nosc_matches['before'] ) ) as $needle) :
+					if ( empty( $needle ) )
+						break;
+					$pos = strpos( $content, $needle );
+					
+					if ( $this->debug ) :
+						printf( 'Looking for [non]: %s and pos is %s<br>', 
+							var_export( $needle, true ), 
+							var_export( $pos, true ) 
+						);
+					endif;
+					
+					if ( $pos !== false ) :
+						$content = substr_replace( $content, '', $pos, strlen( $needle ) );
+						break;
+					endif;
+				endforeach;
+			endif;
+			
+			// Start processing the schema tags
 			foreach ( $matches[0] as $key => $match ) {
 				array_push( $elements, (object)array(
 					'node' => $match[0],
@@ -1337,18 +1371,20 @@ if ( !class_exists( "DJ_SchemaCreator" ) ) :
 					endif;
 				endforeach;
 				
-				// Is there non schema data after this element? Output!
+				// Is there non schema data after this element? 
 				$nosc_matches = array();
-				if ( preg_match( '/^(?P<inner>[^\[]*)/sm', $content, $nosc_matches ) ) :
+				if ( preg_match( '/^(?P<before>(?:[^\[]|\<\!\-\-.*?\-\-\>)+)/sm', $content, $nosc_matches ) && 
+					!empty( $nosc_matches['before'] )  ) :
+					
 					array_push( $elements, (object)array(	
-						'node' => $nosc_matches[0],
+						'node' => $nosc_matches['before'],
 						'type' => 'nosc',
-						'inner_content' => $nosc_matches['inner'],
+						'inner_content' => $nosc_matches['before'],
 						'no_inner' => false
 					) );
 					
 					// Remove the match from the contents
-					foreach(  array( $nosc_mathces[0], trim( $nosc_matches[0] ) ) as $needle) :
+					foreach(  array( $nosc_matches['before'], trim( $nosc_matches['before'] ) ) as $needle) :
 						if ( empty( $needle ) )
 							break;
 						$pos = strpos( $content, $needle );
@@ -1389,6 +1425,7 @@ if ( !class_exists( "DJ_SchemaCreator" ) ) :
 				// Early bail if not schema content
 				if ( $element->type == 'nosc' ) :
 					$sc_build .= $element->inner_content;
+					printf( '<b>nosc</b>: %s<br>', var_export( $element->inner_content, true ) );
 					continue;
 				endif;
 			
@@ -1559,6 +1596,7 @@ if ( !class_exists( "DJ_SchemaCreator" ) ) :
 						
 					// For text and paragraphs, the inner content is the value
 					case 'sc_Text' :
+					case 'sc_Number' :
 						$tagtype = 'span';
 						$element->inner_content = $element->attributes[ 'value' ] . $element->inner_content;
 					break;
