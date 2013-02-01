@@ -79,24 +79,25 @@ if (!class_exists("DJ_SchemaScraper"))
 		/**
 		 * Runs when the admin initializes
 		 */
-		public function get_schema_data() 
+		public function get_schema_data( $url = NULL, $path = NULL, $file = NULL, $fetch_disabled = false ) 
 		{
 			if ( !empty( $this->schema_data ) && is_object( $this->schema_data ) )
 				return $this->schema_data;
 			
-			$this->last_error = '';
-			$url  =	$this->get_option( 'scrape_url' );
-			$path = WP_CONTENT_DIR . $this->get_option( 'cache_path' );
-			$fetch_disabled = false;
+			$url  =	$url ?: $this->get_option( 'scrape_url' );
+			$path = $path ?: WP_CONTENT_DIR . $this->get_option( 'cache_path' );
 
 			// Nope, we need to set options first
-			if ( empty( $url ) || empty( $path ) || $path == WP_CONTENT_DIR ) :
-				$file = 'all.json';
-				$path = plugin_dir_path( __FILE__ ) . '';
-				$fetch_disabled = true;
-			else:
-				$file = basename( $url );
-			endif;
+			if ( !$fetch_disabled )
+				if ( empty( $url ) || empty( $path ) || $path == WP_CONTENT_DIR ) :
+					return $this->get_schema_data( NULL,
+						 plugin_dir_path( __FILE__ ) . 'res/',  
+						 $file ?: 'all.json' ,
+						 true 
+					);
+				else:
+					$file = basename( $url );
+				endif;
 			
 			// Try cached value
 			if ( file_exists( $path ) && file_exists ( $path . $file ) ) :
@@ -109,10 +110,10 @@ if (!class_exists("DJ_SchemaScraper"))
 					$timestamp_now = microtime( true );
 					if ( strtotime( $this->get_validation_date(). " + 2 days") > $timestamp_now ) {
 						if ( $timestamp_now - $this->timestamp <= $cache_time ) 
-							return;
+							return $this->schema_data;
 					}
 					
-					if ( is_admin() ) {
+					if ( is_admin() && !$fetch_disabled ) {
 						$this->last_error .= sprintf( "<div class='updated'><p>" . 
 								__( 'Schemas invalidated. Cache time: %s, File time: %s (%s), Contents time: %s (%s), Timestamp: %s', 'schema' ) .
 							"</p></div>",	
@@ -130,14 +131,14 @@ if (!class_exists("DJ_SchemaScraper"))
 			endif;
 			
 			if ( $fetch_disabled || empty( $url ) )
-				return;
+				return $this->schema_data;
 			
 			// Nope, we still need to fetch it
 			$fetched_schema = @json_decode( $this->get_document( $url ) );
 			if( is_object( $fetched_schema ) ) :
 			
 				// We got it, so try to write it
-				if ( !is_wp_error( $fetched_schema ) ) :
+				if ( !is_wp_error( $fetched_schema ) && empty( $fetched_schema->errors ) ) :
 					@file_put_contents( $path . $file, json_encode( $fetched_schema ) );	
 					// Don't set it earlier, we might have an outdated
 					// but still valid fetch from cache.
@@ -145,7 +146,7 @@ if (!class_exists("DJ_SchemaScraper"))
 					$this->timestamp = microtime( true );
 					
 					do_action( 'dj_schemascraper_fetched', $this->schema_data );
-				 	return;
+				 	return $fetched_schema;
 				 endif;
 				 
 			endif;
@@ -154,12 +155,18 @@ if (!class_exists("DJ_SchemaScraper"))
 				
 				$this->last_error .= sprintf( 
 					"<div class='error'><p>" . __( 'Failed to fetch schema: ( %s ) from %s', 'schema' ) . "</p></div>",
-					var_export(  $fetched_schema, true ),
+					var_export( $fetched_schema, true ),
 					var_export( $url, true )
 				);
 				
 				add_action( 'admin_notices' , array( $this, 'notice_fetch' ) );
 			}
+			
+			return $this->get_schema_data( NULL,
+				 plugin_dir_path( __FILE__ ) . 'res/',  
+				 $file ?: 'all.json' ,
+				 true 
+			);
 		}
 		
 		/**
