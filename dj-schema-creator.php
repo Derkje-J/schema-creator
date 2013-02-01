@@ -1574,13 +1574,15 @@ if ( !class_exists( "DJ_SchemaCreator" ) ) :
 						
 					// We don't know what todo. So default
 					default: 
-						$tagtype = 'div';
-						$element->inner_content = '[' .
-							$element->attributes[ 'prop' ] . ': ' .
-							$element->attributes[ 'value' ] . '] ' .
-							$element->inner_content . '[/' . $element->attributes[ 'prop' ] . ']
-						';
-						break;
+						if ( $element->type === 'scprop' ) :
+							$tagtype = 'div';
+							$element->inner_content = '[' .
+								$element->attributes[ 'prop' ] . ': ' .
+								$element->attributes[ 'value' ] . '] ' .
+								$element->inner_content . '[/' . $element->attributes[ 'prop' ] . ']
+							';
+							break;
+						endif;
 				endswitch;
 						
 				///////////////////////// ///////////////////////// /////////////////////////
