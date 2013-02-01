@@ -41,8 +41,6 @@ Actions Hooks:
 Filters:
 	dj_sc_default_settings		: gets default settings values
 	dj_sc_admin_tooltip			: gets the tooltips for admin pages
-	
-
 
 */
 
@@ -1394,7 +1392,9 @@ if ( !class_exists( "DJ_SchemaCreator" ) ) :
 					continue;
 				endif;
 			
+				///////////////////////// ///////////////////////// /////////////////////////
 				// Readout properties or bail early
+				///////////////////////// ///////////////////////// /////////////////////////
 				$pattern = '/\s*(?P<key>[^\s=\'"]+)(?:=(?:([\'"])(?P<value>[^\'"]+)[\'"])|\s|$)\s*/sm';
 				if ( !preg_match_all( $pattern, $element->attributes_raw, $matches, PREG_OFFSET_CAPTURE ) ) :
 					$sc_build .= $element->inner_content;
@@ -1420,7 +1420,9 @@ if ( !class_exists( "DJ_SchemaCreator" ) ) :
 					if ( in_array( $tag, $encapsulate_allowed ) )
 						$encapsulate = sprintf( '<%1$s>%2$s</%1$s>', $tag,  $encapsulate );
 				
-				// Recursive  processing
+				///////////////////////// ///////////////////////// /////////////////////////
+				// Recursive proccessing
+				///////////////////////// ///////////////////////// /////////////////////////
 				if ( !$element->no_inner ) :
 
 					if ( $element->type == 'scprop' ) :
@@ -1437,7 +1439,9 @@ if ( !class_exists( "DJ_SchemaCreator" ) ) :
 						$element->inner_content = $this->shortcode_recursive( $element->inner_content );
 				endif;
 				
-				// Just wrap inner in html
+				///////////////////////// ///////////////////////// /////////////////////////
+				// HTML processing
+				///////////////////////// ///////////////////////// /////////////////////////
 				if ( $element->type == 'schtml' ) :
 					
 					if ( empty( $element->attributes ) ) :
@@ -1459,6 +1463,9 @@ if ( !class_exists( "DJ_SchemaCreator" ) ) :
 									
 				endif;
 
+				///////////////////////// ///////////////////////// /////////////////////////
+				//  Fallbacks for faulty use of properties
+				///////////////////////// ///////////////////////// /////////////////////////
 				if ( $element->type != 'scmbed' ) :
 					
 					// Default range please. That's text!
@@ -1495,43 +1502,99 @@ if ( !class_exists( "DJ_SchemaCreator" ) ) :
 					
 				endif;
 
+				///////////////////////// ///////////////////////// /////////////////////////
+				// Property type override
+				///////////////////////// ///////////////////////// /////////////////////////
+				
+				// The tagtype will tell what kind of element we are dealing with
+				// The insulate array contains all the properties
+				
+				// Switch by property type (name)
+				switch( $element->attributes[ 'prop' ] ) :
+					
+					// Images
+					case 'image' :
+					case 'photo' :
+						$tagtype = 'img';
+						$insulate[ 'src' ] = esc_url( $element->attributes[ 'value' ] );
+						$element->attributes[ 'range' ] = 'sc_Image';
+					break;
+					
+					// Url ( always in conjunction with name or family/given name )
+					case 'url' :
+						if ( !$element->no_inner ) :
+							$format = '<span itemprop="name" class="name name-sc_link">%s</span>';
+							$element->inner_content = sprintf( $format, $element->inner_content );
+						endif;								
+						break;
+					break;
+					
+					// Paragraphs
+					case 'description' :
+						$tagtype = 'p';
+						$element->attributes[ 'range' ] = 'sc_Paragraph';
+					break;
+					
+					// Meta data
+					case 'additionalType':
+						$element->type = 'scmeta';
+					break;
+					
+				endswitch;
+
+				// Switch by property value type (range)
+				switch( $element->attributes[ 'range' ] ) :
+				
+					// Displays as <a>
+					case 'sc_Link':
+					case 'sc_URL':
+						$tagtype = 'a';
+						$insulate[ 'href' ] = esc_url( $element->attributes[ 'value' ] );
+						break;
+					
+					// Displays as <img>	
+					case 'sc_Image':
+						break;
+						
+					// Displays as <time>. Uses date format if no inner content.	
+					case 'sc_Date' :
+						$tagtype = 'time';
+						$insulate[ 'datetime' ] = esc_attr( $element->attributes[ 'value' ] );
+						if ( $element->no_inner )
+							$element->inner_content = date_i18n( !empty( $element->attributes[ 'format' ] ) ?
+								$element->attributes[ 'format' ]  : $datetime_format, 
+								strtotime( $element->attributes[ 'value' ] )
+							);
+						break;
+						
+					// For text and paragraphs, the inner content is the value
+					case 'sc_Text' :
+						$tagtype = 'span';
+						
+					case 'sc_Paragraph':
+						$element->inner_content = $element->attributes[ 'value' ];
+						break;
+						
+						
+					// We don't know what todo. So default
+					default: 
+						$tagtype = 'div';
+						$element->inner_content = '[' .
+							$element->attributes[ 'prop' ] . ': ' .
+							$element->attributes[ 'value' ] . '] ' .
+							$element->inner_content . '[/' . $element->attributes[ 'prop' ] . ']
+						';
+						break;
+				endswitch;
+						
+				///////////////////////// ///////////////////////// /////////////////////////
+				// Start output
+				///////////////////////// ///////////////////////// /////////////////////////
 				switch( $element->type ) :
 					
 					// Actual output of properties
 					case 'scprop' :
-
-						$scprop = '';
-						// The tagtype will tell what kind of element we are dealing with
-						// The insulate array contains all the properties
-						
-						// Switch by property type (name)
-						switch( $element->attributes[ 'prop' ] ) :
-							
-							// Images
-							case 'image' :
-							case 'photo' :
-								$tagtype = 'img';
-								$insulate[ 'src' ] = esc_url( $element->attributes[ 'value' ] );
-								$element->attributes[ 'range' ] = 'sc_Image';
-							break;
-							
-							// Url ( always in conjunction with name or family/given name )
-							case 'url' :
-								if ( !$element->no_inner ) :
-								 	$format = '<span itemprop="name" class="name name-sc_link">%s</span>';
-									$element->inner_content = sprintf( $format, $element->inner_content );
-								endif;								
-								break;
-							break;
-							
-							// paragraphs
-							case 'description' :
-								$tagtype = 'p';
-								$element->attributes[ 'range' ] = 'sc_Paragraph';
-							break;
-							
-						endswitch;
-						
+					
 						// Build class for this element
 						$prop_class = strtolower(  $element->attributes[ 'prop' ] );
 						$range_class = strtolower( $element->attributes[ 'range' ] );
@@ -1547,52 +1610,7 @@ if ( !class_exists( "DJ_SchemaCreator" ) ) :
 								)
 							)
 						);
-						
-						// Switch by property value type (range)
-						switch( $element->attributes[ 'range' ] ) :
-						
-							// Displays as <a>
-							case 'sc_Link':
-							case 'sc_URL':
-								$tagtype = 'a';
-								$insulate[ 'href' ] = esc_url( $element->attributes[ 'value' ] );
-								break;
-							
-							// Displays as <img>	
-							case 'sc_Image':
-								break;
-								
-							// Displays as <time>. Uses date format if no inner content.	
-							case 'sc_Date' :
-								$tagtype = 'time';
-								$insulate[ 'datetime' ] = esc_attr( $element->attributes[ 'value' ] );
-								if ( $element->no_inner )
-									$element->inner_content = date_i18n( !empty( $element->attributes[ 'format' ] ) ?
-										$element->attributes[ 'format' ]  : $datetime_format, 
-										strtotime( $element->attributes[ 'value' ] )
-									);
-								break;
-								
-							// For text and paragraphs, the inner content is the value
-							case 'sc_Text' :
-								$tagtype = 'span';
-								
-							case 'sc_Paragraph':
-								$element->inner_content = $element->attributes[ 'value' ];
-								break;
-								
-								
-							// We don't know what todo. So default
-							default: 
-								$tagtype = 'div';
-								$element->inner_content = '[' .
-									$element->attributes[ 'prop' ] . ': ' .
-									$element->attributes[ 'value' ] . '] ' .
-									$element->inner_content . '[/' . $element->attributes[ 'prop' ] . ']
-								';
-								break;
-						endswitch;
-						
+
 						// Output
 						$format = '<%1$s %2$sitemprop="%3$s">%4$s</%1$s>';
 						$sc_build .= sprintf( $encapsulate, 
@@ -1796,7 +1814,3 @@ endif;
 // Include modules
 foreach ( glob( plugin_dir_path(__FILE__) . "/lib/*.php" ) as $filename )
     include_once $filename;
-
-
-
-				
