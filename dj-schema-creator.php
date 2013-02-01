@@ -1535,10 +1535,6 @@ if ( !class_exists( "DJ_SchemaCreator" ) ) :
 						$element->attributes[ 'range' ] = 'sc_Paragraph';
 					break;
 					
-					// Meta data
-					case 'additionalType':
-						$element->type = 'scmeta';
-					break;
 					
 				endswitch;
 
