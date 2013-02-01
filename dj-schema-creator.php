@@ -1121,7 +1121,8 @@ if ( !class_exists( "DJ_SchemaCreator" ) ) :
 			$children = array();
 			$siblings = array();
 			$parents = array();
-			$starred = array( 'Person', 'Product', 'Event', 'Organization', 'Movie', 'Book', 'Review', 'Recipe' ); // TODO filter or option or both
+			$starred = $this->get_option( 'starred_schemas' ) ?: 
+				array( 'Person', 'Product', 'Event', 'Organization', 'Movie', 'Book', 'Review', 'Recipe' );
 			
 			// Get selected schema
 			$top_level = $scraper->get_top_level_schemas();
@@ -1162,7 +1163,12 @@ if ( !class_exists( "DJ_SchemaCreator" ) ) :
 			
 			$results = array( 
 				'types' => array(
-					'' => array( array( 'id' => $type, 'desc' => $this->get_i18n( htmlentities( $scraper->get_schema_comment( $type ) ) ) ) ),
+					'' => array( 
+						array( 
+							'id' => $type, 
+							'desc' => $this->get_i18n( htmlentities( $scraper->get_schema_comment( $type ) ) ) 
+						) 
+					),
 					esc_attr__( 'Children', 'schema' ) => $children,
 					esc_attr__( 'Siblings', 'schema' ) => $siblings,
 					esc_attr__( 'Parents', 'schema' ) => $parents,
