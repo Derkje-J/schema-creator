@@ -61,7 +61,7 @@ if (!class_exists("DJ_SchemaScraper"))
 			
 			add_action( 'dj_sc_onactivate', array( $this, 'default_settings' ) );
 			add_action( 'dj_sc_register_settings', array( $this, 'register_settings' ) );
-			add_action( 'dj_sc_options_form', create_function( '', 'settings_fields(\'dj_schemascraper\'); do_settings_sections(\'dj_schemascraper\');' ) );
+			//add_action( 'dj_sc_options_form', create_function( '', 'do_settings_sections(\'dj_schemascraper\');' ) );
 		}
 		
 		/**
@@ -71,9 +71,9 @@ if (!class_exists("DJ_SchemaScraper"))
 		 * @return mixed the option value
 		 */
 		public function get_option( $key ) {
-			if ( empty( $options ) )
-				$options = get_option( 'dj_schemascraper' );
-			return @$options[ $key ];
+			if ( empty( $this->options ) )
+				$this->options = get_option( 'dj_schema_options' );
+			return @$this->options[ $key ];
 		}
 		
 		/**
@@ -185,7 +185,7 @@ if (!class_exists("DJ_SchemaScraper"))
 		 */
 		public function get_document( $url ) {
 			$response = wp_remote_get( $url );
-
+			
 			if ( is_wp_error( $response ) ) 
 				return json_encode( $response );
 			return $response["body"];
@@ -630,15 +630,19 @@ if (!class_exists("DJ_SchemaScraper"))
 		 * Registers new option group
 		 */
 		function register_settings() {
-			register_setting( 'dj_schemascraper', 'dj_schemascraper', array($this, 'options_validate' ) );	
+			//register_setting( 'dj_schemascraper', 'dj_schemascraper', array($this, 'options_validate' ) );	
+			add_action( 'dj_sc_options_validate', array($this, 'options_validate' ) );
 			
 			// Scraper section
-			add_settings_section( 'scraper_section', __('Schema Scraper', 'schema'), array( $this, 'options_scraper_section' ), 'dj_schemascraper' );
-			add_settings_field( 'scrape_url', __( 'Scrape URL', 'schema' ), array( $this, 'options_scraper_scrapeurl' ), 'dj_schemascraper', 'scraper_section' );
-			add_settings_field( 'cache_path', __( 'Cache Path', 'schema' ), array( $this, 'options_scraper_cachepath' ), 'dj_schemascraper', 'scraper_section' );
-			add_settings_field( 'cache_time', __( 'Cache Time', 'schema' ), array( $this, 'options_scraper_cachetime' ), 'dj_schemascraper', 'scraper_section' );
-			add_settings_field( 'current_timestamp', __( 'Current Cache', 'schema' ), array( $this, 'options_scraper_current_timestamp' ), 'dj_schemascraper', 'scraper_section' );
+			add_settings_section( 'scraper_section', __('Scraper', 'schema'), array( $this, 'options_scraper_section' ), 'dj_schema_options' );
+			add_settings_field( 'scrape_url', __( 'Scrape URL', 'schema' ), array( $this, 'options_scraper_scrapeurl' ), 'dj_schema_options', 'scraper_section' );
+			add_settings_field( 'cache_path', __( 'Cache Path', 'schema' ), array( $this, 'options_scraper_cachepath' ), 'dj_schema_options', 'scraper_section' );
+			add_settings_field( 'cache_time', __( 'Cache Time', 'schema' ), array( $this, 'options_scraper_cachetime' ), 'dj_schema_options', 'scraper_section' );
+			add_settings_field( 'current_timestamp', __( 'Current Cache', 'schema' ), array( $this, 'options_scraper_current_timestamp' ), 'dj_schema_options', 'scraper_section' );
 			
+			// Scraper ~ Creator section
+			add_settings_section( 'creator_section', __('Creator', 'schema'), array( $this, 'options_creator_section' ), 'dj_schema_options' );
+			add_settings_field( 'starred_schemas', __( 'Starred Schema\'s', 'schema' ), array( $this, 'options_creator_starred' ), 'dj_schema_options', 'creator_section' );
 		}
 		
 		/**
@@ -654,7 +658,7 @@ if (!class_exists("DJ_SchemaScraper"))
 		 * Outputs the scraper url field
 		 */
 		function options_scraper_scrapeurl() {
-			echo '<input type="textfield" size="60" id="scraper_scrape_url" name="dj_schemascraper[scrape_url]" class="schema_textfield options-big"
+			echo '<input type="textfield" size="60" id="scraper_scrape_url" name="dj_schema_options[scrape_url]" class="schema_textfield options-big"
 				value="'.$this->get_option('scrape_url').'"/>';
 		}
 		
@@ -662,8 +666,8 @@ if (!class_exists("DJ_SchemaScraper"))
 		 * Outputs the scraper cache path field
 		 */
 		function options_scraper_cachepath() {
-			echo '<label for="scraper_cache_path">WP_CONTENT_DIR</labe> <input type="textfield" size="60" id="scraper_cache_path" 
-				name="dj_schemascraper[cache_path]" class="schema_textfield options-big" 
+			echo '<label for="scraper_cache_path">WP_CONTENT_DIR</label> <input type="textfield" size="60" id="scraper_cache_path" 
+				name="dj_schema_options[cache_path]" class="schema_textfield options-big" 
 				value="'.$this->get_option('cache_path').'"/>';
 		}
 		
@@ -671,10 +675,13 @@ if (!class_exists("DJ_SchemaScraper"))
 		 *
 		 */
 		function options_scraper_cachetime() {
-			echo '<input type="textfield" size="5" id="scraper_cache_time" name="dj_schemascraper[cache_time]" class="schema_textfield options-big" 
+			echo '<input type="textfield" size="5" id="scraper_cache_time" name="dj_schema_options[cache_time]" class="schema_textfield options-big" 
 				value="'.$this->get_option('cache_time').'"/> <label for="scraper_cache_time">'._x( 'minutes', 'cache time', 'schema' ).'</label>';
 		}
 		
+		/**
+		 *
+		 */
 		function options_scraper_current_timestamp() {
 			
 			$currtime = microtime( true );
@@ -689,13 +696,57 @@ if (!class_exists("DJ_SchemaScraper"))
 			echo 'file expiration date: <code>' . $fileexpi  . '</code>.';
 		}
 		
+		function options_creator_section() {
+			
+		}
+		
+		function options_creator_starred() {
+			$starred = $this->get_option( 'starred_schemas' ) ?: array();
+			$available = $this->get_top_level_schemas();
+			
+			echo '<style>
+				.starred-list ul { margin-left: 10px; }
+				.starred-list li { margin-right: 5px; }
+			</style>';
+			echo '<ul class="starred-list">';
+			foreach( $available as $schema )
+				echo $this->__subsection_creator_starred( $schema, $starred );
+			echo '</ul>';
+		}
+		
+		protected function __subsection_creator_starred( $schema, $starred ) {
+			$children = $this->get_schema_descendants( $schema, false );
+			if ( !empty( $children ) ) :
+				$recursive = '<ul style="display: none">';
+				foreach( $children as $child )
+					$recursive .= $this->__subsection_creator_starred( $child, $starred );
+				$recursive .= '</ul>';
+			endif;
+
+			return sprintf( 
+				'<li>
+					<input type="checkbox" id="starred_schema_%2$s" 
+					name="dj_schema_options[starred_schemas][]" class="schema_checkbox options-big" 
+					value="%3$s" ' . checked( in_array( $this->get_schema_id( $schema ), $starred ), true, false ) . '/>
+					<label style="%6$s" onclick="%5$s">%1$s</label> 
+					%4$s
+				</li>',
+				$this->get_schema_id( $schema ),
+				strtolower( $this->get_schema_id( $schema ) ),
+				$this->get_schema_id( $schema ),
+				$recursive ?: '',
+				empty( $recursive ) ? '' : 'jQuery( this ).parent().children( \'ul\').slideToggle();',
+				empty( $recursive ) ? '' : 'border-bottom: 1px dotted black;'
+			);	
+		}
+		
 		/**
 		 * Validates the options
 		 *
 		 * @param mixed[] $input the to be processed option values
 		 * @return mixed[] the processed option values
 		 */
-		function options_validate( $input ) {
+		function options_validate( &$input ) {
 			//$input["scrape_url"]
 			//$input["cache_path"] 
 			$input["cache_time"] = max( array(0, floatval( $input["cache_time"] ) ) );
@@ -707,8 +758,8 @@ if (!class_exists("DJ_SchemaScraper"))
 		 */
 		public function default_settings( ) {
 			
-			$options_check	= get_option('dj_schemascraper');
-			if(empty( $options_check ))
+			$options_check	= get_option( 'dj_schema_options' );
+			if(empty( $options_check )) 
 				$options_check = array();
 	
 			// Fetch defaults.
@@ -716,7 +767,7 @@ if (!class_exists("DJ_SchemaScraper"))
 			$default = apply_filters( 'dj_scraper_default_settings', $default );
 			
 			// Existing optons will override defaults
-			update_option('dj_schemascraper', $default + $options_check);
+			update_option('dj_schema_options', array_merge( $default, $options_check ) ) ;
 		}
 		
 		/**
@@ -727,8 +778,10 @@ if (!class_exists("DJ_SchemaScraper"))
 		 */
 		public function get_default_settings( $default = array() ) {
 			
-			$default["scrape_url"] = "http://schema.rdfs.org/all.json";
-			$default["cache_path"] = '/cache/';
+			$default[ 'scrape_url' ] = "http://schema.rdfs.org/all.json";
+			$default[ 'cache_path' ] = '/cache/';
+			$default[ 'cache_time' ] = 1440;
+			$default[ 'starred_schemas' ] = array( 'Person', 'Event', 'Recipe', 'Product', 'Review' );
 			return $default;	
 		}
 			
