@@ -1,4 +1,5 @@
 <?php
+global $schema_scraper_i18n_strings;
 $schema_scraper_i18n_strings = array(
 	'Boolean: True or False.' => __( 'Boolean: True or False.', 'schema' ), 
 	'Boolean' => __( 'Boolean', 'schema' ), 
