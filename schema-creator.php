@@ -1,7 +1,7 @@
 <?php
 /*
 Plugin Name: Schema Creator by Derk-Jan and Raven
-Plugin URI: http://schema-creator.org/?utm_source=wp&utm_medium=plugin&utm_campaign=schema
+Plugin URI: http://github.com/Derkje-J/schema-creator
 Description: Insert schema.org microdata into posts and pages
 Version: 1.0
 Author: Derk-Jan Karrenbeld.info
@@ -16,7 +16,7 @@ License: GPL v2
     but WITHOUT ANY WARRANTY; without even the implied warranty of
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
     GNU General Public License for more details.
-s
+
     You should have received a copy of the GNU General Public License
     along with this program; if not, write to the Free Software
     Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
@@ -45,14 +45,6 @@ Filters:
 
 
 */
-// "This will intercept the version check and increment the current version number by 3.
-// It's the quick and dirty way to do it without messing with the settings directly..."
-function my_refresh_mce($ver) {
-  $ver += 3;
-  return $ver;
-}
-
-add_filter( 'tiny_mce_version', 'my_refresh_mce');
 
 if ( !class_exists( "DJ_SchemaCreator" ) ) :
 
@@ -94,13 +86,13 @@ if ( !class_exists( "DJ_SchemaCreator" ) ) :
 			add_action( 'save_post', array( $this, 'save_metabox' ) );
 			add_filter( 'media_buttons', array( $this, 'schema_media_button' ), 31 );
 			add_action( 'admin_footer',	array( $this, 'schema_media_form'	) );
+			add_filter( 'tiny_mce_version', 'my_refresh_mce');
 			
 			// Plugins page
 			add_filter( 'plugin_action_links', array( $this, 'quick_link' ), 10, 2 );
 			
 			// Settings Page
 			add_action( 'admin_enqueue_scripts', array( $this, 'admin_scripts' ) );
-			
 			add_action( 'admin_menu', array( $this, 'add_pages' ) );
 			add_action( 'admin_init', array( $this, 'register_settings' ) );					
 			add_filter( 'dj_sc_default_settings', array( $this, 'get_default_settings' ) );
@@ -111,12 +103,11 @@ if ( !class_exists( "DJ_SchemaCreator" ) ) :
 
 			// Admin bar
 			add_action( 'admin_bar_menu', array( $this, 'admin_bar_schema_test' ), 9999 );
+			
 			// Content
 			add_filter( 'body_class', array( $this, 'body_class' ) );
 			add_filter( 'the_content', array( $this, 'schema_wrapper' ) );
-			
-			$the_shorcode = $this->get_option( 'shortcode' ) ?: 'schema';
-			add_shortcode( $the_shorcode , array( $this, 'shortcode' ) );
+			add_shortcode( $this->get_option( 'shortcode' ) ?: 'schema' , array( $this, 'shortcode' ) );
 			
 			// Ajax actions
 			add_action( 'wp_ajax_get_schema_types', array( $this, 'get_schema_types' ) );
@@ -203,7 +194,7 @@ if ( !class_exists( "DJ_SchemaCreator" ) ) :
 			$schema_options	= $this->get_options();
 	
 			// they haven't enabled this? THEN YOU LEAVE NOW
-			if( empty( $schema_options['body'] ) && empty( $schema_options['post'] ) )
+			if( empty( $dj_schema_options['body'] ) && empty( $dj_schema_options['post'] ) )
 				return;
 	
 			// get custom post types
@@ -296,7 +287,7 @@ if ( !class_exists( "DJ_SchemaCreator" ) ) :
 		 */
 		function get_option( $key ) {
 			$schema_options = $this->get_options();
-			return isset( $schema_options[$key] ) ? $schema_options[$key] : NULL;
+			return isset( $dj_schema_options[$key] ) ? $dj_schema_options[$key] : NULL;
 		}
 		
 		/**
@@ -432,7 +423,7 @@ if ( !class_exists( "DJ_SchemaCreator" ) ) :
 			$css_hide = isset( $css_hide ) && ($css_hide === true || $css_hide == 'true');
 
 			echo '<label for="schema_css">
-					<input type="checkbox" id="schema_css" name="schema_options[css]" class="schema_checkbox" value="true" '.checked($css_hide, true, false).'/>
+					<input type="checkbox" id="schema_css" name="dj_schema_options[css]" class="schema_checkbox" value="true" '.checked($css_hide, true, false).'/>
 					 '.__('Exclude default CSS for schema output', 'schema').'
 				</label>
 				<span class="ap_tooltip" tooltip="'.$this->get_tooltip( 'default_css' ).'">'._x('(?)', 'tooltip button', 'schema').'</span>
@@ -452,7 +443,7 @@ if ( !class_exists( "DJ_SchemaCreator" ) ) :
 			$body_tag = isset( $body_tag ) && ($body_tag === true || $body_tag == 'true');
 			
 			echo '<label for="schema_body">
-					<input type="checkbox" id="schema_body" name="schema_options[body]" class="schema_checkbox" value="true" '.checked($body_tag, true, false).'/>
+					<input type="checkbox" id="schema_body" name="dj_schema_options[body]" class="schema_checkbox" value="true" '.checked($body_tag, true, false).'/>
 					 '.__('Apply itemprop &amp; itemtype to main body tag', 'schema').'
 				</label>
 				<span class="ap_tooltip" tooltip="'.$this->get_tooltip( 'body_class' ).'">'._x('(?)', 'tooltip button', 'schema').'</span>
@@ -468,7 +459,7 @@ if ( !class_exists( "DJ_SchemaCreator" ) ) :
 			$post_tag = isset( $post_tag ) && ($post_tag === true || $post_tag == 'true');
 			
 			echo '<label for="schema_post">
-					<input type="checkbox" id="schema_post" name="schema_options[post]" class="schema_checkbox" value="true" '.checked($post_tag, true, false).'/>
+					<input type="checkbox" id="schema_post" name="dj_schema_options[post]" class="schema_checkbox" value="true" '.checked($post_tag, true, false).'/>
 					 '.__('Apply itemscope &amp; itemtype to content wrapper', 'schema').'
 				</label>
 				<span class="ap_tooltip" tooltip="'.$this->get_tooltip( 'post_class' ).'">'._x('(?)', 'tooltip button', 'schema').'</span>
@@ -492,7 +483,7 @@ if ( !class_exists( "DJ_SchemaCreator" ) ) :
 			 * $input['some_value'] =  wp_filter_nohtml_kses($input['some_value']);	
 			 * $input['maps_zoom'] = min(21, max(0, intval($input['maps_zoom'])));
 			 * */
-			 
+
 			$input['css'] = isset( $input['css'] );
 			$input['body'] = isset( $input['body'] );
 			$input['post'] = isset( $input['post'] );
@@ -791,7 +782,7 @@ if ( !class_exists( "DJ_SchemaCreator" ) ) :
 		public function schema_wrapper( $content ) {
 	
 			$schema_options = $this->get_options();
-			$wrapper = !isset( $schema_options['post']) || ( $schema_options['post'] === true || $schema_options['post'] == 'true' );
+			$wrapper = !isset( $dj_schema_options['post']) || ( $dj_schema_options['post'] === true || $dj_schema_options['post'] == 'true' );
 	
 			// user disabled content wrapper. just return the content as usual
 			if ($wrapper === false)
@@ -1817,6 +1808,13 @@ if ( !class_exists( "DJ_SchemaCreator" ) ) :
 		<?php 
 		}
 		
+		// "This will intercept the version check and increment the current version number by 3.
+		// It's the quick and dirty way to do it without messing with the settings directly..."
+		function my_refresh_mce($ver) {
+		  $ver += 3;
+		  return $ver;
+		}
+
 	/// end class
 	}
 	
