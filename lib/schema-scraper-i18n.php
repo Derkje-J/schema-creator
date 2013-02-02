@@ -44,28 +44,47 @@ if (!class_exists("DJ_SchemaScraperI18n"))
 		}
 		
 		/**
-		 *
+		 * Runs when the plugin is activated
 		 */
 		public function on_activated() {
+			
 			if ( !class_exists( 'DJ_SchemaScraper' ) )
+				return;
+			if ( !class_exists( 'DJ_SchemaCreator' ) )
+				return;
+			if ( !DJ_SchemaCreator::singleton()->debug )
 				return;
 			
 			$this->on_fetch( DJ_SchemaScraper::singleton()->get_schema_data() );
 		}
 		
+		/**
+		 *	Get caching path
+		 *	@return $string path 
+		 */
 		public function get_path() {
 			return WP_CONTENT_DIR . DJ_SchemaScraper::singleton()->get_option( 'cache_path' );
 		}
 		
+		/**
+		 *	Get caching filename
+		 *	@return $string filename
+		 */
 		public function get_filename() {
 			return 'schema-scraper-i18n-strings.php';	
 		}
 		
 		/**
-		 *
+		 *	On fetched schema data from scraper
+		 *	@param object $schema_data fetched schema
 		 */
 		public function on_fetch( $schema_data ) {
 			
+			if ( !class_exists( 'DJ_SchemaCreator' ) )
+				return;
+			if ( !DJ_SchemaCreator::singleton()->debug )
+				return;
+				
 			$path = $this->get_path();
 			$filename = $this->get_filename();
 			
@@ -80,9 +99,12 @@ if (!class_exists("DJ_SchemaScraperI18n"))
 		}
 		
 		/**
+		 *	Walks the object and looks for strings
 		 *
+		 *	@param object $object the walked object
+		 *	@param resource $stream filestream
 		 */
-		public function walk_object_for_strings( $object, $stream ) {
+		 public function walk_object_for_strings( $object, $stream ) {
 			
 			$strings = array();
 			$objects = array();
@@ -106,7 +128,11 @@ if (!class_exists("DJ_SchemaScraperI18n"))
 			unset( $objects );
 		}
 		
+		/**
+		 *	Runs when plugins are loaded and loads the strings
+		 */
 		public function on_plugins_loaded() {
+			
 			$path = $this->get_path();
 			$filename = $this->get_filename();
 
