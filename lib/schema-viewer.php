@@ -77,27 +77,34 @@ if (!class_exists("DJ_SchemaViewer"))
 		/**
 		 *
 		 */
-		public function get_starring_link( $type, $format = '%1$s', $link_format = '%s', $classes = 'action' ) {
+		public function get_starring_link( $type, $format = '%s %s', $linkdo_text = NULL, $linkdont_text = NULL, 
+			$is_text = NULL, $isnt_text = NULL, $title_format = NULL, $classes = 'action' ) {
+				
 			$do = $this->is_starred( $type ) ? 'off' : 'on';
 			
 			return sprintf( $format, 
-					sprintf( 
-						__( '%s is %s.', 'schema'), 
-						$type, 
-						$do == 'on' ? __( 'not starred', 'schema') : __( 'starred', 'schema' )
-					)
-				) .
-				' <a class="' . $classes . '" href="' . esc_attr( esc_url( 
-					$this->get_url( $type ) . '&action=star&do=' . $do 
-					) ) . '" title="' . esc_attr( 
+				sprintf( 
+					__( '%s is %s.', 'schema'), 
+					$type, 
+					$do == 'on' ? 
+						( $isnt_text ?: __( 'not starred', 'schema') ) : 
+						( $is_text ?: __( 'starred', 'schema' ) )
+				),
+				'<a class="' . $classes . '" href="' . 
+					esc_attr( esc_url( $this->get_url( $type ) . '&action=star&do=' . $do ) ) . '" ' .
+					'title="' . esc_attr( 
 						sprintf( 
-							__( 'Set starred value of %s to %s', 'schema') , 
+							$title_format ?: __( 'Set starred value of %s to %s', 'schema') , 
 							$type, 
 							$do 
 						) 
 					) . '">' . 
-					sprintf( $link_format, __( 'Toggle', 'schema' ) , $type ) . 
-				'</a>';	
+					( $do == 'on' ? 
+						$linkdo_text ?: __( 'Star', 'schema' ) :
+						$linkdont_text ?: __( 'Unstar', 'schema' ) 
+					) . 
+				'</a>'
+			);
 		}
 		
 		/**
@@ -109,16 +116,46 @@ if (!class_exists("DJ_SchemaViewer"))
 			return array_search( $type, $starred ) !== false;
 		}
 		
-		public function get_property_root_toggle( $type, $property ) {
-			$disabled = $this->is_root_disabled( $type, $property );
+		/**
+		 *
+		 */
+		public function get_property_root_toggle( $type, $prop ) {
 			
-			return !$disabled ? '&#9745' : '&#9744'; //checked
+			$disabled = $this->is_root_disabled( $type, $prop );
+			$do = $disabled ? 'on' : 'off';
+			return '<a class="action root" href="' . 
+					esc_attr( esc_url( $this->get_url( $type ) . '&action=root&do=' . $do . '&prop=' . $prop ) ) . '" ' .
+					'title="' . esc_attr( 
+						sprintf( 
+							$title_format ?: __( 'Set property %s:%s when root to %s', 'schema') , 
+							$type, 
+							$prop,
+							$do 
+						) 
+					) . '">' . 
+					( $do == 'on' ? '&#9744' : '&#9745'  ) . 
+				'</a>';
 		}
 		
-		public function get_property_embed_toggle( $type, $property ) {
-			$disabled = $this->is_embed_disabled( $type, $property );
+		/**
+		 *
+		 */
+		public function get_property_embed_toggle( $type, $prop ) {
 			
-			return !$disabled ? '&#9745' : '&#9744'; //checked
+			$disabled = $this->is_embed_disabled( $type, $prop );
+			$do = $disabled ? 'on' : 'off';
+			return '<a class="action embed" href="' . 
+					esc_attr( esc_url( $this->get_url( $type ) . '&action=embed&do=' . $do . '&prop=' . $prop ) ) . '" ' .
+					'title="' . esc_attr( 
+						sprintf( 
+							$title_format ?: __( 'Set property %s:%s when embedded to %s', 'schema') , 
+							$type, 
+							$prop,
+							$do 
+						) 
+					) . '">' . 
+					( $do == 'on' ? '&#9744' : '&#9745'  ) . 
+				'</a>';
 		}
 		
 		/**
@@ -181,19 +218,49 @@ if (!class_exists("DJ_SchemaViewer"))
 			if ( empty( $_REQUEST[ 'action' ] ) || empty( $_REQUEST[ 'schema' ] ) )
 				return;
 				
+			$action = $_REQUEST[ 'action' ];
+			$schema_type = $_REQUEST[ 'schema' ];
+			
 			$schema_creator = DJ_SchemaCreator::singleton();
 			$options = $schema_creator->get_options();
-			$starred = $options[ 'starred_schemas' ];
-			if ( $_REQUEST[ 'do' ] == 'on' ) :
-				$starred = array_unique( array_merge( $starred, array( $_REQUEST[ 'schema' ] ) ) );
-			elseif ( $_REQUEST[ 'do' ] == 'off' ) :
-				$key = array_search( $_REQUEST[ 'schema' ], $starred );
-				if ( $key !== false ) :
-					unset(  $starred[ $key ] );
-					 $starred = array_values(  $starred );
-				endif;
-			endif;
-			$options[ 'starred_schemas' ] = $starred;
+			
+			switch( $action ) :
+			
+				case 'star':
+					$starred = $options[ 'starred_schemas' ];
+					if ( $_REQUEST[ 'do' ] == 'on' ) :
+						$starred = array_unique( array_merge( $starred, array( $schema_type ) ) );
+					elseif ( $_REQUEST[ 'do' ] == 'off' ) :
+						$key = array_search( $schema_type , $starred );
+						if ( $key !== false ) :
+							unset(  $starred[ $key ] );
+							 $starred = array_values(  $starred );
+						endif;
+					endif;
+					$options[ 'starred_schemas' ] = $starred;
+				break;
+				
+				case 'root':
+				case 'embed':	
+					$schema_prop = $_REQUEST[ 'prop' ];
+					$properties = $options[ 'schema_properties' ] ?: array();
+
+					if ( !isset( $properties[ $schema_type ] ) )
+						$properties[ $schema_type ] = array();
+					if ( !isset( $properties[ $schema_type ][ $schema_prop ] ) )
+						$properties[ $schema_type ][ $schema_prop ] = 0;
+						
+					$mask = $action == 'root' ? DJ_SchemaCreator::OptionRootDisabled : DJ_SchemaCreator::OptionEmbedDisabled;
+
+					if ( $_REQUEST[ 'do' ] == 'on' )
+						$properties[ $schema_type ][ $schema_prop ] &= (~$mask);
+					else if ( $_REQUEST[ 'do' ] == 'off') 
+						$properties[ $schema_type ][ $schema_prop ] |= $mask;	
+									
+					$options[ 'schema_properties' ] = $properties;
+				break;
+			endswitch;
+			
 			$schema_creator->set_options( $options );
 		}
 
@@ -254,7 +321,7 @@ if (!class_exists("DJ_SchemaViewer"))
                 	<h2 class="page-title">
 					<?php 
 						$title = array();
-						$star = ' ' . ( $this->is_starred( $schema_type ) ? '&#9733;' : '&#9734' );
+						$star = $this->get_starring_link( $schema_type, ' %2$s', '&#9734;', '&#9733', '', '', NULL, 'action star');
 						foreach( $schema_parents as $parent ) 
 							$title[] = $this->get_link( $parent, '%s', $is_datatype ? 'datatype' : 'schema' );
 						$title[] = $this->get_link( $schema_type, '%s', $is_datatype ? 'datatype' : 'schema' ) . $star; 
