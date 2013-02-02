@@ -163,13 +163,7 @@ if (!class_exists("DJ_SchemaViewer"))
 		 */
 		public function is_root_disabled( $type, $property ) {
 			$schema_creator = DJ_SchemaCreator::singleton();
-			$properties = $schema_creator->get_option( 'schema_properties' );
-			if ( !isset( $properties[ $type ] ) )
-				return false;
-			if ( !isset( $properties[ $type ][ $property ] ) )
-				return false;
-			return ( ($properties[ $type ][ $property ] & DJ_SchemaCreator::OptionRootDisabled) ==
-				DJ_SchemaCreator::OptionRootDisabled );
+			return 	$schema_creator->is_root_disabled( $type, $property );
 		}
 		
 		/**
@@ -177,13 +171,7 @@ if (!class_exists("DJ_SchemaViewer"))
 		 */
 		public function is_embed_disabled( $type, $property ) {
 			$schema_creator = DJ_SchemaCreator::singleton();
-			$properties = $schema_creator->get_option( 'schema_properties' );
-			if ( !isset( $properties[ $type ] ) )
-				return false;
-			if ( !isset( $properties[ $type ][ $property ] ) )
-				return false;
-			return ( ($properties[ $type ][ $property ] & DJ_SchemaCreator::OptionEmbedDisabled) ==
-				DJ_SchemaCreator::OptionEmbedDisabled );
+			return 	$schema_creator->is_embed_disabled( $type, $property );
 		}
 		
 		/**
