@@ -1139,10 +1139,10 @@ if ( !class_exists( "DJ_SchemaCreator" ) ) :
 			$type = isset( $_REQUEST[ 'type' ] ) ? $_REQUEST[ 'type' ] : array_shift( $top_level );
 			$schema = $scraper->get_schema( $type );
 			
-			$allow_parents = isset( $_REQUEST[ 'parents' ] ) ? $_REQUEST[ 'parents' ] : true;
-			$allow_siblings = isset( $_REQUEST[ 'siblings' ] ) ? $_REQUEST[ 'siblings' ] : true;
-			$allow_children = isset( $_REQUEST[ 'children' ] ) ? $_REQUEST[ 'children' ] : true;
-			$allow_starred = isset( $_REQUEST[ 'starred'] )  ? $_REQUEST[ 'starred' ] : true; 
+			$allow_parents = isset( $_REQUEST[ 'parents' ] ) ? $_REQUEST[ 'parents' ] == 'true' : true;
+			$allow_siblings = isset( $_REQUEST[ 'siblings' ] ) ? $_REQUEST[ 'siblings' ] == 'true' : true;
+			$allow_children = isset( $_REQUEST[ 'children' ] ) ? $_REQUEST[ 'children' ] == 'true' : true;
+			$allow_starred = isset( $_REQUEST[ 'starred'] )  ? $_REQUEST[ 'starred' ] == 'true' : true; 
 			
 			if ( empty( $schema ) ) $type = array_shift( $top_level );
 			
@@ -1210,7 +1210,9 @@ if ( !class_exists( "DJ_SchemaCreator" ) ) :
 			
 			$scraper = $this->get_scraper();
 			$schema = $scraper->get_schema( $_REQUEST['type'] );
-						
+			$schema_type = $scraper->get_schema_id( $schema );
+			$is_embed = isset( $_REQUEST[ 'embed' ] ) && $_REQUEST[ 'embed' ] == 'true';
+				
 			foreach( $scraper->get_schema_properties( $schema, true ) as $type => $t_properties )  :
 				$type_id = $scraper->get_schema_id( $type );
 				$properties[ $type_id ] = array();
@@ -1218,10 +1220,15 @@ if ( !class_exists( "DJ_SchemaCreator" ) ) :
 					$t_comment = htmlentities( $scraper->get_property_comment( $t_property ) );
 					if ( strpos( $t_comment, 'legacy spelling' ) !== false )
 						continue;
+						
+					$property_id = $scraper->get_property_id( $t_property );
+					if ( $is_embed ? $this->is_embed_disabled( $schema_type, $property_id ) :
+						$this->is_root_disabled( $schema_type, $property_id ) )
+						continue;
 
 					array_push( $properties[ $type_id ], 
 						array(
-							'id' => $scraper->get_property_id( $t_property ),
+							'id' => $property_id,
 							'label' => $scraper->get_property_label( $t_property ),
 							'desc' => $this->get_i18n( $t_comment ),
 							'ranges' => $scraper->get_property_ranges( $t_property ),
@@ -1240,6 +1247,34 @@ if ( !class_exists( "DJ_SchemaCreator" ) ) :
 			endif;
 			
 			return $results;
+		}
+		
+		/**
+		 *
+		 */
+		public function is_root_disabled( $type, $property ) {
+			
+			$properties = $this->get_option( 'schema_properties' );
+			if ( !isset( $properties[ $type ] ) )
+				return false;
+			if ( !isset( $properties[ $type ][ $property ] ) )
+				return false;
+			return ( ($properties[ $type ][ $property ] & DJ_SchemaCreator::OptionRootDisabled) ==
+				DJ_SchemaCreator::OptionRootDisabled );
+		}
+		
+		/**
+		 *
+		 */
+		public function is_embed_disabled( $type, $property ) {
+
+			$properties = $this->get_option( 'schema_properties' );
+			if ( !isset( $properties[ $type ] ) )
+				return false;
+			if ( !isset( $properties[ $type ][ $property ] ) )
+				return false;
+			return ( ($properties[ $type ][ $property ] & DJ_SchemaCreator::OptionEmbedDisabled) ==
+				DJ_SchemaCreator::OptionEmbedDisabled );
 		}
 		
 		// 
