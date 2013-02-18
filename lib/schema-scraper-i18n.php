@@ -8,13 +8,38 @@
   Author URI: http://derk-jan.com
 */
 
+/**
+ * Schema Scraper Internationalization add-in for schema creator
+ * 
+ * This add in will try to internationalize the scrapped strings
+ * by the Scraper. It simply creates a huge library of i18n-enabled
+ * strings so the pot/po/mo files can be updated.
+ * 
+ * @author Derk-Jan Karrenbeld <derk-jan+schema@karrenbeld.info>
+ * @version 1.0
+ * @package WordPress/Derk-Jan/Schema-Creator/I18n
+ */
+
 if (!class_exists("DJ_SchemaScraperI18n")) 
 {
+	/**
+	 * The basename of the 18n scraper add-in
+	 */
 	define("DJ_SCHEMASCRAPEI18N_BASE", plugin_basename(__FILE__));
+	
+	/**
+	 * The version of the i18n scraper add-in
+	 */
 	define("DJ_SCHEMASCRAPEI18N_VERSION", '1.0');
 	
+	/**
+	 * The Shema Scraper class
+	 */
 	class DJ_SchemaScraperI18n {
 		
+		/**
+		 * Holds the singleton
+		 */
 		private static $singleton;
 		
 		/**
@@ -24,6 +49,7 @@ if (!class_exists("DJ_SchemaScraperI18n"))
 		 * PHP processing stack. This way actions will not be queued duplicately and 
 		 * caching of processed values is not neccesary.
 		 *
+		 * @api
 		 * @return DJ_SchemaScraperI18n the singleton instance
 		 */
 		public static function singleton() {
@@ -33,7 +59,8 @@ if (!class_exists("DJ_SchemaScraperI18n"))
 		}
 		
 		/**
-		 *
+		 * Creates a new instance of the class. Use self::singleton() to get
+		 * the actual instance outside of this (sub)class.
 		 */
 		protected function __construct() 
 		{

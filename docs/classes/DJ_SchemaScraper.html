@@ -18,7 +18,12 @@
 <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse"><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></a><a class="brand" href="../index.html">phpDocumentor</a><div class="nav-collapse"><ul class="nav">
 <li class="dropdown">
 <a href="#api" class="dropdown-toggle" data-toggle="dropdown">
-                                    API Documentation <b class="caret"></b></a><ul class="dropdown-menu"></ul>
+                                    API Documentation <b class="caret"></b></a><ul class="dropdown-menu">
+<li><a>Packages</a></li>
+<li><a href="../packages/Default.html"><i class="icon-folder-open"></i> Default</a></li>
+<li><a href="../packages/WordPress.html"><i class="icon-folder-open"></i> WordPress</a></li>
+<li><a href="../packages/WordPress.Derk-Jan.Schema-Creator.I18n.html"><i class="icon-folder-open"></i> WordPress/Derk-Jan/Schema-Creator/I18n</a></li>
+</ul>
 </li>
 <li class="dropdown" id="charts-menu">
 <a href="#charts" class="dropdown-toggle" data-toggle="dropdown">
@@ -28,7 +33,7 @@
 <a href="#reports" class="dropdown-toggle" data-toggle="dropdown">
                                     Reports <b class="caret"></b></a><ul class="dropdown-menu">
 <li><a href="../errors.html"><i class="icon-remove-sign"></i> Errors 
-                <span class="label label-info">82</span></a></li>
+                <span class="label label-info">37</span></a></li>
 <li><a href="../markers.html"><i class="icon-map-marker"></i> Markers 
                 <ul></ul></a></li>
 <li><a href="../deprecated.html"><i class="icon-stop"></i> Deprecated elements 
@@ -91,15 +96,11 @@
 <li class="method public "><a href="#method_is_datatype" title="is_datatype :: Returns true if type is defined"><span class="description">Returns true if type is defined</span><pre>is_datatype()</pre></a></li>
 <li class="method public "><a href="#method_is_property" title="is_property :: Returns true if property is defined"><span class="description">Returns true if property is defined</span><pre>is_property()</pre></a></li>
 <li class="method public "><a href="#method_notice_fetch" title="notice_fetch :: Fetches notices"><span class="description">Fetches notices</span><pre>notice_fetch()</pre></a></li>
-<li class="method public "><a href="#method_options_creator_section" title="options_creator_section :: "><span class="description">options_creator_section()
-        </span><pre>options_creator_section()</pre></a></li>
-<li class="method public "><a href="#method_options_creator_starred" title="options_creator_starred :: "><span class="description">options_creator_starred()
-        </span><pre>options_creator_starred()</pre></a></li>
+<li class="method public "><a href="#method_options_creator_section" title="options_creator_section :: Outputs the scraper creator section paragraph"><span class="description">Outputs the scraper creator section paragraph</span><pre>options_creator_section()</pre></a></li>
+<li class="method public "><a href="#method_options_creator_starred" title="options_creator_starred :: Outputs the starred schema's"><span class="description">Outputs the starred schema's</span><pre>options_creator_starred()</pre></a></li>
 <li class="method public "><a href="#method_options_scraper_cachepath" title="options_scraper_cachepath :: Outputs the scraper cache path field"><span class="description">Outputs the scraper cache path field</span><pre>options_scraper_cachepath()</pre></a></li>
-<li class="method public "><a href="#method_options_scraper_cachetime" title="options_scraper_cachetime :: "><span class="description">options_scraper_cachetime()
-        </span><pre>options_scraper_cachetime()</pre></a></li>
-<li class="method public "><a href="#method_options_scraper_current_timestamp" title="options_scraper_current_timestamp :: "><span class="description">options_scraper_current_timestamp()
-        </span><pre>options_scraper_current_timestamp()</pre></a></li>
+<li class="method public "><a href="#method_options_scraper_cachetime" title="options_scraper_cachetime :: Outputs the scraper cache time field"><span class="description">Outputs the scraper cache time field</span><pre>options_scraper_cachetime()</pre></a></li>
+<li class="method public "><a href="#method_options_scraper_current_timestamp" title="options_scraper_current_timestamp :: Outputs the scraper current timestamp information field"><span class="description">Outputs the scraper current timestamp information field</span><pre>options_scraper_current_timestamp()</pre></a></li>
 <li class="method public "><a href="#method_options_scraper_scrapeurl" title="options_scraper_scrapeurl :: Outputs the scraper url field"><span class="description">Outputs the scraper url field</span><pre>options_scraper_scrapeurl()</pre></a></li>
 <li class="method public "><a href="#method_options_scraper_section" title="options_scraper_section :: Outputs the scraper section HTML"><span class="description">Outputs the scraper section HTML</span><pre>options_scraper_section()</pre></a></li>
 <li class="method public "><a href="#method_options_validate" title="options_validate :: Validates the options"><span class="description">Validates the options</span><pre>options_validate()</pre></a></li>
@@ -110,8 +111,7 @@
 <li class="nav-header protected">» Protected
                     <ul>
 <li class="method protected "><a href="#method___construct" title="__construct :: Creates a new instance of DJ_SchemaScraper"><span class="description">Creates a new instance of DJ_SchemaScraper</span><pre>__construct()</pre></a></li>
-<li class="method protected "><a href="#method___subsection_creator_starred" title="__subsection_creator_starred :: "><span class="description">__subsection_creator_starred()
-        </span><pre>__subsection_creator_starred()</pre></a></li>
+<li class="method protected "><a href="#method___subsection_creator_starred" title="__subsection_creator_starred :: Subfunction used to see if subtree has starred schema's"><span class="description">Subfunction used to see if subtree has starred schema's</span><pre>__subsection_creator_starred()</pre></a></li>
 </ul>
 </li>
 <li class="nav-header">
@@ -120,11 +120,13 @@
 </li>
 <li class="nav-header private">» Private
                     <ul>
-<li class="property private "><a href="#property_last_error" title="$last_error :: "><span class="description"></span><pre>$last_error</pre></a></li>
-<li class="property private "><a href="#property_options" title="$options :: "><span class="description"></span><pre>$options</pre></a></li>
-<li class="property private "><a href="#property_schema_data" title="$schema_data :: "><span class="description"></span><pre>$schema_data</pre></a></li>
-<li class="property private "><a href="#property_singleton" title="$singleton :: "><span class="description"></span><pre>$singleton</pre></a></li>
-<li class="property private "><a href="#property_timestamp" title="$timestamp :: "><span class="description"></span><pre>$timestamp</pre></a></li>
+<li class="property private "><a href="#property_last_error" title="$last_error :: The last error that occured since the last HTTP request
+that loaded this class."><span class="description"></span><pre>$last_error</pre></a></li>
+<li class="property private "><a href="#property_options" title="$options :: Holds the values of the options"><span class="description"></span><pre>$options</pre></a></li>
+<li class="property private "><a href="#property_schema_data" title="$schema_data :: The fetched schema data from which the schema's are
+generated."><span class="description"></span><pre>$schema_data</pre></a></li>
+<li class="property private "><a href="#property_singleton" title="$singleton :: Holds the singleton instance"><span class="description"></span><pre>$singleton</pre></a></li>
+<li class="property private "><a href="#property_timestamp" title="$timestamp :: The timestamp of the @link $schema_data;"><span class="description"></span><pre>$timestamp</pre></a></li>
 </ul>
 </li>
 </ul>
@@ -139,7 +141,12 @@
 <span class="divider">\</span><a href="../classes/DJ_SchemaScraper.html">DJ_SchemaScraper</a>
 </li>
 </ul>
-<div class="element class"><div class="details">
+<div class="element class">
+<p class="short_description">The Schema Scraper class fetches and processes all the
+schema's from a given URL and is used to provide all the
+schema's available instead of an hardcoded subsection.</p>
+<div class="details">
+<div class="long_description"></div>
 <h3>
 <i class="icon-custom icon-method"></i> Methods</h3>
 <a id="method_default_settings"></a><div class="element clickable method public method_default_settings" data-toggle="collapse" data-target=".method_default_settings .collapse">
@@ -525,15 +532,27 @@
 </div>
 <a id="method_get_schema_data"></a><div class="element clickable method public method_get_schema_data" data-toggle="collapse" data-target=".method_get_schema_data .collapse">
 <h2>Runs when the admin initializes</h2>
-<pre>get_schema_data($url, $path, $file, $fetch_disabled) </pre>
+<pre>get_schema_data(string | null $url, string | null $path, string | null $file, boolean $fetch_disabled) </pre>
 <div class="labels"></div>
 <div class="row collapse"><div class="detail-description">
 <div class="long_description"></div>
+<table class="table table-bordered"><tr>
+<th>returns</th>
+<td>object|null the schema data or null</td>
+</tr></table>
 <h3>Parameters</h3>
-<div class="subelement argument"><h4>$url</h4></div>
-<div class="subelement argument"><h4>$path</h4></div>
-<div class="subelement argument"><h4>$file</h4></div>
-<div class="subelement argument"><h4>$fetch_disabled</h4></div>
+<div class="subelement argument">
+<h4>$url</h4>
+<code>string</code><code>null</code><p>the url where the JSON resides or null to use the default</p></div>
+<div class="subelement argument">
+<h4>$path</h4>
+<code>string</code><code>null</code><p>where the file is cached or null to use the default</p></div>
+<div class="subelement argument">
+<h4>$file</h4>
+<code>string</code><code>null</code><p>name of the file or null to use the default</p></div>
+<div class="subelement argument">
+<h4>$fetch_disabled</h4>
+<code>boolean</code><p>the flag that if set disabled any subsequent fetches.</p></div>
 </div></div>
 </div>
 <a id="method_get_schema_descendants"></a><div class="element clickable method public method_get_schema_descendants" data-toggle="collapse" data-target=".method_get_schema_descendants .collapse">
@@ -666,12 +685,14 @@
 </div>
 <a id="method_is_datatype"></a><div class="element clickable method public method_is_datatype" data-toggle="collapse" data-target=".method_is_datatype .collapse">
 <h2>Returns true if type is defined</h2>
-<pre>is_datatype($type) : boolean</pre>
+<pre>is_datatype(string | object $type) : boolean</pre>
 <div class="labels"></div>
 <div class="row collapse"><div class="detail-description">
 <div class="long_description"></div>
 <h3>Parameters</h3>
-<div class="subelement argument"><h4>$type</h4></div>
+<div class="subelement argument">
+<h4>$type</h4>
+<code>string</code><code>object</code><p>the datatype id or object</p></div>
 <h3>Returns</h3>
 <div class="subelement response">
 <code>boolean</code>datatype exists</div>
@@ -699,15 +720,13 @@
 <div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
 </div>
 <a id="method_options_creator_section"></a><div class="element clickable method public method_options_creator_section" data-toggle="collapse" data-target=".method_options_creator_section .collapse">
-<h2>options_creator_section()
-        </h2>
+<h2>Outputs the scraper creator section paragraph</h2>
 <pre>options_creator_section() </pre>
 <div class="labels"></div>
 <div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
 </div>
 <a id="method_options_creator_starred"></a><div class="element clickable method public method_options_creator_starred" data-toggle="collapse" data-target=".method_options_creator_starred .collapse">
-<h2>options_creator_starred()
-        </h2>
+<h2>Outputs the starred schema's</h2>
 <pre>options_creator_starred() </pre>
 <div class="labels"></div>
 <div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
@@ -719,15 +738,13 @@
 <div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
 </div>
 <a id="method_options_scraper_cachetime"></a><div class="element clickable method public method_options_scraper_cachetime" data-toggle="collapse" data-target=".method_options_scraper_cachetime .collapse">
-<h2>options_scraper_cachetime()
-        </h2>
+<h2>Outputs the scraper cache time field</h2>
 <pre>options_scraper_cachetime() </pre>
 <div class="labels"></div>
 <div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
 </div>
 <a id="method_options_scraper_current_timestamp"></a><div class="element clickable method public method_options_scraper_current_timestamp" data-toggle="collapse" data-target=".method_options_scraper_current_timestamp .collapse">
-<h2>options_scraper_current_timestamp()
-        </h2>
+<h2>Outputs the scraper current timestamp information field</h2>
 <pre>options_scraper_current_timestamp() </pre>
 <div class="labels"></div>
 <div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
@@ -791,15 +808,22 @@ caching of processed values is not neccesary.</p></div>
 </div></div>
 </div>
 <a id="method___subsection_creator_starred"></a><div class="element clickable method protected method___subsection_creator_starred" data-toggle="collapse" data-target=".method___subsection_creator_starred .collapse">
-<h2>__subsection_creator_starred()
-        </h2>
-<pre>__subsection_creator_starred($schema, $starred) </pre>
+<h2>Subfunction used to see if subtree has starred schema's</h2>
+<pre>__subsection_creator_starred(string $schema, string[] $starred) </pre>
 <div class="labels"></div>
 <div class="row collapse"><div class="detail-description">
 <div class="long_description"></div>
+<table class="table table-bordered"><tr>
+<th>returns</th>
+<td>string the starred subsection</td>
+</tr></table>
 <h3>Parameters</h3>
-<div class="subelement argument"><h4>$schema</h4></div>
-<div class="subelement argument"><h4>$starred</h4></div>
+<div class="subelement argument">
+<h4>$schema</h4>
+<code>string</code><p>the schema</p></div>
+<div class="subelement argument">
+<h4>$starred</h4>
+<code>string[]</code><p>the starred ids</p></div>
 </div></div>
 </div>
 <h3>
@@ -820,7 +844,8 @@ caching of processed values is not neccesary.</p></div>
 <h2></h2>
 <pre>$schema_data </pre>
 <div class="labels"></div>
-<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"><p>Is populated with the cached file if the
+URL retrieval generates errors</p></div></div></div>
 </div>
 <a id="property_singleton"> </a><div class="element clickable property private property_singleton" data-toggle="collapse" data-target=".property_singleton .collapse">
 <h2></h2>
@@ -834,13 +859,14 @@ caching of processed values is not neccesary.</p></div>
 <div class="labels"></div>
 <div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
 </div>
-</div></div>
+</div>
+</div>
 </div>
 </div>
 <div class="row"><footer class="span12">
             Template is built using <a href="http://twitter.github.com/bootstrap/">Twitter Bootstrap 2</a> and icons provided by <a href="http://glyphicons.com/">Glyphicons</a>.<br>
             Documentation is powered by <a href="http://www.phpdoc.org/">phpDocumentor 2.0.0a12</a> and<br>
-            generated on 2013-02-18T20:35:07+01:00.<br></footer></div>
+            generated on 2013-02-18T21:16:01+01:00.<br></footer></div>
 </div>
 </body>
 </html>

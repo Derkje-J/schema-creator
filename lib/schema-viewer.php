@@ -6,6 +6,9 @@
   Author: Derk-Jan Karrenbeld
   Author URI: http://derk-jan.com
   
+  @author Derk-Jan Karrenbeld <derk-jan+schema@karrenbeld.info>
+  @version 1.0
+  @package WordPress/Derk-Jan/Schema-Creator/Viewer
 */
 
 if (!class_exists("DJ_SchemaViewer")) 

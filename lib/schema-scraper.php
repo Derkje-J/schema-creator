@@ -15,20 +15,67 @@
 	- dj_schemascraper_cachepath	: Retrieves the schema cache path
 */
 
+/**
+ * Schema Scraper add-in for schema creator
+ * 
+ * This add in will scrape all the schema's from a predifined URL that
+ * provides schema's in a certain JSON format. It enables the schema-
+ * creator base file to dynamically built the schema's. A base file is
+ * provided if there is no internet on the active machine.
+ * 
+ * @author Derk-Jan Karrenbeld <derk-jan+schema@karrenbeld.info>
+ * @version 1.0
+ * @package WordPress/Derk-Jan/Schema-Creator/I18n
+ */
+
 if (!class_exists("DJ_SchemaScraper")) 
 {
+	/**
+	 * The basename of the schema scraper add-in
+	 */
 	define("DJ_SCHEMASCRAPE_BASE", plugin_basename(__FILE__));
+	
+	/**
+	 * The version number of the schema scraper add-in
+	 */
 	define("DJ_SCHEMASCRAPE_VERSION", '1.0');
 	
     if( !class_exists( 'WP_Http' ) )
         include_once( ABSPATH . WPINC. '/class-http.php' );
 	
+	/**
+	 * The Schema Scraper class fetches and processes all the
+	 * schema's from a given URL and is used to provide all the 
+	 * schema's available instead of an hardcoded subsection.
+	 */
 	class DJ_SchemaScraper {
 		
+		/**
+		 * Holds the singleton instance
+		 */
 		private static $singleton;
+		
+		/**
+		 * Holds the values of the options
+		 */
 		private $options;
+		
+		/**
+		 * The fetched schema data from which the schema's are
+		 * generated. Is populated with the cached file if the
+		 * URL retrieval generates errors
+		 */
 		private $schema_data;
+		
+		/**
+		 * The timestamp of the @link $schema_data;
+		 */
 		private $timestamp;
+		
+		/**
+		 * The last error that occured since the last HTTP request
+		 * that loaded this class.
+		 */
 		private $last_error;
 		
 		/**
@@ -78,6 +125,12 @@ if (!class_exists("DJ_SchemaScraper"))
 		
 		/**
 		 * Runs when the admin initializes
+		 * 
+		 * @param string|null $url the url where the JSON resides or null to use the default
+		 * @param string|null $path where the file is cached or null to use the default
+		 * @param string|null $file name of the file or null to use the default
+		 * @param boolean $fetch_disabled the flag that if set disabled any subsequent fetches.
+		 * @returns object|null the schema data or null
 		 */
 		public function get_schema_data( $url = NULL, $path = NULL, $file = NULL, $fetch_disabled = false ) 
 		{
@@ -620,6 +673,7 @@ if (!class_exists("DJ_SchemaScraper"))
 		/**
 		 * Returns true if type is defined
 		 * 
+		 * @param string|object $type the datatype id or object
 		 * @return boolean datatype exists
 		 */
 		public function is_datatype( $type ) {
@@ -672,7 +726,7 @@ if (!class_exists("DJ_SchemaScraper"))
 		}
 		
 		/**
-		 *
+		 * Outputs the scraper cache time field
 		 */
 		function options_scraper_cachetime() {
 			echo '<input type="textfield" size="5" id="scraper_cache_time" name="dj_schema_options[cache_time]" class="schema_textfield options-big" 
@@ -680,7 +734,7 @@ if (!class_exists("DJ_SchemaScraper"))
 		}
 		
 		/**
-		 *
+		 * Outputs the scraper current timestamp information field
 		 */
 		function options_scraper_current_timestamp() {
 			
@@ -696,10 +750,16 @@ if (!class_exists("DJ_SchemaScraper"))
 			echo 'file expiration date: <code>' . $fileexpi  . '</code>.';
 		}
 		
+		/**
+		 * Outputs the scraper creator section paragraph
+		 */
 		function options_creator_section() {
 			
 		}
 		
+		/**
+		 * Outputs the starred schema's
+		 */
 		function options_creator_starred() {
 			$starred = $this->get_option( 'starred_schemas' ) ?: array();
 			$available = $this->get_top_level_schemas();
@@ -714,6 +774,13 @@ if (!class_exists("DJ_SchemaScraper"))
 			echo '</ul>';
 		}
 		
+		/**
+		 * Subfunction used to see if subtree has starred schema's
+		 *
+		 * @param string $schema the schema
+		 * @param string[] $starred the starred ids
+		 * @returns string the starred subsection
+		 */
 		protected function __subsection_creator_starred( $schema, $starred ) {
 			$children = $this->get_schema_descendants( $schema, false );
 			if ( !empty( $children ) ) :

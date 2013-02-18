@@ -18,7 +18,12 @@
 <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse"><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></a><a class="brand" href="../index.html">phpDocumentor</a><div class="nav-collapse"><ul class="nav">
 <li class="dropdown">
 <a href="#api" class="dropdown-toggle" data-toggle="dropdown">
-                                    API Documentation <b class="caret"></b></a><ul class="dropdown-menu"></ul>
+                                    API Documentation <b class="caret"></b></a><ul class="dropdown-menu">
+<li><a>Packages</a></li>
+<li><a href="../packages/Default.html"><i class="icon-folder-open"></i> Default</a></li>
+<li><a href="../packages/WordPress.html"><i class="icon-folder-open"></i> WordPress</a></li>
+<li><a href="../packages/WordPress.Derk-Jan.Schema-Creator.I18n.html"><i class="icon-folder-open"></i> WordPress/Derk-Jan/Schema-Creator/I18n</a></li>
+</ul>
 </li>
 <li class="dropdown" id="charts-menu">
 <a href="#charts" class="dropdown-toggle" data-toggle="dropdown">
@@ -28,7 +33,7 @@
 <a href="#reports" class="dropdown-toggle" data-toggle="dropdown">
                                     Reports <b class="caret"></b></a><ul class="dropdown-menu">
 <li><a href="../errors.html"><i class="icon-remove-sign"></i> Errors 
-                <span class="label label-info">82</span></a></li>
+                <span class="label label-info">37</span></a></li>
 <li><a href="../markers.html"><i class="icon-map-marker"></i> Markers 
                 <ul></ul></a></li>
 <li><a href="../deprecated.html"><i class="icon-stop"></i> Deprecated elements 
@@ -63,15 +68,14 @@
 </ul>
 </li>
 <li class="nav-header protected">» Protected
-                    <ul><li class="method protected "><a href="#method___construct" title="__construct :: "><span class="description">__construct()
-        </span><pre>__construct()</pre></a></li></ul>
+                    <ul><li class="method protected "><a href="#method___construct" title="__construct :: Creates a new instance of the class."><span class="description">Creates a new instance of the class.</span><pre>__construct()</pre></a></li></ul>
 </li>
 <li class="nav-header">
 <i class="icon-custom icon-property"></i> Properties
                     <ul></ul>
 </li>
 <li class="nav-header private">» Private
-                    <ul><li class="property private "><a href="#property_singleton" title="$singleton :: "><span class="description"></span><pre>$singleton</pre></a></li></ul>
+                    <ul><li class="property private "><a href="#property_singleton" title="$singleton :: Holds the singleton"><span class="description"></span><pre>$singleton</pre></a></li></ul>
 </li>
 </ul>
 </div>
@@ -85,7 +89,10 @@
 <span class="divider">\</span><a href="../classes/DJ_SchemaScraperI18n.html">DJ_SchemaScraperI18n</a>
 </li>
 </ul>
-<div class="element class"><div class="details">
+<div class="element class">
+<p class="short_description">The Shema Scraper class</p>
+<div class="details">
+<div class="long_description"></div>
 <h3>
 <i class="icon-custom icon-method"></i> Methods</h3>
 <a id="method_get_filename"></a><div class="element clickable method public method_get_filename" data-toggle="collapse" data-target=".method_get_filename .collapse">
@@ -137,11 +144,17 @@
 <a id="method_singleton"></a><div class="element clickable method public method_singleton" data-toggle="collapse" data-target=".method_singleton .collapse">
 <h2>Gets a singleton of this class</h2>
 <pre>singleton() : <a href="../classes/DJ_SchemaScraperI18n.html">\DJ_SchemaScraperI18n</a></pre>
-<div class="labels"><span class="label">Static</span></div>
+<div class="labels">
+<span class="label label-info">API</span><span class="label">Static</span>
+</div>
 <div class="row collapse"><div class="detail-description">
 <div class="long_description"><p>DJ_SchemaScraperI18n::singleton() will always return the same instance during a
 PHP processing stack. This way actions will not be queued duplicately and
 caching of processed values is not neccesary.</p></div>
+<table class="table table-bordered"><tr>
+<th>api</th>
+<td></td>
+</tr></table>
 <h3>Returns</h3>
 <div class="subelement response">
 <code><a href="../classes/DJ_SchemaScraperI18n.html">\DJ_SchemaScraperI18n</a></code>the singleton instance</div>
@@ -163,11 +176,11 @@ caching of processed values is not neccesary.</p></div>
 </div></div>
 </div>
 <a id="method___construct"></a><div class="element clickable method protected method___construct" data-toggle="collapse" data-target=".method___construct .collapse">
-<h2>__construct()
-        </h2>
+<h2>Creates a new instance of the class.</h2>
 <pre>__construct() </pre>
 <div class="labels"></div>
-<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"><p>Use self::singleton() to get
+the actual instance outside of this (sub)class.</p></div></div></div>
 </div>
 <h3>
 <i class="icon-custom icon-property"></i> Properties</h3>
@@ -177,13 +190,14 @@ caching of processed values is not neccesary.</p></div>
 <div class="labels"></div>
 <div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
 </div>
-</div></div>
+</div>
+</div>
 </div>
 </div>
 <div class="row"><footer class="span12">
             Template is built using <a href="http://twitter.github.com/bootstrap/">Twitter Bootstrap 2</a> and icons provided by <a href="http://glyphicons.com/">Glyphicons</a>.<br>
             Documentation is powered by <a href="http://www.phpdoc.org/">phpDocumentor 2.0.0a12</a> and<br>
-            generated on 2013-02-18T20:35:07+01:00.<br></footer></div>
+            generated on 2013-02-18T21:16:01+01:00.<br></footer></div>
 </div>
 </body>
 </html>

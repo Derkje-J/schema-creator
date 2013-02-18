@@ -41,22 +41,56 @@ Actions Hooks:
 Filters:
 	dj_sc_default_settings		: gets default settings values
 	dj_sc_admin_tooltip			: gets the tooltips for admin pages
-	
-
-
 */
+
+/**
+ * Schema Creator Base
+ *
+ * @version 1.0
+ * @author Derk-Jan Karrenbeld <derk-jan+schema@karrenbeld.info>
+ * @package WordPress\Derk-Jan\Schema-Creator
+ */
 
 if ( !class_exists( "DJ_SchemaCreator" ) ) :
 
+	/**
+	 * Holds the basename for this plugin. 
+	 */ 
 	define('DJ_SCHEMACREATOR_BASE', plugin_basename(__FILE__) );
+	
+	/**
+	 * Current version number of this plugin
+	 */
 	define('DJ_SCHEMACREATOR_VERSION', '1.0');
 
+	/**
+	 * DJ_SchemaCreator base class
+	 *
+	 * @version 1.0
+	 */
 	class DJ_SchemaCreator
 	{
-		private static $singleton;
+		/**
+		 * Holds the singleton instance
+		 */
+		protected static $singleton;
+		
+		/**
+		 * Flag that makes script print verbose information when a schema shortcode is
+		 * processed. This way WP_DEBUG doesn't need to be set to true.
+		 */
 		public $debug = false;
 		
+		/**
+		 * Bitmask that indicates option is not available for schema's that
+		 * are used as root schema (top-level schema's)
+		 */
 		const OptionRootDisabled = 1;
+		
+		/**
+		 * Bitmask that indicates option is not available for schema's that
+		 * are used as embedded schema (sub-level schema's)
+		 */
 		const OptionEmbedDisabled = 2;
 		
 		/**
@@ -66,6 +100,7 @@ if ( !class_exists( "DJ_SchemaCreator" ) ) :
 		 * PHP processing stack. This way actions will not be queued duplicately and 
 		 * caching of processed values is not neccesary.
 		 *
+		 * @api
 		 * @return DJ_SchemaCreator the singleton instance
 		 */
 		public static function singleton() {
@@ -300,7 +335,8 @@ if ( !class_exists( "DJ_SchemaCreator" ) ) :
 		}
 		
 		/**
-		 *
+		 * Sets the options
+		 * @param mixed $options the option values
 		 */
 		function set_options( $options ) {
 			update_option( 'dj_schema_options', $options );
@@ -617,7 +653,11 @@ if ( !class_exists( "DJ_SchemaCreator" ) ) :
 		}
 	
 		/**
-		*/
+		 * Loads the TinyMCE plugin
+		 *
+		 * @param string[] $plugins_array paths of plugins array
+		 * @returns string[] the new paths of plugins array
+		 */
 		function mce_plugin( $plugins_array ) {
 			$plugins_array['schemaadmineditor'] = plugins_url( '/lib/js/schema-admin-editor/editor_plugin.js', __FILE__);
 			return $plugins_array;
@@ -780,6 +820,9 @@ if ( !class_exists( "DJ_SchemaCreator" ) ) :
 
 		/**
 		 * Gets the i18n translation of the string
+		 *
+		 * @param string $string string to translate
+		 * @returns string the translated string
 		 */
 		public function get_i18n( $string ) {
 			
@@ -792,6 +835,7 @@ if ( !class_exists( "DJ_SchemaCreator" ) ) :
 		
 		/**
 		 * Gets the countries and their translated counterparts
+		 * @returns string[] the countries
 		 */
 		public function get_countries() {
 			$countries = array (
@@ -1076,12 +1120,10 @@ if ( !class_exists( "DJ_SchemaCreator" ) ) :
 
 		/**
 		 * Gets the schema datatypes
-
 		 *
+		 * @param mixed $_argument the ajax argument
+		 * @param boolean $ajax using ajax
 		 * @returns JSON encoded array datatypes
-
-
-
 		 */
 		public function get_schema_datatypes( $_argument = '', $ajax = true ) {
 			
@@ -1115,9 +1157,11 @@ if ( !class_exists( "DJ_SchemaCreator" ) ) :
 			return $results;
 		}
 	
-			/**
+		/**
 		 * Gets the schema types
 		 *
+		 * @param mixed $_argument the ajax argument
+		 * @param boolean $ajax using ajax
 		 * @returns JSON encoded array of siblings, parents, children and select type of a type
 		 */
 		public function get_schema_types( $_argument = '', $ajax = true ) {
@@ -1197,7 +1241,8 @@ if ( !class_exists( "DJ_SchemaCreator" ) ) :
 		/**
 		 * Gets the properties of a schema
 		 *
-		 * @ajax set to false to return insteaf of encode
+		 * @param mixed $_argument the ajax argument
+		 * @param boolean $ajax using ajax
 		 * @returns encoded json or array 
 		 */
 		function get_schema_properties( $_argument = '', $ajax = true ) {
@@ -1250,7 +1295,11 @@ if ( !class_exists( "DJ_SchemaCreator" ) ) :
 		}
 		
 		/**
+		 * Checks if property is root disabled
 		 *
+		 * @param string $type the schema type to check for
+		 * @param string $property the property to check for
+		 * @returns boolean true if schema::property is root disabled
 		 */
 		public function is_root_disabled( $type, $property ) {
 			
@@ -1264,7 +1313,11 @@ if ( !class_exists( "DJ_SchemaCreator" ) ) :
 		}
 		
 		/**
+		 * Checks if property is embed disabled
 		 *
+		 * @param string $type the schema type to check for
+		 * @param string $property the property to check for
+		 * @returns boolean true if schema::property is embed disabled
 		 */
 		public function is_embed_disabled( $type, $property ) {
 
@@ -1291,6 +1344,8 @@ if ( !class_exists( "DJ_SchemaCreator" ) ) :
 		/**
 		 * Build out shortcode with variable array of options
 		 *
+		 * @param string $atts shortcode attributes
+		 * @param string|null $content the inner shortcode content
 		 * @return string the replacement
 		 */
 		public function shortcode( $atts, $content = NULL ) 
@@ -1825,8 +1880,15 @@ if ( !class_exists( "DJ_SchemaCreator" ) ) :
 		<?php 
 		}
 		
-		// "This will intercept the version check and increment the current version number by 3.
-		// It's the quick and dirty way to do it without messing with the settings directly..."
+		/**
+		 * Update TinyMCE version
+		 *
+		 * This will intercept the version check and increment the current version number by 3. 
+		 * It's the quick and dirty way to do it without messing with the settings directly... 
+		 *
+		 * @param int $ver current version
+		 * @returns int new version
+		 */
 		function my_refresh_mce($ver) {
 		  $ver += 3;
 		  return $ver;
@@ -1838,6 +1900,7 @@ if ( !class_exists( "DJ_SchemaCreator" ) ) :
 	// Instantiate our class
 	$DJ_SchemaCreator = DJ_SchemaCreator::singleton();
 endif;
+
 // Include modules
 foreach ( glob( plugin_dir_path(__FILE__) . "/lib/*.php" ) as $filename )
     include_once $filename;
