@@ -41,31 +41,74 @@ Actions Hooks:
 Filters:
 	dj_sc_default_settings		: gets default settings values
 	dj_sc_admin_tooltip			: gets the tooltips for admin pages
-	
-
-
 */
+
+/**
+ * Schema Creator Base. 
+ *
+ * @version 1.0
+ * @author Derk-Jan Karrenbeld <derk-jan+schema@karrenbeld.info>
+ * @package WordPress\Derk-Jan\Schema-Creator
+ */
 
 if ( !class_exists( "DJ_SchemaCreator" ) ) :
 
+	/**
+	 * Holds the basename for this plugin. 
+	 */ 
 	define('DJ_SCHEMACREATOR_BASE', plugin_basename(__FILE__) );
+	
+	/**
+	 * Current version number of this plugin. 
+	 */
 	define('DJ_SCHEMACREATOR_VERSION', '1.0');
 
+	/**
+	 * DJ_SchemaCreator base class. 
+	 *
+     * @version 1.0
+     * @author Derk-Jan Karrenbeld <derk-jan+schema@karrenbeld.info>
+     * @package WordPress\Derk-Jan\Schema-Creator
+	 */
 	class DJ_SchemaCreator
 	{
-		private static $singleton;
+		/**
+		 * Holds the singleton instance. 
+		 */
+		protected static $singleton;
+		
+		/**
+		 * Debug flag.
+		 * 
+		 * Flag that makes script print verbose information when a schema shortcode is
+		 * processed. This way WP_DEBUG doesn't need to be set to true.
+		 */
 		public $debug = false;
 		
+		/**
+		 * Root Disabled Bitmask. 
+		 *
+		 * Bitmask that indicates option is not available for schema's that
+		 * are used as root schema (top-level schema's)
+		 */
 		const OptionRootDisabled = 1;
+		
+		/**
+		 * Embed Disabled Bitmask.
+		 *
+		 * Bitmask that indicates option is not available for schema's that
+		 * are used as embedded schema (sub-level schema's)
+		 */
 		const OptionEmbedDisabled = 2;
 		
 		/**
-		 * Gets a singleton of this class
+		 * Gets a singleton of this class. 
 		 *
 		 * DJ_SchemaCreator::singleton() will always return the same instance during a
 		 * PHP processing stack. This way actions will not be queued duplicately and 
 		 * caching of processed values is not neccesary.
 		 *
+		 * @api
 		 * @return DJ_SchemaCreator the singleton instance
 		 */
 		public static function singleton() {
@@ -75,9 +118,9 @@ if ( !class_exists( "DJ_SchemaCreator" ) ) :
 		}
 		
 		/**
-		 * Creates a new instance of DJ_SchemaCreator
+		 * Creates a new instance of DJ_SchemaCreator. 
 		 *
-		 * @link DJ_SchemaCreator::singleton() use outside the class hieracrchy
+		 * @remarks use DJ_SchemaCreator::singleton() outside the class hieracrchy
 		 */
 		protected function __construct() {		
 			// Text domain
@@ -120,14 +163,14 @@ if ( !class_exists( "DJ_SchemaCreator" ) ) :
 		}
 	
 		/**
-		 * Load textdomain for international goodness
+		 * Load textdomain for international goodness. 
 		 */
 		public function plugin_textdomain() {
 			load_plugin_textdomain( 'schema', false, dirname( plugin_basename( __FILE__ ) ) . '/languages/' );
 		}
 	
 		/**
-		 * Shows the settings option on the plugins page
+		 * Shows the settings option on the plugins page. 
 		 * 
 		 * @param string[] $links current links for plugin
 		 * @param string $file plugin file links being fetched for
@@ -151,7 +194,7 @@ if ( !class_exists( "DJ_SchemaCreator" ) ) :
 		}
 	
 		/**
-		 * Adds the `test schema` link to the admin toolbar
+		 * Adds the `test schema` link to the admin toolbar. 
 		 *
 		 * @param object $wp_admin_bar the current admin bar
 		 */
@@ -183,7 +226,7 @@ if ( !class_exists( "DJ_SchemaCreator" ) ) :
 		}
 	
 		/**
-		 * Display metabox for schemas
+		 * Display metabox for schemas. 
 		 *
 		 * @param string $page current page hook
 		 * @param string $context current metabox context
@@ -218,7 +261,7 @@ if ( !class_exists( "DJ_SchemaCreator" ) ) :
 		}
 	
 		/**
-		 * Display checkboxes for disabling the itemprop and itemscope
+		 * Display checkboxes for disabling the itemprop and itemscope. 
 		 */
 		public function schema_post_box( ) {
 			global $post;
@@ -248,7 +291,7 @@ if ( !class_exists( "DJ_SchemaCreator" ) ) :
 		}
 	
 		/**
-		 * Save the data
+		 * Save the data. 
 		 *
 		 * @param int $post_id the current post id
 		 * @return int|void the post id or void
@@ -279,7 +322,7 @@ if ( !class_exists( "DJ_SchemaCreator" ) ) :
 		}
 		
 		/**
-		 * Gets the options value for a key
+		 * Gets the options value for a key. 
 		 * 
 		 * @param string $key the option key
 		 * @return mixed the option value
@@ -290,7 +333,7 @@ if ( !class_exists( "DJ_SchemaCreator" ) ) :
 		}
 		
 		/**
-		 * Gets the options
+		 * Gets the options. 
 		 * @return mixed[] the options;
 		 **/
 		function get_options() {
@@ -300,14 +343,15 @@ if ( !class_exists( "DJ_SchemaCreator" ) ) :
 		}
 		
 		/**
-		 *
+		 * Sets the options. 
+		 * @param mixed $options the option values
 		 */
 		function set_options( $options ) {
 			update_option( 'dj_schema_options', $options );
 		}
 		
 		/**
-		 * Gets the tooltip value for a key
+		 * Gets the tooltip value for a key. 
 		 *
 		 * @param string $key the tooltip key
 		 * @return string the tooltip value
@@ -318,7 +362,7 @@ if ( !class_exists( "DJ_SchemaCreator" ) ) :
 		}
 	
 		/**
-		 * Build settings page
+		 * Build settings page. 
 		 */
 		public function add_pages() {
 			
@@ -333,16 +377,16 @@ if ( !class_exists( "DJ_SchemaCreator" ) ) :
 		}
 		
 		/**
-		 * Gets the page slug name
+		 * Gets the page slug name. 
 		 *
-		 * @returns the page slug
+		 * @return the page slug
 		 */
 		public function get_page_slug() {
 			return 'dj-schema-creator';
 		}
 	
 		/**
-		 * Register settings
+		 * Register settings. 
 		 */
 		public function register_settings() {
 			register_setting( 'dj_schema_options', 'dj_schema_options', array($this, 'options_validate' ) );
@@ -364,7 +408,7 @@ if ( !class_exists( "DJ_SchemaCreator" ) ) :
 		}
 		
 		/**
-		 * Outputs the info section HTML 
+		 * Outputs the info section HTML. 
 		 */
 		function options_info_section() { 
 		?>
@@ -405,7 +449,7 @@ if ( !class_exists( "DJ_SchemaCreator" ) ) :
 		}
 		
 		/**
-		 * Outputs the info version field
+		 * Outputs the info version field. 
 		 */
 		function options_info_version() 
 		{ 
@@ -413,12 +457,12 @@ if ( !class_exists( "DJ_SchemaCreator" ) ) :
 		}
 					
 		/**
-		 * Outputs the display section HTML
+		 * Outputs the display section HTML. 
 		 */
 		function options_display_section() { }
 		
 		/**
-		 * Outputs the display css field
+		 * Outputs the display css field. 
 		 */
 		function options_display_css() { 
 			$css_hide = $this->get_option( 'css' );
@@ -433,12 +477,12 @@ if ( !class_exists( "DJ_SchemaCreator" ) ) :
 		}
 		
 		/**
-		 * Outputs the data section HTML
+		 * Outputs the data section HTML. 
 		 */
 		function options_data_section() { }
 		
 		/**
-		 * Outputs data body field
+		 * Outputs data body field. 
 		 */
 		function options_data_body() { 
 			$body_tag = $this->get_option( 'body' );
@@ -454,7 +498,7 @@ if ( !class_exists( "DJ_SchemaCreator" ) ) :
 		}
 		
 		/** 
-		 * Outputs data post field
+		 * Outputs data post field. 
 		 */
 		function options_data_post() { 
 			$post_tag = $this->get_option( 'post' );
@@ -469,7 +513,7 @@ if ( !class_exists( "DJ_SchemaCreator" ) ) :
 		}
 		
 		/**
-		 * Validates input
+		 * Validates input. 
 		 *
 		 * @param mixed[] $input the to be processed new values
 		 * @return mixed the processed new values
@@ -492,7 +536,7 @@ if ( !class_exists( "DJ_SchemaCreator" ) ) :
 		}
 	
 		/**
-		 * Set default settings
+		 * Set default settings. 
 		 */
 		public function default_settings( ) 
 		{
@@ -504,7 +548,7 @@ if ( !class_exists( "DJ_SchemaCreator" ) ) :
 		}
 		
 		/**
-		 * Gets the default settings
+		 * Gets the default settings. 
 		 *
 		 * @param mixed[] $default current defaults
 		 * @return mixed[] new defaults
@@ -519,7 +563,7 @@ if ( !class_exists( "DJ_SchemaCreator" ) ) :
 		}	
 	
 		/**
-		 * Content for pop-up tooltips
+		 * Content for pop-up tooltips. 
 		 *
 		 * @param string[] $tooltip current tooltips
 		 * @return string[] new tooltips
@@ -539,7 +583,7 @@ if ( !class_exists( "DJ_SchemaCreator" ) ) :
 
 		
 		/**
-		 * Adds ajax headers
+		 * Adds ajax headers. 
 		 */
 		public function do_ajax() {
 			header( 'Cache-Control: no-cache, must-revalidate' );
@@ -548,7 +592,7 @@ if ( !class_exists( "DJ_SchemaCreator" ) ) :
 		}
 	
 		/**
-		 * Display main options page structure
+		 * Display main options page structure. 
 		 */
 		public function do_page() {
 	
@@ -576,7 +620,7 @@ if ( !class_exists( "DJ_SchemaCreator" ) ) :
 	
 	
 		/**
-		 * Load scripts and style for admin settings page
+		 * Load scripts and style for admin settings page. 
 		 * 
 		 * @param string $hook the current page hook
 		 */
@@ -617,14 +661,18 @@ if ( !class_exists( "DJ_SchemaCreator" ) ) :
 		}
 	
 		/**
-		*/
+		 * Loads the TinyMCE plugin. 
+		 *
+		 * @param string[] $plugins_array paths of plugins array
+		 * @return string[] the new paths of plugins array
+		 */
 		function mce_plugin( $plugins_array ) {
 			$plugins_array['schemaadmineditor'] = plugins_url( '/lib/js/schema-admin-editor/editor_plugin.js', __FILE__);
 			return $plugins_array;
 		}
 	
 		/**
-		 * Add attribution link to settings page
+		 * Add attribution link to settings page. 
 		 *
 		 * @param string $text the current footer text
 		 * @return string the new footer text
@@ -656,7 +704,7 @@ if ( !class_exists( "DJ_SchemaCreator" ) ) :
 		}
 	
 		/**
-		 * Load body classes
+		 * Load body classes. 
 		 *
 		 * Outputs itemtype and itemscope when body classes are generated.
 		 *
@@ -693,7 +741,7 @@ if ( !class_exists( "DJ_SchemaCreator" ) ) :
 		}
 	
 		/**
-		 * Load front-end CSS if shortcode is present
+		 * Load front-end CSS if shortcode is present. 
 		 *
 		 * @param object[] $posts the posts to display
 		 * @return object[] the posts to display
@@ -750,7 +798,7 @@ if ( !class_exists( "DJ_SchemaCreator" ) ) :
 		}
 	
 		/**
-		 * wrap content in markup
+		 * wrap content in markup. 
 		 *
 		 * @param string $content the post content
 		 * @return string the proccesed post content
@@ -779,7 +827,10 @@ if ( !class_exists( "DJ_SchemaCreator" ) ) :
 		}
 
 		/**
-		 * Gets the i18n translation of the string
+		 * Gets the i18n translation of the string. 
+		 *
+		 * @param string $string string to translate
+		 * @return string the translated string
 		 */
 		public function get_i18n( $string ) {
 			
@@ -791,7 +842,8 @@ if ( !class_exists( "DJ_SchemaCreator" ) ) :
 		}
 		
 		/**
-		 * Gets the countries and their translated counterparts
+		 * Gets the countries and their translated counterparts. 
+		 * @return string[] the countries
 		 */
 		public function get_countries() {
 			$countries = array (
@@ -1075,13 +1127,11 @@ if ( !class_exists( "DJ_SchemaCreator" ) ) :
 		
 
 		/**
-		 * Gets the schema datatypes
-
+		 * Gets the schema datatypes. 
 		 *
-		 * @returns JSON encoded array datatypes
-
-
-
+		 * @param mixed $_argument the ajax argument
+		 * @param boolean $ajax using ajax
+		 * @return JSON encoded array datatypes
 		 */
 		public function get_schema_datatypes( $_argument = '', $ajax = true ) {
 			
@@ -1115,10 +1165,12 @@ if ( !class_exists( "DJ_SchemaCreator" ) ) :
 			return $results;
 		}
 	
-			/**
-		 * Gets the schema types
+		/**
+		 * Gets the schema types. 
 		 *
-		 * @returns JSON encoded array of siblings, parents, children and select type of a type
+		 * @param mixed $_argument the ajax argument
+		 * @param boolean $ajax using ajax
+		 * @return JSON encoded array of siblings, parents, children and select type of a type
 		 */
 		public function get_schema_types( $_argument = '', $ajax = true ) {
 			
@@ -1195,10 +1247,11 @@ if ( !class_exists( "DJ_SchemaCreator" ) ) :
 		}
 		
 		/**
-		 * Gets the properties of a schema
+		 * Gets the properties of a schema. 
 		 *
-		 * @ajax set to false to return insteaf of encode
-		 * @returns encoded json or array 
+		 * @param mixed $_argument the ajax argument
+		 * @param boolean $ajax using ajax
+		 * @return encoded json or array 
 		 */
 		function get_schema_properties( $_argument = '', $ajax = true ) {
 			if ( $ajax ) :
@@ -1250,7 +1303,11 @@ if ( !class_exists( "DJ_SchemaCreator" ) ) :
 		}
 		
 		/**
+		 * Checks if property is root disabled. 
 		 *
+		 * @param string $type the schema type to check for
+		 * @param string $property the property to check for
+		 * @return boolean true if schema::property is root disabled
 		 */
 		public function is_root_disabled( $type, $property ) {
 			
@@ -1264,7 +1321,11 @@ if ( !class_exists( "DJ_SchemaCreator" ) ) :
 		}
 		
 		/**
+		 * Checks if property is embed disabled. 
 		 *
+		 * @param string $type the schema type to check for
+		 * @param string $property the property to check for
+		 * @return boolean true if schema::property is embed disabled
 		 */
 		public function is_embed_disabled( $type, $property ) {
 
@@ -1280,7 +1341,7 @@ if ( !class_exists( "DJ_SchemaCreator" ) ) :
 		// 
 		
 		/** 
-		 * Gets the scraper class
+		 * Gets the scraper class. 
 		 *
 		 * @return self the scraper singleton instance
 		 */
@@ -1289,8 +1350,10 @@ if ( !class_exists( "DJ_SchemaCreator" ) ) :
 		}
 		
 		/**
-		 * Build out shortcode with variable array of options
+		 * Build out shortcode with variable array of options. 
 		 *
+		 * @param string $atts shortcode attributes
+		 * @param string|null $content the inner shortcode content
 		 * @return string the replacement
 		 */
 		public function shortcode( $atts, $content = NULL ) 
@@ -1325,7 +1388,7 @@ if ( !class_exists( "DJ_SchemaCreator" ) ) :
 		}
 		
 		/**
-		 * Outputs shortcode recursively
+		 * Outputs shortcode recursively. 
 		 *
 		 * @param string $content content to process
 		 * @param string $embed_class class to style embeds with
@@ -1719,7 +1782,7 @@ if ( !class_exists( "DJ_SchemaCreator" ) ) :
 		}
 	
 		/**
-		 * Builds attributes for the shortcode processing
+		 * Builds attributes for the shortcode processing. 
 		 *
 		 * @param string[] $insulate key value array with attributes
 		 * @return string attributes string
@@ -1731,7 +1794,7 @@ if ( !class_exists( "DJ_SchemaCreator" ) ) :
 		}
 	
 		/**
-		 * Add button to top level media row
+		 * Add button to top level media row. 
 		 */
 		public function schema_media_button() {
 	
@@ -1764,7 +1827,7 @@ if ( !class_exists( "DJ_SchemaCreator" ) ) :
 		}
 	
 		/**
-		 * Build form and add into footer
+		 * Build form and add into footer. 
 		 */
 		public function schema_media_form() {
 	
@@ -1825,8 +1888,15 @@ if ( !class_exists( "DJ_SchemaCreator" ) ) :
 		<?php 
 		}
 		
-		// "This will intercept the version check and increment the current version number by 3.
-		// It's the quick and dirty way to do it without messing with the settings directly..."
+		/**
+		 * Update TinyMCE version. 
+		 *
+		 * This will intercept the version check and increment the current version number by 3. 
+		 * It's the quick and dirty way to do it without messing with the settings directly... 
+		 *
+		 * @param int $ver current version
+		 * @return int new version
+		 */
 		function my_refresh_mce($ver) {
 		  $ver += 3;
 		  return $ver;
@@ -1838,6 +1908,7 @@ if ( !class_exists( "DJ_SchemaCreator" ) ) :
 	// Instantiate our class
 	$DJ_SchemaCreator = DJ_SchemaCreator::singleton();
 endif;
+
 // Include modules
 foreach ( glob( plugin_dir_path(__FILE__) . "/lib/*.php" ) as $filename )
     include_once $filename;

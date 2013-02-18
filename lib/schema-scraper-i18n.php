@@ -8,22 +8,56 @@
   Author URI: http://derk-jan.com
 */
 
+/**
+ * Schema Scraper Internationalization add-in for schema creator. 
+ * 
+ * This add in will try to internationalize the scrapped strings
+ * by the Scraper. It simply creates a huge library of i18n-enabled
+ * strings so the pot/po/mo files can be updated.
+ * 
+ * @author Derk-Jan Karrenbeld <derk-jan+schema@karrenbeld.info>
+ * @version 1.0
+ * @package WordPress\Derk-Jan\Schema-Creator\I18n
+ */
+
 if (!class_exists("DJ_SchemaScraperI18n")) 
 {
+	/**
+	 * The basename of the 18n scraper add-in. 
+	 */
 	define("DJ_SCHEMASCRAPEI18N_BASE", plugin_basename(__FILE__));
+	
+	/**
+	 * The version of the i18n scraper add-in. 
+	 */
 	define("DJ_SCHEMASCRAPEI18N_VERSION", '1.0');
 	
+	/**
+	 * The Shema Scraper class. 
+	 * 
+	 * This add in will try to internationalize the scrapped strings
+	 * by the Scraper. It simply creates a huge library of i18n-enabled
+	 * strings so the pot/po/mo files can be updated.
+	 * 
+	 * @author Derk-Jan Karrenbeld <derk-jan+schema@karrenbeld.info>
+	 * @version 1.0
+	 * @package WordPress\Derk-Jan\Schema-Creator\I18n	
+	 */
 	class DJ_SchemaScraperI18n {
 		
+		/**
+		 * Holds the singleton. 
+		 */
 		private static $singleton;
 		
 		/**
-		 * Gets a singleton of this class
+		 * Gets a singleton of this class. 
 		 *
 		 * DJ_SchemaScraperI18n::singleton() will always return the same instance during a
 		 * PHP processing stack. This way actions will not be queued duplicately and 
 		 * caching of processed values is not neccesary.
 		 *
+		 * @api
 		 * @return DJ_SchemaScraperI18n the singleton instance
 		 */
 		public static function singleton() {
@@ -33,7 +67,9 @@ if (!class_exists("DJ_SchemaScraperI18n"))
 		}
 		
 		/**
+		 * Creates a new instance of the class. 
 		 *
+		 * @remarks use DJ_SchemaScraperI18n::singleton() to get the actual instance outside of this (sub)class.
 		 */
 		protected function __construct() 
 		{
@@ -44,7 +80,7 @@ if (!class_exists("DJ_SchemaScraperI18n"))
 		}
 		
 		/**
-		 * Runs when the plugin is activated
+		 * Runs when the plugin is activated. 
 		 */
 		public function on_activated() {
 			
@@ -59,7 +95,9 @@ if (!class_exists("DJ_SchemaScraperI18n"))
 		}
 		
 		/**
-		 *	Get caching path
+		 *	Get caching path. 
+		 *
+		 *  @todo add a filter
 		 *	@return $string path 
 		 */
 		public function get_path() {
@@ -67,7 +105,9 @@ if (!class_exists("DJ_SchemaScraperI18n"))
 		}
 		
 		/**
-		 *	Get caching filename
+		 *	Get caching filename. 
+		 *
+		 *  @todo add a filter
 		 *	@return $string filename
 		 */
 		public function get_filename() {
@@ -75,7 +115,7 @@ if (!class_exists("DJ_SchemaScraperI18n"))
 		}
 		
 		/**
-		 *	On fetched schema data from scraper
+		 *	On fetched schema data from scraper. 
 		 *	@param object $schema_data fetched schema
 		 */
 		public function on_fetch( $schema_data ) {
@@ -99,7 +139,7 @@ if (!class_exists("DJ_SchemaScraperI18n"))
 		}
 		
 		/**
-		 *	Walks the object and looks for strings
+		 *	Walks the object and looks for strings. 
 		 *
 		 *	@param object $object the walked object
 		 *	@param resource $stream filestream
@@ -129,7 +169,7 @@ if (!class_exists("DJ_SchemaScraperI18n"))
 		}
 		
 		/**
-		 *	Runs when plugins are loaded and loads the strings
+		 * Runs when plugins are loaded and loads the strings. 
 		 */
 		public function on_plugins_loaded() {
 			
