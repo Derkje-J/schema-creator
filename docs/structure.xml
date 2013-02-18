@@ -1,0 +1,2119 @@
+<?xml version="1.0" encoding="utf-8"?>
+<project version="2.0.0a12" title="">
+  <file path="dj-schema-creator.php" hash="044c1329566c9ff3b71cc45130bbadaa" package="Default">
+    <include line="1843" type="Include Once" package="Default">
+      <name/>
+    </include>
+    <constant namespace="global" line="51" package="Default">
+      <name>DJ_SCHEMACREATOR_BASE</name>
+      <full_name>\DJ_SCHEMACREATOR_BASE</full_name>
+      <value>plugin_basename(__FILE__)</value>
+    </constant>
+    <constant namespace="global" line="52" package="Default">
+      <name>DJ_SCHEMACREATOR_VERSION</name>
+      <full_name>\DJ_SCHEMACREATOR_VERSION</full_name>
+      <value>'1.0'</value>
+    </constant>
+    <class final="false" abstract="false" namespace="global" line="54" package="Default">
+      <extends/>
+      <name>DJ_SchemaCreator</name>
+      <full_name>\DJ_SchemaCreator</full_name>
+      <constant namespace="global" line="59" package="Default">
+        <name>OptionRootDisabled</name>
+        <full_name>OptionRootDisabled</full_name>
+        <value>1</value>
+      </constant>
+      <constant namespace="global" line="60" package="Default">
+        <name>OptionEmbedDisabled</name>
+        <full_name>OptionEmbedDisabled</full_name>
+        <value>2</value>
+      </constant>
+      <property final="false" static="true" visibility="private" line="56" namespace="global" package="Default">
+        <name>$singleton</name>
+        <default/>
+      </property>
+      <property final="false" static="false" visibility="public" line="57" namespace="global" package="Default">
+        <name>$debug</name>
+        <default>false</default>
+      </property>
+      <method final="false" abstract="false" static="true" visibility="public" namespace="global" line="71" package="Default">
+        <name>singleton</name>
+        <full_name>singleton</full_name>
+        <docblock line="62">
+          <description>Gets a singleton of this class</description>
+          <long-description>&lt;p&gt;DJ_SchemaCreator::singleton() will always return the same instance during a
+PHP processing stack. This way actions will not be queued duplicately and
+caching of processed values is not neccesary.&lt;/p&gt;</long-description>
+          <tag line="62" name="return" description="the singleton instance" type="\DJ_SchemaCreator">
+            <type by_reference="false">\DJ_SchemaCreator</type>
+          </tag>
+        </docblock>
+      </method>
+      <method final="false" abstract="false" static="false" visibility="protected" namespace="global" line="82" package="Default">
+        <name>__construct</name>
+        <full_name>__construct</full_name>
+        <docblock line="77">
+          <description>Creates a new instance of DJ_SchemaCreator</description>
+          <long-description/>
+          <tag line="77" name="link" description="use outside the class hieracrchy" link="DJ_SchemaCreator::singleton()"/>
+        </docblock>
+      </method>
+      <method final="false" abstract="false" static="false" visibility="public" namespace="global" line="125" package="Default">
+        <name>plugin_textdomain</name>
+        <full_name>plugin_textdomain</full_name>
+        <docblock line="122">
+          <description>Load textdomain for international goodness</description>
+          <long-description/>
+        </docblock>
+      </method>
+      <method final="false" abstract="false" static="false" visibility="public" namespace="global" line="137" package="Default">
+        <name>quick_link</name>
+        <full_name>quick_link</full_name>
+        <docblock line="129">
+          <description>Shows the settings option on the plugins page</description>
+          <long-description/>
+          <tag line="129" name="param" description="current links for plugin" type="string[]" variable="$links">
+            <type by_reference="false">string[]</type>
+          </tag>
+          <tag line="129" name="param" description="plugin file links being fetched for" type="string" variable="$file">
+            <type by_reference="false">string</type>
+          </tag>
+          <tag line="129" name="return" description="the links for the plugin" type="string[]">
+            <type by_reference="false">string[]</type>
+          </tag>
+        </docblock>
+        <argument line="137">
+          <name>$links</name>
+          <default/>
+          <type/>
+        </argument>
+        <argument line="137">
+          <name>$file</name>
+          <default/>
+          <type/>
+        </argument>
+      </method>
+      <method final="false" abstract="false" static="false" visibility="public" namespace="global" line="158" package="Default">
+        <name>admin_bar_schema_test</name>
+        <full_name>admin_bar_schema_test</full_name>
+        <docblock line="153">
+          <description>Adds the `test schema` link to the admin toolbar</description>
+          <long-description/>
+          <tag line="153" name="param" description="the current admin bar" type="object" variable="$wp_admin_bar">
+            <type by_reference="false">object</type>
+          </tag>
+        </docblock>
+        <argument line="158">
+          <name>$wp_admin_bar</name>
+          <default/>
+          <type/>
+        </argument>
+      </method>
+      <method final="false" abstract="false" static="false" visibility="public" namespace="global" line="191" package="Default">
+        <name>metabox_schema</name>
+        <full_name>metabox_schema</full_name>
+        <docblock line="185">
+          <description>Display metabox for schemas</description>
+          <long-description/>
+          <tag line="185" name="param" description="current page hook" type="string" variable="$page">
+            <type by_reference="false">string</type>
+          </tag>
+          <tag line="185" name="param" description="current metabox context" type="string" variable="$context">
+            <type by_reference="false">string</type>
+          </tag>
+        </docblock>
+        <argument line="191">
+          <name>$page</name>
+          <default/>
+          <type/>
+        </argument>
+        <argument line="191">
+          <name>$context</name>
+          <default/>
+          <type/>
+        </argument>
+      </method>
+      <method final="false" abstract="false" static="false" visibility="public" namespace="global" line="223" package="Default">
+        <name>schema_post_box</name>
+        <full_name>schema_post_box</full_name>
+        <docblock line="220">
+          <description>Display checkboxes for disabling the itemprop and itemscope</description>
+          <long-description/>
+        </docblock>
+      </method>
+      <method final="false" abstract="false" static="false" visibility="public" namespace="global" line="256" package="Default">
+        <name>save_metabox</name>
+        <full_name>save_metabox</full_name>
+        <docblock line="250">
+          <description>Save the data</description>
+          <long-description/>
+          <tag line="250" name="param" description="the current post id" type="int" variable="$post_id">
+            <type by_reference="false">int</type>
+          </tag>
+          <tag line="250" name="return" description="the post id or void" type="int|void">
+            <type by_reference="false">int</type>
+            <type by_reference="false">void</type>
+          </tag>
+        </docblock>
+        <argument line="256">
+          <name>$post_id</name>
+          <default>0</default>
+          <type/>
+        </argument>
+      </method>
+      <method final="false" abstract="false" static="false" visibility="public" namespace="global" line="287" package="Default">
+        <name>get_option</name>
+        <full_name>get_option</full_name>
+        <docblock line="281">
+          <description>Gets the options value for a key</description>
+          <long-description/>
+          <tag line="281" name="param" description="the option key" type="string" variable="$key">
+            <type by_reference="false">string</type>
+          </tag>
+          <tag line="281" name="return" description="the option value" type="mixed">
+            <type by_reference="false">mixed</type>
+          </tag>
+        </docblock>
+        <argument line="287">
+          <name>$key</name>
+          <default/>
+          <type/>
+        </argument>
+      </method>
+      <method final="false" abstract="false" static="false" visibility="public" namespace="global" line="296" package="Default">
+        <name>get_options</name>
+        <full_name>get_options</full_name>
+        <docblock line="292">
+          <description>Gets the options</description>
+          <long-description/>
+          <tag line="292" name="return" description="the options;" type="mixed[]">
+            <type by_reference="false">mixed[]</type>
+          </tag>
+        </docblock>
+      </method>
+      <method final="false" abstract="false" static="false" visibility="public" namespace="global" line="305" package="Default">
+        <name>set_options</name>
+        <full_name>set_options</full_name>
+        <docblock line="302">
+          <description/>
+          <long-description/>
+        </docblock>
+        <argument line="305">
+          <name>$options</name>
+          <default/>
+          <type/>
+        </argument>
+      </method>
+      <method final="false" abstract="false" static="false" visibility="public" namespace="global" line="315" package="Default">
+        <name>get_tooltip</name>
+        <full_name>get_tooltip</full_name>
+        <docblock line="309">
+          <description>Gets the tooltip value for a key</description>
+          <long-description/>
+          <tag line="309" name="param" description="the tooltip key" type="string" variable="$key">
+            <type by_reference="false">string</type>
+          </tag>
+          <tag line="309" name="return" description="the tooltip value" type="string">
+            <type by_reference="false">string</type>
+          </tag>
+        </docblock>
+        <argument line="315">
+          <name>$key</name>
+          <default/>
+          <type/>
+        </argument>
+      </method>
+      <method final="false" abstract="false" static="false" visibility="public" namespace="global" line="323" package="Default">
+        <name>add_pages</name>
+        <full_name>add_pages</full_name>
+        <docblock line="320">
+          <description>Build settings page</description>
+          <long-description/>
+        </docblock>
+      </method>
+      <method final="false" abstract="false" static="false" visibility="public" namespace="global" line="340" package="Default">
+        <name>get_page_slug</name>
+        <full_name>get_page_slug</full_name>
+        <docblock line="335">
+          <description>Gets the page slug name</description>
+          <long-description/>
+          <tag line="335" name="returns" description="the page slug"/>
+        </docblock>
+      </method>
+      <method final="false" abstract="false" static="false" visibility="public" namespace="global" line="347" package="Default">
+        <name>register_settings</name>
+        <full_name>register_settings</full_name>
+        <docblock line="344">
+          <description>Register settings</description>
+          <long-description/>
+        </docblock>
+      </method>
+      <method final="false" abstract="false" static="false" visibility="public" namespace="global" line="369" package="Default">
+        <name>options_info_section</name>
+        <full_name>options_info_section</full_name>
+        <docblock line="366">
+          <description>Outputs the info section HTML</description>
+          <long-description/>
+        </docblock>
+      </method>
+      <method final="false" abstract="false" static="false" visibility="public" namespace="global" line="410" package="Default">
+        <name>options_info_version</name>
+        <full_name>options_info_version</full_name>
+        <docblock line="407">
+          <description>Outputs the info version field</description>
+          <long-description/>
+        </docblock>
+      </method>
+      <method final="false" abstract="false" static="false" visibility="public" namespace="global" line="418" package="Default">
+        <name>options_display_section</name>
+        <full_name>options_display_section</full_name>
+        <docblock line="415">
+          <description>Outputs the display section HTML</description>
+          <long-description/>
+        </docblock>
+      </method>
+      <method final="false" abstract="false" static="false" visibility="public" namespace="global" line="423" package="Default">
+        <name>options_display_css</name>
+        <full_name>options_display_css</full_name>
+        <docblock line="420">
+          <description>Outputs the display css field</description>
+          <long-description/>
+        </docblock>
+      </method>
+      <method final="false" abstract="false" static="false" visibility="public" namespace="global" line="438" package="Default">
+        <name>options_data_section</name>
+        <full_name>options_data_section</full_name>
+        <docblock line="435">
+          <description>Outputs the data section HTML</description>
+          <long-description/>
+        </docblock>
+      </method>
+      <method final="false" abstract="false" static="false" visibility="public" namespace="global" line="443" package="Default">
+        <name>options_data_body</name>
+        <full_name>options_data_body</full_name>
+        <docblock line="440">
+          <description>Outputs data body field</description>
+          <long-description/>
+        </docblock>
+      </method>
+      <method final="false" abstract="false" static="false" visibility="public" namespace="global" line="459" package="Default">
+        <name>options_data_post</name>
+        <full_name>options_data_post</full_name>
+        <docblock line="456">
+          <description>Outputs data post field</description>
+          <long-description/>
+        </docblock>
+      </method>
+      <method final="false" abstract="false" static="false" visibility="public" namespace="global" line="477" package="Default">
+        <name>options_validate</name>
+        <full_name>options_validate</full_name>
+        <docblock line="471">
+          <description>Validates input</description>
+          <long-description/>
+          <tag line="471" name="param" description="the to be processed new values" type="mixed[]" variable="$input">
+            <type by_reference="false">mixed[]</type>
+          </tag>
+          <tag line="471" name="return" description="the processed new values" type="mixed">
+            <type by_reference="false">mixed</type>
+          </tag>
+        </docblock>
+        <argument line="477">
+          <name>$input</name>
+          <default/>
+          <type/>
+        </argument>
+      </method>
+      <method final="false" abstract="false" static="false" visibility="public" namespace="global" line="497" package="Default">
+        <name>default_settings</name>
+        <full_name>default_settings</full_name>
+        <docblock line="494">
+          <description>Set default settings</description>
+          <long-description/>
+        </docblock>
+      </method>
+      <method final="false" abstract="false" static="false" visibility="public" namespace="global" line="512" package="Default">
+        <name>get_default_settings</name>
+        <full_name>get_default_settings</full_name>
+        <docblock line="506">
+          <description>Gets the default settings</description>
+          <long-description/>
+          <tag line="506" name="param" description="current defaults" type="mixed[]" variable="$default">
+            <type by_reference="false">mixed[]</type>
+          </tag>
+          <tag line="506" name="return" description="new defaults" type="mixed[]">
+            <type by_reference="false">mixed[]</type>
+          </tag>
+        </docblock>
+        <argument line="512">
+          <name>$default</name>
+          <default>array()</default>
+          <type/>
+        </argument>
+      </method>
+      <method final="false" abstract="false" static="false" visibility="public" namespace="global" line="527" package="Default">
+        <name>get_tooltips</name>
+        <full_name>get_tooltips</full_name>
+        <docblock line="521">
+          <description>Content for pop-up tooltips</description>
+          <long-description/>
+          <tag line="521" name="param" description="current tooltips" type="string[]" variable="$tooltip">
+            <type by_reference="false">string[]</type>
+          </tag>
+          <tag line="521" name="return" description="new tooltips" type="string[]">
+            <type by_reference="false">string[]</type>
+          </tag>
+        </docblock>
+        <argument line="527">
+          <name>$tooltip</name>
+          <default>array()</default>
+          <type/>
+        </argument>
+      </method>
+      <method final="false" abstract="false" static="false" visibility="public" namespace="global" line="544" package="Default">
+        <name>do_ajax</name>
+        <full_name>do_ajax</full_name>
+        <docblock line="541">
+          <description>Adds ajax headers</description>
+          <long-description/>
+        </docblock>
+      </method>
+      <method final="false" abstract="false" static="false" visibility="public" namespace="global" line="553" package="Default">
+        <name>do_page</name>
+        <full_name>do_page</full_name>
+        <docblock line="550">
+          <description>Display main options page structure</description>
+          <long-description/>
+        </docblock>
+      </method>
+      <method final="false" abstract="false" static="false" visibility="public" namespace="global" line="583" package="Default">
+        <name>admin_scripts</name>
+        <full_name>admin_scripts</full_name>
+        <docblock line="578">
+          <description>Load scripts and style for admin settings page</description>
+          <long-description/>
+          <tag line="578" name="param" description="the current page hook" type="string" variable="$hook">
+            <type by_reference="false">string</type>
+          </tag>
+        </docblock>
+        <argument line="583">
+          <name>$hook</name>
+          <default/>
+          <type/>
+        </argument>
+      </method>
+      <method final="false" abstract="false" static="false" visibility="public" namespace="global" line="621" package="Default">
+        <name>mce_plugin</name>
+        <full_name>mce_plugin</full_name>
+        <docblock line="619">
+          <description/>
+          <long-description/>
+        </docblock>
+        <argument line="621">
+          <name>$plugins_array</name>
+          <default/>
+          <type/>
+        </argument>
+      </method>
+      <method final="false" abstract="false" static="false" visibility="public" namespace="global" line="632" package="Default">
+        <name>admin_footer_attribution</name>
+        <full_name>admin_footer_attribution</full_name>
+        <docblock line="626">
+          <description>Add attribution link to settings page</description>
+          <long-description/>
+          <tag line="626" name="param" description="the current footer text" type="string" variable="$text">
+            <type by_reference="false">string</type>
+          </tag>
+          <tag line="626" name="return" description="the new footer text" type="string">
+            <type by_reference="false">string</type>
+          </tag>
+        </docblock>
+        <argument line="632">
+          <name>$text</name>
+          <default/>
+          <type/>
+        </argument>
+      </method>
+      <method final="false" abstract="false" static="false" visibility="public" namespace="global" line="666" package="Default">
+        <name>body_class</name>
+        <full_name>body_class</full_name>
+        <docblock line="658">
+          <description>Load body classes</description>
+          <long-description>&lt;p&gt;Outputs itemtype and itemscope when body classes are generated.&lt;/p&gt;</long-description>
+          <tag line="658" name="param" description="current body classes" type="string[]" variable="$classes">
+            <type by_reference="false">string[]</type>
+          </tag>
+          <tag line="658" name="return" description="new body classes" type="string[]">
+            <type by_reference="false">string[]</type>
+          </tag>
+        </docblock>
+        <argument line="666">
+          <name>$classes</name>
+          <default/>
+          <type/>
+        </argument>
+      </method>
+      <method final="false" abstract="false" static="false" visibility="public" namespace="global" line="701" package="Default">
+        <name>schema_loader</name>
+        <full_name>schema_loader</full_name>
+        <docblock line="695">
+          <description>Load front-end CSS if shortcode is present</description>
+          <long-description/>
+          <tag line="695" name="param" description="the posts to display" type="object[]" variable="$posts">
+            <type by_reference="false">object[]</type>
+          </tag>
+          <tag line="695" name="return" description="the posts to display" type="object[]">
+            <type by_reference="false">object[]</type>
+          </tag>
+        </docblock>
+        <argument line="701">
+          <name>$posts</name>
+          <default/>
+          <type/>
+        </argument>
+      </method>
+      <method final="false" abstract="false" static="false" visibility="public" namespace="global" line="758" package="Default">
+        <name>schema_wrapper</name>
+        <full_name>schema_wrapper</full_name>
+        <docblock line="752">
+          <description>wrap content in markup</description>
+          <long-description/>
+          <tag line="752" name="param" description="the post content" type="string" variable="$content">
+            <type by_reference="false">string</type>
+          </tag>
+          <tag line="752" name="return" description="the proccesed post content" type="string">
+            <type by_reference="false">string</type>
+          </tag>
+        </docblock>
+        <argument line="758">
+          <name>$content</name>
+          <default/>
+          <type/>
+        </argument>
+      </method>
+      <method final="false" abstract="false" static="false" visibility="public" namespace="global" line="784" package="Default">
+        <name>get_i18n</name>
+        <full_name>get_i18n</full_name>
+        <docblock line="781">
+          <description>Gets the i18n translation of the string</description>
+          <long-description/>
+        </docblock>
+        <argument line="784">
+          <name>$string</name>
+          <default/>
+          <type/>
+        </argument>
+      </method>
+      <method final="false" abstract="false" static="false" visibility="public" namespace="global" line="796" package="Default">
+        <name>get_countries</name>
+        <full_name>get_countries</full_name>
+        <docblock line="793">
+          <description>Gets the countries and their translated counterparts</description>
+          <long-description/>
+        </docblock>
+      </method>
+      <method final="false" abstract="false" static="false" visibility="public" namespace="global" line="1086" package="Default">
+        <name>get_schema_datatypes</name>
+        <full_name>get_schema_datatypes</full_name>
+        <docblock line="1077">
+          <description>Gets the schema datatypes</description>
+          <long-description/>
+          <tag line="1077" name="returns" description="JSON encoded array datatypes"/>
+        </docblock>
+        <argument line="1086">
+          <name>$_argument</name>
+          <default>''</default>
+          <type/>
+        </argument>
+        <argument line="1086">
+          <name>$ajax</name>
+          <default>true</default>
+          <type/>
+        </argument>
+      </method>
+      <method final="false" abstract="false" static="false" visibility="public" namespace="global" line="1123" package="Default">
+        <name>get_schema_types</name>
+        <full_name>get_schema_types</full_name>
+        <docblock line="1118">
+          <description>Gets the schema types</description>
+          <long-description/>
+          <tag line="1118" name="returns" description="JSON encoded array of siblings, parents, children and select type of a type"/>
+        </docblock>
+        <argument line="1123">
+          <name>$_argument</name>
+          <default>''</default>
+          <type/>
+        </argument>
+        <argument line="1123">
+          <name>$ajax</name>
+          <default>true</default>
+          <type/>
+        </argument>
+      </method>
+      <method final="false" abstract="false" static="false" visibility="public" namespace="global" line="1203" package="Default">
+        <name>get_schema_properties</name>
+        <full_name>get_schema_properties</full_name>
+        <docblock line="1197">
+          <description>Gets the properties of a schema</description>
+          <long-description/>
+          <tag line="1197" name="ajax" description="set to false to return insteaf of encode"/>
+          <tag line="1197" name="returns" description="encoded json or array"/>
+        </docblock>
+        <argument line="1203">
+          <name>$_argument</name>
+          <default>''</default>
+          <type/>
+        </argument>
+        <argument line="1203">
+          <name>$ajax</name>
+          <default>true</default>
+          <type/>
+        </argument>
+      </method>
+      <method final="false" abstract="false" static="false" visibility="public" namespace="global" line="1255" package="Default">
+        <name>is_root_disabled</name>
+        <full_name>is_root_disabled</full_name>
+        <docblock line="1252">
+          <description/>
+          <long-description/>
+        </docblock>
+        <argument line="1255">
+          <name>$type</name>
+          <default/>
+          <type/>
+        </argument>
+        <argument line="1255">
+          <name>$property</name>
+          <default/>
+          <type/>
+        </argument>
+      </method>
+      <method final="false" abstract="false" static="false" visibility="public" namespace="global" line="1269" package="Default">
+        <name>is_embed_disabled</name>
+        <full_name>is_embed_disabled</full_name>
+        <docblock line="1266">
+          <description/>
+          <long-description/>
+        </docblock>
+        <argument line="1269">
+          <name>$type</name>
+          <default/>
+          <type/>
+        </argument>
+        <argument line="1269">
+          <name>$property</name>
+          <default/>
+          <type/>
+        </argument>
+      </method>
+      <method final="false" abstract="false" static="false" visibility="public" namespace="global" line="1287" package="Default">
+        <name>get_scraper</name>
+        <full_name>get_scraper</full_name>
+        <docblock line="1282">
+          <description>Gets the scraper class</description>
+          <long-description/>
+          <tag line="1282" name="return" description="the scraper singleton instance" type="self">
+            <type by_reference="false">self</type>
+          </tag>
+        </docblock>
+      </method>
+      <method final="false" abstract="false" static="false" visibility="public" namespace="global" line="1296" package="Default">
+        <name>shortcode</name>
+        <full_name>shortcode</full_name>
+        <docblock line="1291">
+          <description>Build out shortcode with variable array of options</description>
+          <long-description/>
+          <tag line="1291" name="return" description="the replacement" type="string">
+            <type by_reference="false">string</type>
+          </tag>
+        </docblock>
+        <argument line="1296">
+          <name>$atts</name>
+          <default/>
+          <type/>
+        </argument>
+        <argument line="1296">
+          <name>$content</name>
+          <default>NULL</default>
+          <type/>
+        </argument>
+      </method>
+      <method final="false" abstract="false" static="false" visibility="public" namespace="global" line="1334" package="Default">
+        <name>shortcode_recursive</name>
+        <full_name>shortcode_recursive</full_name>
+        <docblock line="1327">
+          <description>Outputs shortcode recursively</description>
+          <long-description/>
+          <tag line="1327" name="param" description="content to process" type="string" variable="$content">
+            <type by_reference="false">string</type>
+          </tag>
+          <tag line="1327" name="param" description="class to style embeds with" type="string" variable="$embed_class">
+            <type by_reference="false">string</type>
+          </tag>
+          <tag line="1327" name="return" description="processed content" type="string">
+            <type by_reference="false">string</type>
+          </tag>
+        </docblock>
+        <argument line="1334">
+          <name>$content</name>
+          <default/>
+          <type/>
+        </argument>
+        <argument line="1334">
+          <name>$embed_class</name>
+          <default>''</default>
+          <type/>
+        </argument>
+      </method>
+      <method final="false" abstract="false" static="false" visibility="public" namespace="global" line="1727" package="Default">
+        <name>shortcode_build_attributes</name>
+        <full_name>shortcode_build_attributes</full_name>
+        <docblock line="1721">
+          <description>Builds attributes for the shortcode processing</description>
+          <long-description/>
+          <tag line="1721" name="param" description="key value array with attributes" type="string[]" variable="$insulate">
+            <type by_reference="false">string[]</type>
+          </tag>
+          <tag line="1721" name="return" description="attributes string" type="string">
+            <type by_reference="false">string</type>
+          </tag>
+        </docblock>
+        <argument line="1727">
+          <name>$insulate</name>
+          <default/>
+          <type/>
+        </argument>
+      </method>
+      <method final="false" abstract="false" static="false" visibility="public" namespace="global" line="1736" package="Default">
+        <name>schema_media_button</name>
+        <full_name>schema_media_button</full_name>
+        <docblock line="1733">
+          <description>Add button to top level media row</description>
+          <long-description/>
+        </docblock>
+      </method>
+      <method final="false" abstract="false" static="false" visibility="public" namespace="global" line="1769" package="Default">
+        <name>schema_media_form</name>
+        <full_name>schema_media_form</full_name>
+        <docblock line="1766">
+          <description>Build form and add into footer</description>
+          <long-description/>
+        </docblock>
+      </method>
+      <method final="false" abstract="false" static="false" visibility="public" namespace="global" line="1830" package="Default">
+        <name>my_refresh_mce</name>
+        <full_name>my_refresh_mce</full_name>
+        <argument line="1830">
+          <name>$ver</name>
+          <default/>
+          <type/>
+        </argument>
+      </method>
+    </class>
+    <parse_markers>
+      <error line="0" code="50007">No page-level DocBlock was found in file dj-schema-creator.php</error>
+      <error line="54" code="50000">No DocBlock was found for \DJ_SchemaCreator</error>
+      <error line="56" code="50018">No DocBlock was found for property $singleton</error>
+      <error line="57" code="50018">No DocBlock was found for property $debug</error>
+      <error line="302" code="50012">No short description for method set_options()</error>
+      <error line="302" code="50015">Argument $options is missing from the Docblock of set_options()</error>
+      <error line="619" code="50012">No short description for method mce_plugin()</error>
+      <error line="619" code="50015">Argument $plugins_array is missing from the Docblock of mce_plugin()</error>
+      <error line="781" code="50015">Argument $string is missing from the Docblock of get_i18n()</error>
+      <error line="1077" code="50015">Argument $_argument is missing from the Docblock of get_schema_datatypes()</error>
+      <error line="1077" code="50015">Argument $ajax is missing from the Docblock of get_schema_datatypes()</error>
+      <error line="1118" code="50015">Argument $_argument is missing from the Docblock of get_schema_types()</error>
+      <error line="1118" code="50015">Argument $ajax is missing from the Docblock of get_schema_types()</error>
+      <error line="1197" code="50015">Argument $_argument is missing from the Docblock of get_schema_properties()</error>
+      <error line="1197" code="50015">Argument $ajax is missing from the Docblock of get_schema_properties()</error>
+      <error line="1252" code="50012">No short description for method is_root_disabled()</error>
+      <error line="1252" code="50015">Argument $type is missing from the Docblock of is_root_disabled()</error>
+      <error line="1252" code="50015">Argument $property is missing from the Docblock of is_root_disabled()</error>
+      <error line="1266" code="50012">No short description for method is_embed_disabled()</error>
+      <error line="1266" code="50015">Argument $type is missing from the Docblock of is_embed_disabled()</error>
+      <error line="1266" code="50015">Argument $property is missing from the Docblock of is_embed_disabled()</error>
+      <error line="1291" code="50015">Argument $atts is missing from the Docblock of shortcode()</error>
+      <error line="1291" code="50015">Argument $content is missing from the Docblock of shortcode()</error>
+      <error line="1830" code="50010">No DocBlock was found for method my_refresh_mce()</error>
+    </parse_markers>
+  </file>
+  <file path="lib\res\schema-scraper-i18n-strings.php" hash="261eb6d269fd66b8e32b3e230df0d37c" package="Default">
+    <parse_markers>
+      <error line="0" code="50007">No page-level DocBlock was found in file lib\res\schema-scraper-i18n-strings.php</error>
+    </parse_markers>
+  </file>
+  <file path="lib\schema-scraper-i18n.php" hash="f870498af93742f38afa05058bc41c51" package="Default">
+    <include line="141" type="Include Once" package="Default">
+      <name/>
+    </include>
+    <include line="146" type="Include Once" package="Default">
+      <name/>
+    </include>
+    <constant namespace="global" line="13" package="Default">
+      <name>DJ_SCHEMASCRAPEI18N_BASE</name>
+      <full_name>\DJ_SCHEMASCRAPEI18N_BASE</full_name>
+      <value>plugin_basename(__FILE__)</value>
+    </constant>
+    <constant namespace="global" line="14" package="Default">
+      <name>DJ_SCHEMASCRAPEI18N_VERSION</name>
+      <full_name>\DJ_SCHEMASCRAPEI18N_VERSION</full_name>
+      <value>'1.0'</value>
+    </constant>
+    <class final="false" abstract="false" namespace="global" line="16" package="Default">
+      <extends/>
+      <name>DJ_SchemaScraperI18n</name>
+      <full_name>\DJ_SchemaScraperI18n</full_name>
+      <property final="false" static="true" visibility="private" line="18" namespace="global" package="Default">
+        <name>$singleton</name>
+        <default/>
+      </property>
+      <method final="false" abstract="false" static="true" visibility="public" namespace="global" line="29" package="Default">
+        <name>singleton</name>
+        <full_name>singleton</full_name>
+        <docblock line="20">
+          <description>Gets a singleton of this class</description>
+          <long-description>&lt;p&gt;DJ_SchemaScraperI18n::singleton() will always return the same instance during a
+PHP processing stack. This way actions will not be queued duplicately and
+caching of processed values is not neccesary.&lt;/p&gt;</long-description>
+          <tag line="20" name="return" description="the singleton instance" type="\DJ_SchemaScraperI18n">
+            <type by_reference="false">\DJ_SchemaScraperI18n</type>
+          </tag>
+        </docblock>
+      </method>
+      <method final="false" abstract="false" static="false" visibility="protected" namespace="global" line="38" package="Default">
+        <name>__construct</name>
+        <full_name>__construct</full_name>
+        <docblock line="35">
+          <description/>
+          <long-description/>
+        </docblock>
+      </method>
+      <method final="false" abstract="false" static="false" visibility="public" namespace="global" line="49" package="Default">
+        <name>on_activated</name>
+        <full_name>on_activated</full_name>
+        <docblock line="46">
+          <description>Runs when the plugin is activated</description>
+          <long-description/>
+        </docblock>
+      </method>
+      <method final="false" abstract="false" static="false" visibility="public" namespace="global" line="65" package="Default">
+        <name>get_path</name>
+        <full_name>get_path</full_name>
+        <docblock line="61">
+          <description>Get caching path</description>
+          <long-description/>
+          <tag line="61" name="return" description="path" type="\$string">
+            <type by_reference="false">\$string</type>
+          </tag>
+        </docblock>
+      </method>
+      <method final="false" abstract="false" static="false" visibility="public" namespace="global" line="73" package="Default">
+        <name>get_filename</name>
+        <full_name>get_filename</full_name>
+        <docblock line="69">
+          <description>Get caching filename</description>
+          <long-description/>
+          <tag line="69" name="return" description="filename" type="\$string">
+            <type by_reference="false">\$string</type>
+          </tag>
+        </docblock>
+      </method>
+      <method final="false" abstract="false" static="false" visibility="public" namespace="global" line="81" package="Default">
+        <name>on_fetch</name>
+        <full_name>on_fetch</full_name>
+        <docblock line="77">
+          <description>On fetched schema data from scraper</description>
+          <long-description/>
+          <tag line="77" name="param" description="fetched schema" type="object" variable="$schema_data">
+            <type by_reference="false">object</type>
+          </tag>
+        </docblock>
+        <argument line="81">
+          <name>$schema_data</name>
+          <default/>
+          <type/>
+        </argument>
+      </method>
+      <method final="false" abstract="false" static="false" visibility="public" namespace="global" line="107" package="Default">
+        <name>walk_object_for_strings</name>
+        <full_name>walk_object_for_strings</full_name>
+        <docblock line="101">
+          <description>Walks the object and looks for strings</description>
+          <long-description/>
+          <tag line="101" name="param" description="the walked object" type="object" variable="$object">
+            <type by_reference="false">object</type>
+          </tag>
+          <tag line="101" name="param" description="filestream" type="resource" variable="$stream">
+            <type by_reference="false">resource</type>
+          </tag>
+        </docblock>
+        <argument line="107">
+          <name>$object</name>
+          <default/>
+          <type/>
+        </argument>
+        <argument line="107">
+          <name>$stream</name>
+          <default/>
+          <type/>
+        </argument>
+      </method>
+      <method final="false" abstract="false" static="false" visibility="public" namespace="global" line="134" package="Default">
+        <name>on_plugins_loaded</name>
+        <full_name>on_plugins_loaded</full_name>
+        <docblock line="131">
+          <description>Runs when plugins are loaded and loads the strings</description>
+          <long-description/>
+        </docblock>
+      </method>
+    </class>
+    <parse_markers>
+      <error line="0" code="50007">No page-level DocBlock was found in file lib\schema-scraper-i18n.php</error>
+      <error line="16" code="50000">No DocBlock was found for \DJ_SchemaScraperI18n</error>
+      <error line="18" code="50018">No DocBlock was found for property $singleton</error>
+      <error line="35" code="50012">No short description for method __construct()</error>
+    </parse_markers>
+  </file>
+  <file path="lib\schema-scraper.php" hash="eb6a8da92a8c92a070a79928f66a4752" package="Default">
+    <include line="24" type="Include Once" package="Default">
+      <name/>
+    </include>
+    <constant namespace="global" line="20" package="Default">
+      <name>DJ_SCHEMASCRAPE_BASE</name>
+      <full_name>\DJ_SCHEMASCRAPE_BASE</full_name>
+      <value>plugin_basename(__FILE__)</value>
+    </constant>
+    <constant namespace="global" line="21" package="Default">
+      <name>DJ_SCHEMASCRAPE_VERSION</name>
+      <full_name>\DJ_SCHEMASCRAPE_VERSION</full_name>
+      <value>'1.0'</value>
+    </constant>
+    <class final="false" abstract="false" namespace="global" line="26" package="Default">
+      <extends/>
+      <name>DJ_SchemaScraper</name>
+      <full_name>\DJ_SchemaScraper</full_name>
+      <property final="false" static="true" visibility="private" line="28" namespace="global" package="Default">
+        <name>$singleton</name>
+        <default/>
+      </property>
+      <property final="false" static="false" visibility="private" line="29" namespace="global" package="Default">
+        <name>$options</name>
+        <default/>
+      </property>
+      <property final="false" static="false" visibility="private" line="30" namespace="global" package="Default">
+        <name>$schema_data</name>
+        <default/>
+      </property>
+      <property final="false" static="false" visibility="private" line="31" namespace="global" package="Default">
+        <name>$timestamp</name>
+        <default/>
+      </property>
+      <property final="false" static="false" visibility="private" line="32" namespace="global" package="Default">
+        <name>$last_error</name>
+        <default/>
+      </property>
+      <method final="false" abstract="false" static="true" visibility="public" namespace="global" line="43" package="Default">
+        <name>singleton</name>
+        <full_name>singleton</full_name>
+        <docblock line="34">
+          <description>Gets a singleton of this class</description>
+          <long-description>&lt;p&gt;DJ_SchemaScraper::singleton() will always return the same instance during a
+PHP processing stack. This way actions will not be queued duplicately and
+caching of processed values is not neccesary.&lt;/p&gt;</long-description>
+          <tag line="34" name="return" description="the singleton instance" type="\DJ_SchemaScraper">
+            <type by_reference="false">\DJ_SchemaScraper</type>
+          </tag>
+        </docblock>
+      </method>
+      <method final="false" abstract="false" static="false" visibility="protected" namespace="global" line="54" package="Default">
+        <name>__construct</name>
+        <full_name>__construct</full_name>
+        <docblock line="49">
+          <description>Creates a new instance of DJ_SchemaScraper</description>
+          <long-description/>
+          <tag line="49" name="link" description="use outside the class hieracrchy" link="DJ_SchemaScraper::singleton()"/>
+        </docblock>
+      </method>
+      <method final="false" abstract="false" static="false" visibility="public" namespace="global" line="73" package="Default">
+        <name>get_option</name>
+        <full_name>get_option</full_name>
+        <docblock line="67">
+          <description>Gets an option value by key</description>
+          <long-description/>
+          <tag line="67" name="param" description="the option key" type="string" variable="$key">
+            <type by_reference="false">string</type>
+          </tag>
+          <tag line="67" name="return" description="the option value" type="mixed">
+            <type by_reference="false">mixed</type>
+          </tag>
+        </docblock>
+        <argument line="73">
+          <name>$key</name>
+          <default/>
+          <type/>
+        </argument>
+      </method>
+      <method final="false" abstract="false" static="false" visibility="public" namespace="global" line="82" package="Default">
+        <name>get_schema_data</name>
+        <full_name>get_schema_data</full_name>
+        <docblock line="79">
+          <description>Runs when the admin initializes</description>
+          <long-description/>
+        </docblock>
+        <argument line="82">
+          <name>$url</name>
+          <default>NULL</default>
+          <type/>
+        </argument>
+        <argument line="82">
+          <name>$path</name>
+          <default>NULL</default>
+          <type/>
+        </argument>
+        <argument line="82">
+          <name>$file</name>
+          <default>NULL</default>
+          <type/>
+        </argument>
+        <argument line="82">
+          <name>$fetch_disabled</name>
+          <default>false</default>
+          <type/>
+        </argument>
+      </method>
+      <method final="false" abstract="false" static="false" visibility="public" namespace="global" line="175" package="Default">
+        <name>notice_fetch</name>
+        <full_name>notice_fetch</full_name>
+        <docblock line="172">
+          <description>Fetches notices</description>
+          <long-description/>
+        </docblock>
+      </method>
+      <method final="false" abstract="false" static="false" visibility="public" namespace="global" line="186" package="Default">
+        <name>get_document</name>
+        <full_name>get_document</full_name>
+        <docblock line="180">
+          <description>Gets a document over an HTTP request</description>
+          <long-description/>
+          <tag line="180" name="param" description="the url to the scrapped database" type="string" variable="$url">
+            <type by_reference="false">string</type>
+          </tag>
+          <tag line="180" name="return" description="the body of the document or http error" type="string|object">
+            <type by_reference="false">string</type>
+            <type by_reference="false">object</type>
+          </tag>
+        </docblock>
+        <argument line="186">
+          <name>$url</name>
+          <default/>
+          <type/>
+        </argument>
+      </method>
+      <method final="false" abstract="false" static="false" visibility="public" namespace="global" line="199" package="Default">
+        <name>get_validation_date</name>
+        <full_name>get_validation_date</full_name>
+        <docblock line="194">
+          <description>Gets date till witch this schema is valid</description>
+          <long-description/>
+          <tag line="194" name="return" description="strtotime valid timestamp string" type="string">
+            <type by_reference="false">string</type>
+          </tag>
+        </docblock>
+      </method>
+      <method final="false" abstract="false" static="false" visibility="public" namespace="global" line="208" package="Default">
+        <name>get_schemas</name>
+        <full_name>get_schemas</full_name>
+        <docblock line="203">
+          <description>Get all the schema types</description>
+          <long-description/>
+          <tag line="203" name="return" description="array of objects by type name" type="object[]">
+            <type by_reference="false">object[]</type>
+          </tag>
+        </docblock>
+      </method>
+      <method final="false" abstract="false" static="false" visibility="public" namespace="global" line="218" package="Default">
+        <name>get_schema</name>
+        <full_name>get_schema</full_name>
+        <docblock line="212">
+          <description>Get the schema for a type</description>
+          <long-description/>
+          <tag line="212" name="param" description="either string or type object" type="string|object" variable="$type">
+            <type by_reference="false">string</type>
+            <type by_reference="false">object</type>
+          </tag>
+          <tag line="212" name="return" description="the type object" type="object">
+            <type by_reference="false">object</type>
+          </tag>
+        </docblock>
+        <argument line="218">
+          <name>$type</name>
+          <default/>
+          <type/>
+        </argument>
+      </method>
+      <method final="false" abstract="false" static="false" visibility="public" namespace="global" line="230" package="Default">
+        <name>get_schema_id</name>
+        <full_name>get_schema_id</full_name>
+        <docblock line="224">
+          <description>Gets the schema's id</description>
+          <long-description/>
+          <tag line="224" name="param" description="either string or type object" type="string|object" variable="$type">
+            <type by_reference="false">string</type>
+            <type by_reference="false">object</type>
+          </tag>
+          <tag line="224" name="return" description="the type id" type="object">
+            <type by_reference="false">object</type>
+          </tag>
+        </docblock>
+        <argument line="230">
+          <name>$type</name>
+          <default/>
+          <type/>
+        </argument>
+      </method>
+      <method final="false" abstract="false" static="false" visibility="public" namespace="global" line="240" package="Default">
+        <name>get_top_level_schemas</name>
+        <full_name>get_top_level_schemas</full_name>
+        <docblock line="235">
+          <description>Gets the schemas with no parents</description>
+          <long-description/>
+          <tag line="235" name="return" description="the top level schemas" type="string[]">
+            <type by_reference="false">string[]</type>
+          </tag>
+        </docblock>
+      </method>
+      <method final="false" abstract="false" static="false" visibility="public" namespace="global" line="257" package="Default">
+        <name>get_schema_ancestors</name>
+        <full_name>get_schema_ancestors</full_name>
+        <docblock line="250">
+          <description>Get all the ancestors of a type</description>
+          <long-description/>
+          <tag line="250" name="param" description="either string or type object" type="string|object" variable="$type">
+            <type by_reference="false">string</type>
+            <type by_reference="false">object</type>
+          </tag>
+          <tag line="250" name="param" description="grap recursively flag" type="boolean" variable="$recursive">
+            <type by_reference="false">boolean</type>
+          </tag>
+          <tag line="250" name="return" description="type names of the ancestors" type="string[]">
+            <type by_reference="false">string[]</type>
+          </tag>
+        </docblock>
+        <argument line="257">
+          <name>$type</name>
+          <default/>
+          <type/>
+        </argument>
+        <argument line="257">
+          <name>$recursive</name>
+          <default>true</default>
+          <type/>
+        </argument>
+      </method>
+      <method final="false" abstract="false" static="false" visibility="public" namespace="global" line="269" package="Default">
+        <name>get_schema_descendants</name>
+        <full_name>get_schema_descendants</full_name>
+        <docblock line="262">
+          <description>Get schema descendants</description>
+          <long-description/>
+          <tag line="262" name="param" description="either string or type object" type="string|object" variable="$type">
+            <type by_reference="false">string</type>
+            <type by_reference="false">object</type>
+          </tag>
+          <tag line="262" name="param" description="grap recursively flag" type="boolean" variable="$recursive">
+            <type by_reference="false">boolean</type>
+          </tag>
+          <tag line="262" name="return" description="type names of the descendants" type="string[]|\string[][]">
+            <type by_reference="false">string[]</type>
+            <type by_reference="false">\string[][]</type>
+          </tag>
+        </docblock>
+        <argument line="269">
+          <name>$type</name>
+          <default/>
+          <type/>
+        </argument>
+        <argument line="269">
+          <name>$recursive</name>
+          <default>true</default>
+          <type/>
+        </argument>
+      </method>
+      <method final="false" abstract="false" static="false" visibility="public" namespace="global" line="289" package="Default">
+        <name>get_schema_siblings</name>
+        <full_name>get_schema_siblings</full_name>
+        <docblock line="283">
+          <description>Gets schema siblings</description>
+          <long-description/>
+          <tag line="283" name="param" description="either string or type object" type="string|object" variable="$type">
+            <type by_reference="false">string</type>
+            <type by_reference="false">object</type>
+          </tag>
+          <tag line="283" name="return" description="type names of the siblings" type="string[]">
+            <type by_reference="false">string[]</type>
+          </tag>
+        </docblock>
+        <argument line="289">
+          <name>$type</name>
+          <default/>
+          <type/>
+        </argument>
+      </method>
+      <method final="false" abstract="false" static="false" visibility="public" namespace="global" line="309" package="Default">
+        <name>get_schema_properties</name>
+        <full_name>get_schema_properties</full_name>
+        <docblock line="301">
+          <description>Get all the properties of a type</description>
+          <long-description/>
+          <tag line="301" name="param" description="either string or type object" type="string|object" variable="$type">
+            <type by_reference="false">string</type>
+            <type by_reference="false">object</type>
+          </tag>
+          <tag line="301" name="param" description="to grab all the properties of all the ancestors flag" type="boolean" variable="$recursive">
+            <type by_reference="false">boolean</type>
+          </tag>
+          <tag line="301" name="param" description="to flatten the results array or per type" type="boolean" variable="$flat">
+            <type by_reference="false">boolean</type>
+          </tag>
+          <tag line="301" name="return" description="property names" type="string[]|\string[][]">
+            <type by_reference="false">string[]</type>
+            <type by_reference="false">\string[][]</type>
+          </tag>
+        </docblock>
+        <argument line="309">
+          <name>$type</name>
+          <default/>
+          <type/>
+        </argument>
+        <argument line="309">
+          <name>$recursive</name>
+          <default>true</default>
+          <type/>
+        </argument>
+        <argument line="309">
+          <name>$flat</name>
+          <default>false</default>
+          <type/>
+        </argument>
+      </method>
+      <method final="false" abstract="false" static="false" visibility="public" namespace="global" line="335" package="Default">
+        <name>get_schema_comment</name>
+        <full_name>get_schema_comment</full_name>
+        <docblock line="328">
+          <description>Get the schema comment for a type</description>
+          <long-description/>
+          <tag line="328" name="param" description="either string or type object" type="string|object" variable="$type">
+            <type by_reference="false">string</type>
+            <type by_reference="false">object</type>
+          </tag>
+          <tag line="328" name="param" description="to output in html flag" type="boolean" variable="$html">
+            <type by_reference="false">boolean</type>
+          </tag>
+          <tag line="328" name="return" description="type comment" type="\the">
+            <type by_reference="false">\the</type>
+          </tag>
+        </docblock>
+        <argument line="335">
+          <name>$type</name>
+          <default/>
+          <type/>
+        </argument>
+        <argument line="335">
+          <name>$html</name>
+          <default>true</default>
+          <type/>
+        </argument>
+      </method>
+      <method final="false" abstract="false" static="false" visibility="public" namespace="global" line="346" package="Default">
+        <name>get_schema_url</name>
+        <full_name>get_schema_url</full_name>
+        <docblock line="340">
+          <description>Get the URL of the schema</description>
+          <long-description/>
+          <tag line="340" name="param" description="either string or type object" type="string|object" variable="$type">
+            <type by_reference="false">string</type>
+            <type by_reference="false">object</type>
+          </tag>
+          <tag line="340" name="return" description="url" type="\schema">
+            <type by_reference="false">\schema</type>
+          </tag>
+        </docblock>
+        <argument line="346">
+          <name>$type</name>
+          <default/>
+          <type/>
+        </argument>
+      </method>
+      <method final="false" abstract="false" static="false" visibility="public" namespace="global" line="357" package="Default">
+        <name>get_properties</name>
+        <full_name>get_properties</full_name>
+        <docblock line="352">
+          <description>Gets the properties data</description>
+          <long-description/>
+          <tag line="352" name="return" description="the properties data" type="object[]">
+            <type by_reference="false">object[]</type>
+          </tag>
+        </docblock>
+      </method>
+      <method final="false" abstract="false" static="false" visibility="public" namespace="global" line="366" package="Default">
+        <name>get_property_keys</name>
+        <full_name>get_property_keys</full_name>
+        <docblock line="361">
+          <description>Gets the property keys</description>
+          <long-description/>
+          <tag line="361" name="return" description="the property names" type="string[]">
+            <type by_reference="false">string[]</type>
+          </tag>
+        </docblock>
+      </method>
+      <method final="false" abstract="false" static="false" visibility="public" namespace="global" line="379" package="Default">
+        <name>get_property</name>
+        <full_name>get_property</full_name>
+        <docblock line="373">
+          <description>Gets a property object</description>
+          <long-description/>
+          <tag line="373" name="param" description="the property id or object" type="string|object" variable="$property">
+            <type by_reference="false">string</type>
+            <type by_reference="false">object</type>
+          </tag>
+          <tag line="373" name="return" description="that property" type="object">
+            <type by_reference="false">object</type>
+          </tag>
+        </docblock>
+        <argument line="379">
+          <name>$property</name>
+          <default/>
+          <type/>
+        </argument>
+      </method>
+      <method final="false" abstract="false" static="false" visibility="public" namespace="global" line="389" package="Default">
+        <name>get_property_id</name>
+        <full_name>get_property_id</full_name>
+        <docblock line="383">
+          <description>Gets the property id</description>
+          <long-description/>
+          <tag line="383" name="param" description="the property id or object" type="string|object" variable="$property">
+            <type by_reference="false">string</type>
+            <type by_reference="false">object</type>
+          </tag>
+          <tag line="383" name="return" description="the property's id" type="string">
+            <type by_reference="false">string</type>
+          </tag>
+        </docblock>
+        <argument line="389">
+          <name>$property</name>
+          <default/>
+          <type/>
+        </argument>
+      </method>
+      <method final="false" abstract="false" static="false" visibility="public" namespace="global" line="401" package="Default">
+        <name>get_property_label</name>
+        <full_name>get_property_label</full_name>
+        <docblock line="395">
+          <description>Gets a property english display label</description>
+          <long-description/>
+          <tag line="395" name="param" description="the property id or object" type="string|object" variable="$property">
+            <type by_reference="false">string</type>
+            <type by_reference="false">object</type>
+          </tag>
+          <tag line="395" name="return" description="the property's label" type="string">
+            <type by_reference="false">string</type>
+          </tag>
+        </docblock>
+        <argument line="401">
+          <name>$property</name>
+          <default/>
+          <type/>
+        </argument>
+      </method>
+      <method final="false" abstract="false" static="false" visibility="public" namespace="global" line="414" package="Default">
+        <name>get_property_comment</name>
+        <full_name>get_property_comment</full_name>
+        <docblock line="407">
+          <description>Gets a property description</description>
+          <long-description/>
+          <tag line="407" name="param" description="the property id or object" type="string|object" variable="$property">
+            <type by_reference="false">string</type>
+            <type by_reference="false">object</type>
+          </tag>
+          <tag line="407" name="param" description="to output as html flag" type="boolean" variable="$html">
+            <type by_reference="false">boolean</type>
+          </tag>
+          <tag line="407" name="return" description="the property's comment" type="string">
+            <type by_reference="false">string</type>
+          </tag>
+        </docblock>
+        <argument line="414">
+          <name>$property</name>
+          <default/>
+          <type/>
+        </argument>
+        <argument line="414">
+          <name>$html</name>
+          <default>true</default>
+          <type/>
+        </argument>
+      </method>
+      <method final="false" abstract="false" static="false" visibility="public" namespace="global" line="425" package="Default">
+        <name>get_property_ranges</name>
+        <full_name>get_property_ranges</full_name>
+        <docblock line="419">
+          <description>Get property ranges (what is valid contents)</description>
+          <long-description/>
+          <tag line="419" name="param" description="the property id or object" type="string|object" variable="$property">
+            <type by_reference="false">string</type>
+            <type by_reference="false">object</type>
+          </tag>
+          <tag line="419" name="return" description="the types that are valid input" type="string[]">
+            <type by_reference="false">string[]</type>
+          </tag>
+        </docblock>
+        <argument line="425">
+          <name>$property</name>
+          <default/>
+          <type/>
+        </argument>
+      </method>
+      <method final="false" abstract="false" static="false" visibility="public" namespace="global" line="437" package="Default">
+        <name>get_property_domains</name>
+        <full_name>get_property_domains</full_name>
+        <docblock line="431">
+          <description>Get property domains (where is this used)</description>
+          <long-description/>
+          <tag line="431" name="param" description="the property id or object" type="string|object" variable="$property">
+            <type by_reference="false">string</type>
+            <type by_reference="false">object</type>
+          </tag>
+          <tag line="431" name="return" description="the types that have this property" type="string[]">
+            <type by_reference="false">string[]</type>
+          </tag>
+        </docblock>
+        <argument line="437">
+          <name>$property</name>
+          <default/>
+          <type/>
+        </argument>
+      </method>
+      <method final="false" abstract="false" static="false" visibility="public" namespace="global" line="449" package="Default">
+        <name>is_property</name>
+        <full_name>is_property</full_name>
+        <docblock line="443">
+          <description>Returns true if property is defined</description>
+          <long-description/>
+          <tag line="443" name="param" description="the property id or object" type="string|object" variable="$property">
+            <type by_reference="false">string</type>
+            <type by_reference="false">object</type>
+          </tag>
+          <tag line="443" name="return" description="exists" type="boolean">
+            <type by_reference="false">boolean</type>
+          </tag>
+        </docblock>
+        <argument line="449">
+          <name>$property</name>
+          <default/>
+          <type/>
+        </argument>
+      </method>
+      <method final="false" abstract="false" static="false" visibility="public" namespace="global" line="458" package="Default">
+        <name>get_datatypes</name>
+        <full_name>get_datatypes</full_name>
+        <docblock line="453">
+          <description>Get datatypes</description>
+          <long-description/>
+          <tag line="453" name="return" description="the datatypes" type="object[]">
+            <type by_reference="false">object[]</type>
+          </tag>
+        </docblock>
+      </method>
+      <method final="false" abstract="false" static="false" visibility="public" namespace="global" line="468" package="Default">
+        <name>get_datatype</name>
+        <full_name>get_datatype</full_name>
+        <docblock line="462">
+          <description>Gets a single datatype</description>
+          <long-description/>
+          <tag line="462" name="param" description="the datatype id or object" type="string|object" variable="$type">
+            <type by_reference="false">string</type>
+            <type by_reference="false">object</type>
+          </tag>
+          <tag line="462" name="return" description="that datatype" type="object">
+            <type by_reference="false">object</type>
+          </tag>
+        </docblock>
+        <argument line="468">
+          <name>$type</name>
+          <default/>
+          <type/>
+        </argument>
+      </method>
+      <method final="false" abstract="false" static="false" visibility="public" namespace="global" line="478" package="Default">
+        <name>get_datatype_id</name>
+        <full_name>get_datatype_id</full_name>
+        <docblock line="472">
+          <description>Gets a datatype's id</description>
+          <long-description/>
+          <tag line="472" name="param" description="the datatype id or object" type="string|object" variable="$type">
+            <type by_reference="false">string</type>
+            <type by_reference="false">object</type>
+          </tag>
+          <tag line="472" name="return" description="the datatype id" type="string">
+            <type by_reference="false">string</type>
+          </tag>
+        </docblock>
+        <argument line="478">
+          <name>$type</name>
+          <default/>
+          <type/>
+        </argument>
+      </method>
+      <method final="false" abstract="false" static="false" visibility="public" namespace="global" line="490" package="Default">
+        <name>get_datatype_label</name>
+        <full_name>get_datatype_label</full_name>
+        <docblock line="484">
+          <description>Gets a datatype's label</description>
+          <long-description/>
+          <tag line="484" name="param" description="the datatype id or object" type="string|object" variable="$type">
+            <type by_reference="false">string</type>
+            <type by_reference="false">object</type>
+          </tag>
+          <tag line="484" name="return" description="the label of the datatype" type="string">
+            <type by_reference="false">string</type>
+          </tag>
+        </docblock>
+        <argument line="490">
+          <name>$type</name>
+          <default/>
+          <type/>
+        </argument>
+      </method>
+      <method final="false" abstract="false" static="false" visibility="public" namespace="global" line="501" package="Default">
+        <name>get_top_level_datatypes</name>
+        <full_name>get_top_level_datatypes</full_name>
+        <docblock line="496">
+          <description>Gets the datatypes with no parents</description>
+          <long-description/>
+          <tag line="496" name="return" description="toplevel datatypes" type="string[]">
+            <type by_reference="false">string[]</type>
+          </tag>
+        </docblock>
+      </method>
+      <method final="false" abstract="false" static="false" visibility="public" namespace="global" line="518" package="Default">
+        <name>get_datatype_ancestors</name>
+        <full_name>get_datatype_ancestors</full_name>
+        <docblock line="511">
+          <description>Get all the ancestors of a datatype</description>
+          <long-description/>
+          <tag line="511" name="param" description="the datatype id or object" type="string|object" variable="$type">
+            <type by_reference="false">string</type>
+            <type by_reference="false">object</type>
+          </tag>
+          <tag line="511" name="param" description="grab all the ancestors of datatype" type="boolean" variable="$recursive">
+            <type by_reference="false">boolean</type>
+          </tag>
+          <tag line="511" name="return" description="datatype names" type="string[]">
+            <type by_reference="false">string[]</type>
+          </tag>
+        </docblock>
+        <argument line="518">
+          <name>$type</name>
+          <default/>
+          <type/>
+        </argument>
+        <argument line="518">
+          <name>$recursive</name>
+          <default>true</default>
+          <type/>
+        </argument>
+      </method>
+      <method final="false" abstract="false" static="false" visibility="public" namespace="global" line="530" package="Default">
+        <name>get_datatype_descendants</name>
+        <full_name>get_datatype_descendants</full_name>
+        <docblock line="523">
+          <description>Get datatype descendants</description>
+          <long-description/>
+          <tag line="523" name="param" description="the datatype id or object" type="string|object" variable="$type">
+            <type by_reference="false">string</type>
+            <type by_reference="false">object</type>
+          </tag>
+          <tag line="523" name="param" description="to grab all the descendant datatypes of all the descendants flag" type="boolean" variable="$recursive">
+            <type by_reference="false">boolean</type>
+          </tag>
+          <tag line="523" name="param" description="to flatten the results array or per type" type="boolean" variable="$flat">
+            <type by_reference="false">boolean</type>
+          </tag>
+          <tag line="523" name="return" description="datatype names" type="string[]|\string[][]">
+            <type by_reference="false">string[]</type>
+            <type by_reference="false">\string[][]</type>
+          </tag>
+        </docblock>
+        <argument line="530">
+          <name>$type</name>
+          <default/>
+          <type/>
+        </argument>
+        <argument line="530">
+          <name>$recursive</name>
+          <default>true</default>
+          <type/>
+        </argument>
+        <argument line="530">
+          <name>$flat</name>
+          <default>false</default>
+          <type/>
+        </argument>
+      </method>
+      <method final="false" abstract="false" static="false" visibility="public" namespace="global" line="557" package="Default">
+        <name>get_datatype_siblings</name>
+        <full_name>get_datatype_siblings</full_name>
+        <docblock line="551">
+          <description>Gets datatype siblings</description>
+          <long-description/>
+          <tag line="551" name="param" description="the datatype id or object" type="string|object" variable="$type">
+            <type by_reference="false">string</type>
+            <type by_reference="false">object</type>
+          </tag>
+          <tag line="551" name="return" description="the siblings" type="string[]">
+            <type by_reference="false">string[]</type>
+          </tag>
+        </docblock>
+        <argument line="557">
+          <name>$type</name>
+          <default/>
+          <type/>
+        </argument>
+      </method>
+      <method final="false" abstract="false" static="false" visibility="public" namespace="global" line="577" package="Default">
+        <name>get_datatype_properties</name>
+        <full_name>get_datatype_properties</full_name>
+        <docblock line="569">
+          <description>Get all the properties of a datatype</description>
+          <long-description/>
+          <tag line="569" name="param" description="either string or datatype object" type="string|object" variable="$type">
+            <type by_reference="false">string</type>
+            <type by_reference="false">object</type>
+          </tag>
+          <tag line="569" name="param" description="to grab all the properties of all the ancestors flag" type="boolean" variable="$recursive">
+            <type by_reference="false">boolean</type>
+          </tag>
+          <tag line="569" name="param" description="to flatten the results array or per type" type="boolean" variable="$flat">
+            <type by_reference="false">boolean</type>
+          </tag>
+          <tag line="569" name="return" description="property names" type="string[]|\string[][]">
+            <type by_reference="false">string[]</type>
+            <type by_reference="false">\string[][]</type>
+          </tag>
+        </docblock>
+        <argument line="577">
+          <name>$type</name>
+          <default/>
+          <type/>
+        </argument>
+        <argument line="577">
+          <name>$recursive</name>
+          <default>true</default>
+          <type/>
+        </argument>
+        <argument line="577">
+          <name>$flat</name>
+          <default>false</default>
+          <type/>
+        </argument>
+      </method>
+      <method final="false" abstract="false" static="false" visibility="public" namespace="global" line="603" package="Default">
+        <name>get_datatype_comment</name>
+        <full_name>get_datatype_comment</full_name>
+        <docblock line="596">
+          <description>Gets a datatype comment</description>
+          <long-description/>
+          <tag line="596" name="param" description="the datatype id or object" type="string|object" variable="$type">
+            <type by_reference="false">string</type>
+            <type by_reference="false">object</type>
+          </tag>
+          <tag line="596" name="param" description="output as html flag" type="boolean" variable="$html">
+            <type by_reference="false">boolean</type>
+          </tag>
+          <tag line="596" name="return" description="the comment" type="string">
+            <type by_reference="false">string</type>
+          </tag>
+        </docblock>
+        <argument line="603">
+          <name>$type</name>
+          <default/>
+          <type/>
+        </argument>
+        <argument line="603">
+          <name>$html</name>
+          <default>true</default>
+          <type/>
+        </argument>
+      </method>
+      <method final="false" abstract="false" static="false" visibility="public" namespace="global" line="614" package="Default">
+        <name>get_datatype_url</name>
+        <full_name>get_datatype_url</full_name>
+        <docblock line="608">
+          <description>Gets the datatype url</description>
+          <long-description/>
+          <tag line="608" name="param" description="the datatype id or object" type="string|object" variable="$type">
+            <type by_reference="false">string</type>
+            <type by_reference="false">object</type>
+          </tag>
+          <tag line="608" name="return" description="the url to the datatype" type="string">
+            <type by_reference="false">string</type>
+          </tag>
+        </docblock>
+        <argument line="614">
+          <name>$type</name>
+          <default/>
+          <type/>
+        </argument>
+      </method>
+      <method final="false" abstract="false" static="false" visibility="public" namespace="global" line="625" package="Default">
+        <name>is_datatype</name>
+        <full_name>is_datatype</full_name>
+        <docblock line="620">
+          <description>Returns true if type is defined</description>
+          <long-description/>
+          <tag line="620" name="return" description="datatype exists" type="boolean">
+            <type by_reference="false">boolean</type>
+          </tag>
+        </docblock>
+        <argument line="625">
+          <name>$type</name>
+          <default/>
+          <type/>
+        </argument>
+      </method>
+      <method final="false" abstract="false" static="false" visibility="public" namespace="global" line="632" package="Default">
+        <name>register_settings</name>
+        <full_name>register_settings</full_name>
+        <docblock line="629">
+          <description>Registers new option group</description>
+          <long-description/>
+        </docblock>
+      </method>
+      <method final="false" abstract="false" static="false" visibility="public" namespace="global" line="651" package="Default">
+        <name>options_scraper_section</name>
+        <full_name>options_scraper_section</full_name>
+        <docblock line="648">
+          <description>Outputs the scraper section HTML</description>
+          <long-description/>
+        </docblock>
+      </method>
+      <method final="false" abstract="false" static="false" visibility="public" namespace="global" line="660" package="Default">
+        <name>options_scraper_scrapeurl</name>
+        <full_name>options_scraper_scrapeurl</full_name>
+        <docblock line="657">
+          <description>Outputs the scraper url field</description>
+          <long-description/>
+        </docblock>
+      </method>
+      <method final="false" abstract="false" static="false" visibility="public" namespace="global" line="668" package="Default">
+        <name>options_scraper_cachepath</name>
+        <full_name>options_scraper_cachepath</full_name>
+        <docblock line="665">
+          <description>Outputs the scraper cache path field</description>
+          <long-description/>
+        </docblock>
+      </method>
+      <method final="false" abstract="false" static="false" visibility="public" namespace="global" line="677" package="Default">
+        <name>options_scraper_cachetime</name>
+        <full_name>options_scraper_cachetime</full_name>
+        <docblock line="674">
+          <description/>
+          <long-description/>
+        </docblock>
+      </method>
+      <method final="false" abstract="false" static="false" visibility="public" namespace="global" line="685" package="Default">
+        <name>options_scraper_current_timestamp</name>
+        <full_name>options_scraper_current_timestamp</full_name>
+        <docblock line="682">
+          <description/>
+          <long-description/>
+        </docblock>
+      </method>
+      <method final="false" abstract="false" static="false" visibility="public" namespace="global" line="699" package="Default">
+        <name>options_creator_section</name>
+        <full_name>options_creator_section</full_name>
+      </method>
+      <method final="false" abstract="false" static="false" visibility="public" namespace="global" line="703" package="Default">
+        <name>options_creator_starred</name>
+        <full_name>options_creator_starred</full_name>
+      </method>
+      <method final="false" abstract="false" static="false" visibility="protected" namespace="global" line="717" package="Default">
+        <name>__subsection_creator_starred</name>
+        <full_name>__subsection_creator_starred</full_name>
+        <argument line="717">
+          <name>$schema</name>
+          <default/>
+          <type/>
+        </argument>
+        <argument line="717">
+          <name>$starred</name>
+          <default/>
+          <type/>
+        </argument>
+      </method>
+      <method final="false" abstract="false" static="false" visibility="public" namespace="global" line="749" package="Default">
+        <name>options_validate</name>
+        <full_name>options_validate</full_name>
+        <docblock line="743">
+          <description>Validates the options</description>
+          <long-description/>
+          <tag line="743" name="param" description="the to be processed option values" type="mixed[]" variable="$input">
+            <type by_reference="false">mixed[]</type>
+          </tag>
+          <tag line="743" name="return" description="the processed option values" type="mixed[]">
+            <type by_reference="false">mixed[]</type>
+          </tag>
+        </docblock>
+        <argument line="749">
+          <name>$input</name>
+          <default/>
+          <type/>
+        </argument>
+      </method>
+      <method final="false" abstract="false" static="false" visibility="public" namespace="global" line="759" package="Default">
+        <name>default_settings</name>
+        <full_name>default_settings</full_name>
+        <docblock line="756">
+          <description>Sets default settings</description>
+          <long-description/>
+        </docblock>
+      </method>
+      <method final="false" abstract="false" static="false" visibility="public" namespace="global" line="779" package="Default">
+        <name>get_default_settings</name>
+        <full_name>get_default_settings</full_name>
+        <docblock line="773">
+          <description>Gets the default settings</description>
+          <long-description/>
+          <tag line="773" name="param" description="the current defaults" type="mixed[]" variable="$default">
+            <type by_reference="false">mixed[]</type>
+          </tag>
+          <tag line="773" name="return" description="the defaults" type="mixed[]">
+            <type by_reference="false">mixed[]</type>
+          </tag>
+        </docblock>
+        <argument line="779">
+          <name>$default</name>
+          <default>array()</default>
+          <type/>
+        </argument>
+      </method>
+    </class>
+    <parse_markers>
+      <error line="0" code="50007">No page-level DocBlock was found in file lib\schema-scraper.php</error>
+      <error line="26" code="50000">No DocBlock was found for \DJ_SchemaScraper</error>
+      <error line="28" code="50018">No DocBlock was found for property $singleton</error>
+      <error line="29" code="50018">No DocBlock was found for property $options</error>
+      <error line="30" code="50018">No DocBlock was found for property $schema_data</error>
+      <error line="31" code="50018">No DocBlock was found for property $timestamp</error>
+      <error line="32" code="50018">No DocBlock was found for property $last_error</error>
+      <error line="79" code="50015">Argument $url is missing from the Docblock of get_schema_data()</error>
+      <error line="79" code="50015">Argument $path is missing from the Docblock of get_schema_data()</error>
+      <error line="79" code="50015">Argument $file is missing from the Docblock of get_schema_data()</error>
+      <error line="79" code="50015">Argument $fetch_disabled is missing from the Docblock of get_schema_data()</error>
+      <error line="620" code="50015">Argument $type is missing from the Docblock of is_datatype()</error>
+      <error line="674" code="50012">No short description for method options_scraper_cachetime()</error>
+      <error line="682" code="50012">No short description for method options_scraper_current_timestamp()</error>
+      <error line="699" code="50010">No DocBlock was found for method options_creator_section()</error>
+      <error line="703" code="50010">No DocBlock was found for method options_creator_starred()</error>
+      <error line="717" code="50010">No DocBlock was found for method __subsection_creator_starred()</error>
+    </parse_markers>
+  </file>
+  <file path="lib\schema-viewer.php" hash="7c96167d7a5e6c719aff5523af65a141" package="Default">
+    <constant namespace="global" line="13" package="Default">
+      <name>DJ_SCHEMAVIEWER_BASE</name>
+      <full_name>\DJ_SCHEMAVIEWER_BASE</full_name>
+      <value>plugin_basename(__FILE__)</value>
+    </constant>
+    <constant namespace="global" line="14" package="Default">
+      <name>DJ_SCHEMAVIEWER_VERSION</name>
+      <full_name>\DJ_SCHEMAVIEWER_VERSION</full_name>
+      <value>'1.0'</value>
+    </constant>
+    <class final="false" abstract="false" namespace="global" line="16" package="Default">
+      <extends/>
+      <name>DJ_SchemaViewer</name>
+      <full_name>\DJ_SchemaViewer</full_name>
+      <property final="false" static="true" visibility="private" line="18" namespace="global" package="Default">
+        <name>$singleton</name>
+        <default/>
+      </property>
+      <method final="false" abstract="false" static="true" visibility="public" namespace="global" line="29" package="Default">
+        <name>singleton</name>
+        <full_name>singleton</full_name>
+        <docblock line="20">
+          <description>Gets a singleton of this class</description>
+          <long-description>&lt;p&gt;DJ_SchemaViewer::singleton() will always return the same instance during a
+PHP processing stack. This way actions will not be queued duplicately and
+caching of processed values is not neccesary.&lt;/p&gt;</long-description>
+          <tag line="20" name="returns" description="the singleton instance"/>
+        </docblock>
+      </method>
+      <method final="false" abstract="false" static="false" visibility="protected" namespace="global" line="40" package="Default">
+        <name>__construct</name>
+        <full_name>__construct</full_name>
+        <docblock line="35">
+          <description>Creates a new instance of DJ_SchemaScraper</description>
+          <long-description/>
+          <tag line="35" name="remarks" description="use DJ_SchemaViewer::singleton() outside the class hieracrchy"/>
+        </docblock>
+      </method>
+      <method final="false" abstract="false" static="false" visibility="public" namespace="global" line="49" package="Default">
+        <name>page_slug</name>
+        <full_name>page_slug</full_name>
+        <docblock line="46">
+          <description>Gets the page slug name</description>
+          <long-description/>
+        </docblock>
+      </method>
+      <method final="false" abstract="false" static="false" visibility="public" namespace="global" line="56" package="Default">
+        <name>get_url</name>
+        <full_name>get_url</full_name>
+        <docblock line="53">
+          <description/>
+          <long-description/>
+        </docblock>
+        <argument line="56">
+          <name>$type</name>
+          <default>NULL</default>
+          <type/>
+        </argument>
+      </method>
+      <method final="false" abstract="false" static="false" visibility="public" namespace="global" line="71" package="Default">
+        <name>get_link</name>
+        <full_name>get_link</full_name>
+        <docblock line="68">
+          <description/>
+          <long-description/>
+        </docblock>
+        <argument line="71">
+          <name>$type</name>
+          <default/>
+          <type/>
+        </argument>
+        <argument line="71">
+          <name>$format</name>
+          <default>'%s'</default>
+          <type/>
+        </argument>
+        <argument line="71">
+          <name>$classes</name>
+          <default>'schema'</default>
+          <type/>
+        </argument>
+      </method>
+      <method final="false" abstract="false" static="false" visibility="public" namespace="global" line="80" package="Default">
+        <name>get_starring_link</name>
+        <full_name>get_starring_link</full_name>
+        <docblock line="77">
+          <description/>
+          <long-description/>
+        </docblock>
+        <argument line="80">
+          <name>$type</name>
+          <default/>
+          <type/>
+        </argument>
+        <argument line="80">
+          <name>$format</name>
+          <default>'%s %s'</default>
+          <type/>
+        </argument>
+        <argument line="80">
+          <name>$linkdo_text</name>
+          <default>NULL</default>
+          <type/>
+        </argument>
+        <argument line="80">
+          <name>$linkdont_text</name>
+          <default>NULL</default>
+          <type/>
+        </argument>
+        <argument line="81">
+          <name>$is_text</name>
+          <default>NULL</default>
+          <type/>
+        </argument>
+        <argument line="81">
+          <name>$isnt_text</name>
+          <default>NULL</default>
+          <type/>
+        </argument>
+        <argument line="81">
+          <name>$title_format</name>
+          <default>NULL</default>
+          <type/>
+        </argument>
+        <argument line="81">
+          <name>$classes</name>
+          <default>'action'</default>
+          <type/>
+        </argument>
+      </method>
+      <method final="false" abstract="false" static="false" visibility="public" namespace="global" line="113" package="Default">
+        <name>is_starred</name>
+        <full_name>is_starred</full_name>
+        <docblock line="110">
+          <description/>
+          <long-description/>
+        </docblock>
+        <argument line="113">
+          <name>$type</name>
+          <default/>
+          <type/>
+        </argument>
+      </method>
+      <method final="false" abstract="false" static="false" visibility="public" namespace="global" line="122" package="Default">
+        <name>get_property_root_toggle</name>
+        <full_name>get_property_root_toggle</full_name>
+        <docblock line="119">
+          <description/>
+          <long-description/>
+        </docblock>
+        <argument line="122">
+          <name>$type</name>
+          <default/>
+          <type/>
+        </argument>
+        <argument line="122">
+          <name>$prop</name>
+          <default/>
+          <type/>
+        </argument>
+      </method>
+      <method final="false" abstract="false" static="false" visibility="public" namespace="global" line="143" package="Default">
+        <name>get_property_embed_toggle</name>
+        <full_name>get_property_embed_toggle</full_name>
+        <docblock line="140">
+          <description/>
+          <long-description/>
+        </docblock>
+        <argument line="143">
+          <name>$type</name>
+          <default/>
+          <type/>
+        </argument>
+        <argument line="143">
+          <name>$prop</name>
+          <default/>
+          <type/>
+        </argument>
+      </method>
+      <method final="false" abstract="false" static="false" visibility="public" namespace="global" line="164" package="Default">
+        <name>is_root_disabled</name>
+        <full_name>is_root_disabled</full_name>
+        <docblock line="161">
+          <description/>
+          <long-description/>
+        </docblock>
+        <argument line="164">
+          <name>$type</name>
+          <default/>
+          <type/>
+        </argument>
+        <argument line="164">
+          <name>$property</name>
+          <default/>
+          <type/>
+        </argument>
+      </method>
+      <method final="false" abstract="false" static="false" visibility="public" namespace="global" line="172" package="Default">
+        <name>is_embed_disabled</name>
+        <full_name>is_embed_disabled</full_name>
+        <docblock line="169">
+          <description/>
+          <long-description/>
+        </docblock>
+        <argument line="172">
+          <name>$type</name>
+          <default/>
+          <type/>
+        </argument>
+        <argument line="172">
+          <name>$property</name>
+          <default/>
+          <type/>
+        </argument>
+      </method>
+      <method final="false" abstract="false" static="false" visibility="public" namespace="global" line="180" package="Default">
+        <name>admin_scripts</name>
+        <full_name>admin_scripts</full_name>
+        <docblock line="177">
+          <description/>
+          <long-description/>
+        </docblock>
+        <argument line="180">
+          <name>$hook</name>
+          <default/>
+          <type/>
+        </argument>
+      </method>
+      <method final="false" abstract="false" static="false" visibility="public" namespace="global" line="190" package="Default">
+        <name>add_pages</name>
+        <full_name>add_pages</full_name>
+        <docblock line="187">
+          <description>build out settings page</description>
+          <long-description/>
+        </docblock>
+      </method>
+      <method final="false" abstract="false" static="false" visibility="public" namespace="global" line="205" package="Default">
+        <name>do_actions</name>
+        <full_name>do_actions</full_name>
+        <docblock line="202">
+          <description/>
+          <long-description/>
+        </docblock>
+      </method>
+      <method final="false" abstract="false" static="false" visibility="public" namespace="global" line="258" package="Default">
+        <name>do_page</name>
+        <full_name>do_page</full_name>
+        <docblock line="255">
+          <description/>
+          <long-description/>
+        </docblock>
+      </method>
+    </class>
+    <parse_markers>
+      <error line="0" code="50007">No page-level DocBlock was found in file lib\schema-viewer.php</error>
+      <error line="16" code="50000">No DocBlock was found for \DJ_SchemaViewer</error>
+      <error line="18" code="50018">No DocBlock was found for property $singleton</error>
+      <error line="53" code="50012">No short description for method get_url()</error>
+      <error line="53" code="50015">Argument $type is missing from the Docblock of get_url()</error>
+      <error line="68" code="50012">No short description for method get_link()</error>
+      <error line="68" code="50015">Argument $type is missing from the Docblock of get_link()</error>
+      <error line="68" code="50015">Argument $format is missing from the Docblock of get_link()</error>
+      <error line="68" code="50015">Argument $classes is missing from the Docblock of get_link()</error>
+      <error line="77" code="50012">No short description for method get_starring_link()</error>
+      <error line="77" code="50015">Argument $type is missing from the Docblock of get_starring_link()</error>
+      <error line="77" code="50015">Argument $format is missing from the Docblock of get_starring_link()</error>
+      <error line="77" code="50015">Argument $linkdo_text is missing from the Docblock of get_starring_link()</error>
+      <error line="77" code="50015">Argument $linkdont_text is missing from the Docblock of get_starring_link()</error>
+      <error line="77" code="50015">Argument $is_text is missing from the Docblock of get_starring_link()</error>
+      <error line="77" code="50015">Argument $isnt_text is missing from the Docblock of get_starring_link()</error>
+      <error line="77" code="50015">Argument $title_format is missing from the Docblock of get_starring_link()</error>
+      <error line="77" code="50015">Argument $classes is missing from the Docblock of get_starring_link()</error>
+      <error line="110" code="50012">No short description for method is_starred()</error>
+      <error line="110" code="50015">Argument $type is missing from the Docblock of is_starred()</error>
+      <error line="119" code="50012">No short description for method get_property_root_toggle()</error>
+      <error line="119" code="50015">Argument $type is missing from the Docblock of get_property_root_toggle()</error>
+      <error line="119" code="50015">Argument $prop is missing from the Docblock of get_property_root_toggle()</error>
+      <error line="140" code="50012">No short description for method get_property_embed_toggle()</error>
+      <error line="140" code="50015">Argument $type is missing from the Docblock of get_property_embed_toggle()</error>
+      <error line="140" code="50015">Argument $prop is missing from the Docblock of get_property_embed_toggle()</error>
+      <error line="161" code="50012">No short description for method is_root_disabled()</error>
+      <error line="161" code="50015">Argument $type is missing from the Docblock of is_root_disabled()</error>
+      <error line="161" code="50015">Argument $property is missing from the Docblock of is_root_disabled()</error>
+      <error line="169" code="50012">No short description for method is_embed_disabled()</error>
+      <error line="169" code="50015">Argument $type is missing from the Docblock of is_embed_disabled()</error>
+      <error line="169" code="50015">Argument $property is missing from the Docblock of is_embed_disabled()</error>
+      <error line="177" code="50012">No short description for method admin_scripts()</error>
+      <error line="177" code="50015">Argument $hook is missing from the Docblock of admin_scripts()</error>
+      <error line="202" code="50012">No short description for method do_actions()</error>
+      <error line="255" code="50012">No short description for method do_page()</error>
+    </parse_markers>
+  </file>
+  <package name="Default" full_name="Default"/>
+  <namespace name="global" full_name="global"/>
+  <marker count="0">todo</marker>
+  <marker count="0">fixme</marker>
+  <deprecated count="0"/>
+</project>
