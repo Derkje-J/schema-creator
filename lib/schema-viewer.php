@@ -6,28 +6,61 @@
   Author: Derk-Jan Karrenbeld
   Author URI: http://derk-jan.com
   
-  @author Derk-Jan Karrenbeld <derk-jan+schema@karrenbeld.info>
-  @version 1.0
-  @package WordPress/Derk-Jan/Schema-Creator/Viewer
 */
+
+/**
+ * Schema Viewer add-in for schema creator. 
+ * 
+ * This add in builds a schema.org copy of the website from the
+ * schema data provided from cache or the Scraper. It also provided
+ * quick access for starring and enabling/disabling properties for
+ * certain classes.
+ *
+ * @author Derk-Jan Karrenbeld <derk-jan+schema@karrenbeld.info>
+ * @version 1.0
+ * @package WordPress\Derk-Jan\Schema-Creator\Viewer
+ */
 
 if (!class_exists("DJ_SchemaViewer")) 
 {
+	/**
+	 * The basename of the viewer add-in. 
+	 */
 	define("DJ_SCHEMAVIEWER_BASE", plugin_basename(__FILE__));
+	
+	/**
+	 * The version of the viewer add-in. 
+	 */
 	define("DJ_SCHEMAVIEWER_VERSION", '1.0');
 	
+	/**
+	 * The schema viewer class. 
+	 *
+	 * This add in builds a schema.org copy of the website from the
+ 	 * schema data provided from cache or the Scraper. It also provided
+ 	 * quick access for starring and enabling/disabling properties for
+ 	 * certain classes.
+	 *
+	 * @author Derk-Jan Karrenbeld <derk-jan+schema@karrenbeld.info>
+	 * @version 1.0
+ 	 * @package WordPress\Derk-Jan\Schema-Creator\Viewer
+	 */
 	class DJ_SchemaViewer {
 		
+		/**
+		 * Holds the singleton instance. 
+		 */
 		private static $singleton;
 		
 		/**
-		 * Gets a singleton of this class
+		 * Gets a singleton of this class. 
 		 *
 		 * DJ_SchemaViewer::singleton() will always return the same instance during a
 		 * PHP processing stack. This way actions will not be queued duplicately and 
 		 * caching of processed values is not neccesary.
 		 *
-		 * @returns the singleton instance
+		 * @api
+		 * @return the singleton instance
 		 */
 		public static function singleton() {
 			if ( empty( DJ_SchemaViewer::$singleton ) )
@@ -36,7 +69,7 @@ if (!class_exists("DJ_SchemaViewer"))
 		}
 		
 		/**
-		 * Creates a new instance of DJ_SchemaScraper
+		 * Creates a new instance of DJ_SchemaScraper. 
 		 *
 		 * @remarks use DJ_SchemaViewer::singleton() outside the class hieracrchy
 		 */
@@ -47,14 +80,18 @@ if (!class_exists("DJ_SchemaViewer"))
 		}	
 		
 		/**
-		 * Gets the page slug name
+		 * Gets the page slug name. 
+		 * @return $string the page slug name
 		 */
 		public function page_slug() {
 			return 'dj-schema-viewer';
 		}	
 		
 		/**
+		 * Gets the url for a certain type. 
 		 *
+		 * @param string|null $type the type to generate for
+		 * @return string the url generated
 		 */
 		public function get_url( $type = NULL ) {
 			
@@ -69,7 +106,12 @@ if (!class_exists("DJ_SchemaViewer"))
 		}	
 		
 		/**
-		 *
+		 * Gets the link to a certain type. 
+		 * 
+		 * @param string $type the type to generate for
+		 * @param string $format the format for the readable link
+		 * @param string $classes the link classes
+		 * @return string the generated link
 		 */
 		public function get_link( $type, $format = '%s', $classes = 'schema' ) {
 			return '<a class="' . $classes . '" href="' . esc_attr( esc_url( $this->get_url( $type ) ) ) . '" title="' . esc_attr( sprintf( __( 'See the schema for %s', 'schema') , $type ) ) . '">' . 
@@ -78,7 +120,17 @@ if (!class_exists("DJ_SchemaViewer"))
 		}
 		
 		/**
+		 * Gets the link to star/unstar a certain type. 
 		 *
+		 * @param string $type the type to generate for
+		 * @param string $format the format for the readable link
+		 * @param string|NULL $linkdo_text the text to show when doing
+		 * @param string|NULL $linkdont_text the text to show when undoing
+		 * @param string|NULL $is_text the starred part when is starred
+		 * @param string|NULL $isnt_text the unstarred part when it isn't starred
+		 * @param string|NULL $title_format the format for the title
+		 * @param string $classes the classes for the link
+		 * @return string the generated link
 		 */
 		public function get_starring_link( $type, $format = '%s %s', $linkdo_text = NULL, $linkdont_text = NULL, 
 			$is_text = NULL, $isnt_text = NULL, $title_format = NULL, $classes = 'action' ) {
@@ -111,7 +163,10 @@ if (!class_exists("DJ_SchemaViewer"))
 		}
 		
 		/**
-		 *
+		 * Gets the starred state of the type. 
+		 * 
+		 * @param string $type the type to check
+		 * @return boolean the is starred state of that type
 		 */
 		public function is_starred( $type ) {
 			$schema_creator = DJ_SchemaCreator::singleton();
@@ -120,7 +175,15 @@ if (!class_exists("DJ_SchemaViewer"))
 		}
 		
 		/**
+		 * Gets the toggle link for a property in a root schema. 
 		 *
+		 * The property can be disabled and enabled to be displayed
+		 * when a schema is used as a top-level schema (root). This
+		 * function generates the toggler.
+		 *
+		 * @param string $type the type to create for
+		 * @param string $prop the property to create for
+		 * @return string the link
 		 */
 		public function get_property_root_toggle( $type, $prop ) {
 			
@@ -141,7 +204,15 @@ if (!class_exists("DJ_SchemaViewer"))
 		}
 		
 		/**
+		 * Gets the toggle link for a property in an embedded schema. 
 		 *
+		 * The property can be disabled and enabled to be displayed
+		 * when a schema is used as a sub-level schema (embedded). This
+		 * function generates the toggler.
+		 *
+		 * @param string $type the type to create for
+		 * @param string $prop the property to create for
+		 * @return string the link
 		 */
 		public function get_property_embed_toggle( $type, $prop ) {
 			
@@ -162,7 +233,11 @@ if (!class_exists("DJ_SchemaViewer"))
 		}
 		
 		/**
-		 *
+		 * Checks if the type:property is root disabled. 
+		 * 
+		 * @param string $type the type to check for
+		 * @param string $property the property to check for
+		 * @return boolean true if disabled
 		 */
 		public function is_root_disabled( $type, $property ) {
 			$schema_creator = DJ_SchemaCreator::singleton();
@@ -170,7 +245,11 @@ if (!class_exists("DJ_SchemaViewer"))
 		}
 		
 		/**
-		 *
+		 * Checks if the type:property is embed disabled. 
+		 * 
+		 * @param string $type the type to check for
+		 * @param string $property the property to check for
+		 * @return boolean true if disabled
 		 */
 		public function is_embed_disabled( $type, $property ) {
 			$schema_creator = DJ_SchemaCreator::singleton();
@@ -178,7 +257,8 @@ if (!class_exists("DJ_SchemaViewer"))
 		}
 		
 		/**
-		 *
+		 * Loads the scripts to be used when is_admin(). 
+		 * @param string $hook the current page hook
 		 */
 		public function admin_scripts( $hook ) {
 			
@@ -188,7 +268,7 @@ if (!class_exists("DJ_SchemaViewer"))
 		}
 		
 		/**
-		 * build out settings page
+		 * Build our settings page. 
 		 */
 		public function add_pages() {
 			
@@ -203,7 +283,11 @@ if (!class_exists("DJ_SchemaViewer"))
 		}
 		
 		/**
+		 * Processes actions if needed. 
 		 *
+		 * The action and schema parameters are checked. If both are
+		 * set on either POST or GET, they will be processed to execute
+		 * their respective function. 
 		 */
 		public function do_actions() {
 			if ( empty( $_REQUEST[ 'action' ] ) || empty( $_REQUEST[ 'schema' ] ) )
@@ -256,7 +340,7 @@ if (!class_exists("DJ_SchemaViewer"))
 		}
 
 		/**
-		 *
+		 * Output the settings page. 
 		 */
 		public function do_page()
 		{	

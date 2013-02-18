@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <project version="2.0.0a12" title="">
-  <file path="dj-schema-creator.php" hash="0af4e1c837e109b27538452325fb0fc8" package="WordPress\Derk-Jan\Schema-Creator">
+  <file path="dj-schema-creator.php" hash="6edb7399a6f110d9235de1fcecebcf6a" package="WordPress\Derk-Jan\Schema-Creator">
     <docblock line="46">
-      <description>Schema Creator Base</description>
+      <description>Schema Creator Base.</description>
       <long-description/>
       <tag line="46" name="version" description="1.0"/>
       <tag line="46" name="author" description="Derk-Jan Karrenbeld &lt;derk-jan+schema@karrenbeld.info&gt;"/>
       <tag line="46" name="package" description="WordPress\Derk-Jan\Schema-Creator"/>
     </docblock>
-    <include line="1906" type="Include Once" package="Default">
+    <include line="1914" type="Include Once" package="Default">
       <name/>
     </include>
     <constant namespace="global" line="59" package="WordPress\Derk-Jan\Schema-Creator">
@@ -21,779 +21,801 @@
       <full_name>\DJ_SCHEMACREATOR_VERSION</full_name>
       <value>'1.0'</value>
     </constant>
-    <class final="false" abstract="false" namespace="global" line="71" package="Default">
+    <class final="false" abstract="false" namespace="global" line="73" package="WordPress\Derk-Jan\Schema-Creator">
       <extends/>
       <name>DJ_SchemaCreator</name>
       <full_name>\DJ_SchemaCreator</full_name>
       <docblock line="66">
-        <description>DJ_SchemaCreator base class</description>
+        <description>DJ_SchemaCreator base class.</description>
         <long-description/>
         <tag line="66" name="version" description="1.0"/>
+        <tag line="66" name="author" description="Derk-Jan Karrenbeld &lt;derk-jan+schema@karrenbeld.info&gt;"/>
+        <tag line="66" name="package" description="WordPress\Derk-Jan\Schema-Creator"/>
       </docblock>
-      <constant namespace="global" line="88" package="Default">
+      <constant namespace="global" line="94" package="WordPress\Derk-Jan\Schema-Creator">
         <name>OptionRootDisabled</name>
         <full_name>OptionRootDisabled</full_name>
         <value>1</value>
-        <docblock line="84">
-          <description>Bitmask that indicates option is not available for schema's that
-are used as root schema (top-level schema's)</description>
-          <long-description/>
+        <docblock line="88">
+          <description>Root Disabled Bitmask.</description>
+          <long-description>&lt;p&gt;Bitmask that indicates option is not available for schema's that
+are used as root schema (top-level schema's)&lt;/p&gt;</long-description>
         </docblock>
       </constant>
-      <constant namespace="global" line="94" package="Default">
+      <constant namespace="global" line="102" package="WordPress\Derk-Jan\Schema-Creator">
         <name>OptionEmbedDisabled</name>
         <full_name>OptionEmbedDisabled</full_name>
         <value>2</value>
-        <docblock line="90">
-          <description>Bitmask that indicates option is not available for schema's that
-are used as embedded schema (sub-level schema's)</description>
-          <long-description/>
+        <docblock line="96">
+          <description>Embed Disabled Bitmask.</description>
+          <long-description>&lt;p&gt;Bitmask that indicates option is not available for schema's that
+are used as embedded schema (sub-level schema's)&lt;/p&gt;</long-description>
         </docblock>
       </constant>
-      <property final="false" static="true" visibility="protected" line="76" namespace="global" package="Default">
+      <property final="false" static="true" visibility="protected" line="78" namespace="global" package="Default">
         <name>$singleton</name>
         <default/>
-        <docblock line="73">
-          <description>Holds the singleton instance</description>
+        <docblock line="75">
+          <description>Holds the singleton instance.</description>
           <long-description/>
         </docblock>
       </property>
-      <property final="false" static="false" visibility="public" line="82" namespace="global" package="Default">
+      <property final="false" static="false" visibility="public" line="86" namespace="global" package="Default">
         <name>$debug</name>
         <default>false</default>
-        <docblock line="78">
-          <description>Flag that makes script print verbose information when a schema shortcode is
-processed.</description>
-          <long-description>&lt;p&gt;This way WP_DEBUG doesn't need to be set to true.&lt;/p&gt;</long-description>
+        <docblock line="80">
+          <description>Debug flag.</description>
+          <long-description>&lt;p&gt;Flag that makes script print verbose information when a schema shortcode is
+processed. This way WP_DEBUG doesn't need to be set to true.&lt;/p&gt;</long-description>
         </docblock>
       </property>
-      <method final="false" abstract="false" static="true" visibility="public" namespace="global" line="106" package="Default">
+      <method final="false" abstract="false" static="true" visibility="public" namespace="global" line="114" package="WordPress\Derk-Jan\Schema-Creator">
         <name>singleton</name>
         <full_name>singleton</full_name>
-        <docblock line="96">
-          <description>Gets a singleton of this class</description>
+        <docblock line="104">
+          <description>Gets a singleton of this class.</description>
           <long-description>&lt;p&gt;DJ_SchemaCreator::singleton() will always return the same instance during a
 PHP processing stack. This way actions will not be queued duplicately and
 caching of processed values is not neccesary.&lt;/p&gt;</long-description>
-          <tag line="96" name="api" description=""/>
-          <tag line="96" name="return" description="the singleton instance" type="\DJ_SchemaCreator">
+          <tag line="104" name="api" description=""/>
+          <tag line="104" name="return" description="the singleton instance" type="\DJ_SchemaCreator">
             <type by_reference="false">\DJ_SchemaCreator</type>
           </tag>
         </docblock>
       </method>
-      <method final="false" abstract="false" static="false" visibility="protected" namespace="global" line="117" package="Default">
+      <method final="false" abstract="false" static="false" visibility="protected" namespace="global" line="125" package="WordPress\Derk-Jan\Schema-Creator">
         <name>__construct</name>
         <full_name>__construct</full_name>
-        <docblock line="112">
-          <description>Creates a new instance of DJ_SchemaCreator</description>
+        <docblock line="120">
+          <description>Creates a new instance of DJ_SchemaCreator.</description>
           <long-description/>
-          <tag line="112" name="link" description="use outside the class hieracrchy" link="DJ_SchemaCreator::singleton()"/>
+          <tag line="120" name="remarks" description="use DJ_SchemaCreator::singleton() outside the class hieracrchy"/>
         </docblock>
       </method>
-      <method final="false" abstract="false" static="false" visibility="public" namespace="global" line="160" package="Default">
+      <method final="false" abstract="false" static="false" visibility="public" namespace="global" line="168" package="WordPress\Derk-Jan\Schema-Creator">
         <name>plugin_textdomain</name>
         <full_name>plugin_textdomain</full_name>
-        <docblock line="157">
-          <description>Load textdomain for international goodness</description>
+        <docblock line="165">
+          <description>Load textdomain for international goodness.</description>
           <long-description/>
         </docblock>
       </method>
-      <method final="false" abstract="false" static="false" visibility="public" namespace="global" line="172" package="Default">
+      <method final="false" abstract="false" static="false" visibility="public" namespace="global" line="180" package="WordPress\Derk-Jan\Schema-Creator">
         <name>quick_link</name>
         <full_name>quick_link</full_name>
-        <docblock line="164">
-          <description>Shows the settings option on the plugins page</description>
+        <docblock line="172">
+          <description>Shows the settings option on the plugins page.</description>
           <long-description/>
-          <tag line="164" name="param" description="current links for plugin" type="string[]" variable="$links">
+          <tag line="172" name="param" description="current links for plugin" type="string[]" variable="$links">
             <type by_reference="false">string[]</type>
           </tag>
-          <tag line="164" name="param" description="plugin file links being fetched for" type="string" variable="$file">
+          <tag line="172" name="param" description="plugin file links being fetched for" type="string" variable="$file">
             <type by_reference="false">string</type>
           </tag>
-          <tag line="164" name="return" description="the links for the plugin" type="string[]">
+          <tag line="172" name="return" description="the links for the plugin" type="string[]">
             <type by_reference="false">string[]</type>
           </tag>
         </docblock>
-        <argument line="172">
+        <argument line="180">
           <name>$links</name>
           <default/>
           <type/>
         </argument>
-        <argument line="172">
+        <argument line="180">
           <name>$file</name>
           <default/>
           <type/>
         </argument>
       </method>
-      <method final="false" abstract="false" static="false" visibility="public" namespace="global" line="193" package="Default">
+      <method final="false" abstract="false" static="false" visibility="public" namespace="global" line="201" package="WordPress\Derk-Jan\Schema-Creator">
         <name>admin_bar_schema_test</name>
         <full_name>admin_bar_schema_test</full_name>
-        <docblock line="188">
-          <description>Adds the `test schema` link to the admin toolbar</description>
+        <docblock line="196">
+          <description>Adds the `test schema` link to the admin toolbar.</description>
           <long-description/>
-          <tag line="188" name="param" description="the current admin bar" type="object" variable="$wp_admin_bar">
+          <tag line="196" name="param" description="the current admin bar" type="object" variable="$wp_admin_bar">
             <type by_reference="false">object</type>
           </tag>
         </docblock>
-        <argument line="193">
+        <argument line="201">
           <name>$wp_admin_bar</name>
           <default/>
           <type/>
         </argument>
       </method>
-      <method final="false" abstract="false" static="false" visibility="public" namespace="global" line="226" package="Default">
+      <method final="false" abstract="false" static="false" visibility="public" namespace="global" line="234" package="WordPress\Derk-Jan\Schema-Creator">
         <name>metabox_schema</name>
         <full_name>metabox_schema</full_name>
-        <docblock line="220">
-          <description>Display metabox for schemas</description>
+        <docblock line="228">
+          <description>Display metabox for schemas.</description>
           <long-description/>
-          <tag line="220" name="param" description="current page hook" type="string" variable="$page">
+          <tag line="228" name="param" description="current page hook" type="string" variable="$page">
             <type by_reference="false">string</type>
           </tag>
-          <tag line="220" name="param" description="current metabox context" type="string" variable="$context">
+          <tag line="228" name="param" description="current metabox context" type="string" variable="$context">
             <type by_reference="false">string</type>
           </tag>
         </docblock>
-        <argument line="226">
+        <argument line="234">
           <name>$page</name>
           <default/>
           <type/>
         </argument>
-        <argument line="226">
+        <argument line="234">
           <name>$context</name>
           <default/>
           <type/>
         </argument>
       </method>
-      <method final="false" abstract="false" static="false" visibility="public" namespace="global" line="258" package="Default">
+      <method final="false" abstract="false" static="false" visibility="public" namespace="global" line="266" package="WordPress\Derk-Jan\Schema-Creator">
         <name>schema_post_box</name>
         <full_name>schema_post_box</full_name>
-        <docblock line="255">
-          <description>Display checkboxes for disabling the itemprop and itemscope</description>
+        <docblock line="263">
+          <description>Display checkboxes for disabling the itemprop and itemscope.</description>
           <long-description/>
         </docblock>
       </method>
-      <method final="false" abstract="false" static="false" visibility="public" namespace="global" line="291" package="Default">
+      <method final="false" abstract="false" static="false" visibility="public" namespace="global" line="299" package="WordPress\Derk-Jan\Schema-Creator">
         <name>save_metabox</name>
         <full_name>save_metabox</full_name>
-        <docblock line="285">
-          <description>Save the data</description>
+        <docblock line="293">
+          <description>Save the data.</description>
           <long-description/>
-          <tag line="285" name="param" description="the current post id" type="int" variable="$post_id">
+          <tag line="293" name="param" description="the current post id" type="int" variable="$post_id">
             <type by_reference="false">int</type>
           </tag>
-          <tag line="285" name="return" description="the post id or void" type="int|void">
+          <tag line="293" name="return" description="the post id or void" type="int|void">
             <type by_reference="false">int</type>
             <type by_reference="false">void</type>
           </tag>
         </docblock>
-        <argument line="291">
+        <argument line="299">
           <name>$post_id</name>
           <default>0</default>
           <type/>
         </argument>
       </method>
-      <method final="false" abstract="false" static="false" visibility="public" namespace="global" line="322" package="Default">
+      <method final="false" abstract="false" static="false" visibility="public" namespace="global" line="330" package="WordPress\Derk-Jan\Schema-Creator">
         <name>get_option</name>
         <full_name>get_option</full_name>
-        <docblock line="316">
-          <description>Gets the options value for a key</description>
+        <docblock line="324">
+          <description>Gets the options value for a key.</description>
           <long-description/>
-          <tag line="316" name="param" description="the option key" type="string" variable="$key">
+          <tag line="324" name="param" description="the option key" type="string" variable="$key">
             <type by_reference="false">string</type>
           </tag>
-          <tag line="316" name="return" description="the option value" type="mixed">
+          <tag line="324" name="return" description="the option value" type="mixed">
             <type by_reference="false">mixed</type>
           </tag>
         </docblock>
-        <argument line="322">
+        <argument line="330">
           <name>$key</name>
           <default/>
           <type/>
         </argument>
       </method>
-      <method final="false" abstract="false" static="false" visibility="public" namespace="global" line="331" package="Default">
+      <method final="false" abstract="false" static="false" visibility="public" namespace="global" line="339" package="WordPress\Derk-Jan\Schema-Creator">
         <name>get_options</name>
         <full_name>get_options</full_name>
-        <docblock line="327">
-          <description>Gets the options</description>
+        <docblock line="335">
+          <description>Gets the options.</description>
           <long-description/>
-          <tag line="327" name="return" description="the options;" type="mixed[]">
+          <tag line="335" name="return" description="the options;" type="mixed[]">
             <type by_reference="false">mixed[]</type>
           </tag>
         </docblock>
       </method>
-      <method final="false" abstract="false" static="false" visibility="public" namespace="global" line="341" package="Default">
+      <method final="false" abstract="false" static="false" visibility="public" namespace="global" line="349" package="WordPress\Derk-Jan\Schema-Creator">
         <name>set_options</name>
         <full_name>set_options</full_name>
-        <docblock line="337">
-          <description>Sets the options</description>
+        <docblock line="345">
+          <description>Sets the options.</description>
           <long-description/>
-          <tag line="337" name="param" description="the option values" type="mixed" variable="$options">
+          <tag line="345" name="param" description="the option values" type="mixed" variable="$options">
             <type by_reference="false">mixed</type>
           </tag>
         </docblock>
-        <argument line="341">
+        <argument line="349">
           <name>$options</name>
           <default/>
           <type/>
         </argument>
       </method>
-      <method final="false" abstract="false" static="false" visibility="public" namespace="global" line="351" package="Default">
+      <method final="false" abstract="false" static="false" visibility="public" namespace="global" line="359" package="WordPress\Derk-Jan\Schema-Creator">
         <name>get_tooltip</name>
         <full_name>get_tooltip</full_name>
-        <docblock line="345">
-          <description>Gets the tooltip value for a key</description>
+        <docblock line="353">
+          <description>Gets the tooltip value for a key.</description>
           <long-description/>
-          <tag line="345" name="param" description="the tooltip key" type="string" variable="$key">
+          <tag line="353" name="param" description="the tooltip key" type="string" variable="$key">
             <type by_reference="false">string</type>
           </tag>
-          <tag line="345" name="return" description="the tooltip value" type="string">
+          <tag line="353" name="return" description="the tooltip value" type="string">
             <type by_reference="false">string</type>
           </tag>
         </docblock>
-        <argument line="351">
+        <argument line="359">
           <name>$key</name>
           <default/>
           <type/>
         </argument>
       </method>
-      <method final="false" abstract="false" static="false" visibility="public" namespace="global" line="359" package="Default">
+      <method final="false" abstract="false" static="false" visibility="public" namespace="global" line="367" package="WordPress\Derk-Jan\Schema-Creator">
         <name>add_pages</name>
         <full_name>add_pages</full_name>
-        <docblock line="356">
-          <description>Build settings page</description>
+        <docblock line="364">
+          <description>Build settings page.</description>
           <long-description/>
         </docblock>
       </method>
-      <method final="false" abstract="false" static="false" visibility="public" namespace="global" line="376" package="Default">
+      <method final="false" abstract="false" static="false" visibility="public" namespace="global" line="384" package="WordPress\Derk-Jan\Schema-Creator">
         <name>get_page_slug</name>
         <full_name>get_page_slug</full_name>
-        <docblock line="371">
-          <description>Gets the page slug name</description>
+        <docblock line="379">
+          <description>Gets the page slug name.</description>
           <long-description/>
-          <tag line="371" name="returns" description="the page slug"/>
+          <tag line="379" name="return" description="page slug" type="\the">
+            <type by_reference="false">\the</type>
+          </tag>
         </docblock>
       </method>
-      <method final="false" abstract="false" static="false" visibility="public" namespace="global" line="383" package="Default">
+      <method final="false" abstract="false" static="false" visibility="public" namespace="global" line="391" package="WordPress\Derk-Jan\Schema-Creator">
         <name>register_settings</name>
         <full_name>register_settings</full_name>
-        <docblock line="380">
-          <description>Register settings</description>
+        <docblock line="388">
+          <description>Register settings.</description>
           <long-description/>
         </docblock>
       </method>
-      <method final="false" abstract="false" static="false" visibility="public" namespace="global" line="405" package="Default">
+      <method final="false" abstract="false" static="false" visibility="public" namespace="global" line="413" package="WordPress\Derk-Jan\Schema-Creator">
         <name>options_info_section</name>
         <full_name>options_info_section</full_name>
-        <docblock line="402">
-          <description>Outputs the info section HTML</description>
+        <docblock line="410">
+          <description>Outputs the info section HTML.</description>
           <long-description/>
         </docblock>
       </method>
-      <method final="false" abstract="false" static="false" visibility="public" namespace="global" line="446" package="Default">
+      <method final="false" abstract="false" static="false" visibility="public" namespace="global" line="454" package="WordPress\Derk-Jan\Schema-Creator">
         <name>options_info_version</name>
         <full_name>options_info_version</full_name>
-        <docblock line="443">
-          <description>Outputs the info version field</description>
+        <docblock line="451">
+          <description>Outputs the info version field.</description>
           <long-description/>
         </docblock>
       </method>
-      <method final="false" abstract="false" static="false" visibility="public" namespace="global" line="454" package="Default">
+      <method final="false" abstract="false" static="false" visibility="public" namespace="global" line="462" package="WordPress\Derk-Jan\Schema-Creator">
         <name>options_display_section</name>
         <full_name>options_display_section</full_name>
-        <docblock line="451">
-          <description>Outputs the display section HTML</description>
+        <docblock line="459">
+          <description>Outputs the display section HTML.</description>
           <long-description/>
         </docblock>
       </method>
-      <method final="false" abstract="false" static="false" visibility="public" namespace="global" line="459" package="Default">
+      <method final="false" abstract="false" static="false" visibility="public" namespace="global" line="467" package="WordPress\Derk-Jan\Schema-Creator">
         <name>options_display_css</name>
         <full_name>options_display_css</full_name>
-        <docblock line="456">
-          <description>Outputs the display css field</description>
+        <docblock line="464">
+          <description>Outputs the display css field.</description>
           <long-description/>
         </docblock>
       </method>
-      <method final="false" abstract="false" static="false" visibility="public" namespace="global" line="474" package="Default">
+      <method final="false" abstract="false" static="false" visibility="public" namespace="global" line="482" package="WordPress\Derk-Jan\Schema-Creator">
         <name>options_data_section</name>
         <full_name>options_data_section</full_name>
-        <docblock line="471">
-          <description>Outputs the data section HTML</description>
+        <docblock line="479">
+          <description>Outputs the data section HTML.</description>
           <long-description/>
         </docblock>
       </method>
-      <method final="false" abstract="false" static="false" visibility="public" namespace="global" line="479" package="Default">
+      <method final="false" abstract="false" static="false" visibility="public" namespace="global" line="487" package="WordPress\Derk-Jan\Schema-Creator">
         <name>options_data_body</name>
         <full_name>options_data_body</full_name>
-        <docblock line="476">
-          <description>Outputs data body field</description>
+        <docblock line="484">
+          <description>Outputs data body field.</description>
           <long-description/>
         </docblock>
       </method>
-      <method final="false" abstract="false" static="false" visibility="public" namespace="global" line="495" package="Default">
+      <method final="false" abstract="false" static="false" visibility="public" namespace="global" line="503" package="WordPress\Derk-Jan\Schema-Creator">
         <name>options_data_post</name>
         <full_name>options_data_post</full_name>
-        <docblock line="492">
-          <description>Outputs data post field</description>
+        <docblock line="500">
+          <description>Outputs data post field.</description>
           <long-description/>
         </docblock>
       </method>
-      <method final="false" abstract="false" static="false" visibility="public" namespace="global" line="513" package="Default">
+      <method final="false" abstract="false" static="false" visibility="public" namespace="global" line="521" package="WordPress\Derk-Jan\Schema-Creator">
         <name>options_validate</name>
         <full_name>options_validate</full_name>
-        <docblock line="507">
-          <description>Validates input</description>
+        <docblock line="515">
+          <description>Validates input.</description>
           <long-description/>
-          <tag line="507" name="param" description="the to be processed new values" type="mixed[]" variable="$input">
+          <tag line="515" name="param" description="the to be processed new values" type="mixed[]" variable="$input">
             <type by_reference="false">mixed[]</type>
           </tag>
-          <tag line="507" name="return" description="the processed new values" type="mixed">
+          <tag line="515" name="return" description="the processed new values" type="mixed">
             <type by_reference="false">mixed</type>
           </tag>
         </docblock>
-        <argument line="513">
+        <argument line="521">
           <name>$input</name>
           <default/>
           <type/>
         </argument>
       </method>
-      <method final="false" abstract="false" static="false" visibility="public" namespace="global" line="533" package="Default">
+      <method final="false" abstract="false" static="false" visibility="public" namespace="global" line="541" package="WordPress\Derk-Jan\Schema-Creator">
         <name>default_settings</name>
         <full_name>default_settings</full_name>
-        <docblock line="530">
-          <description>Set default settings</description>
+        <docblock line="538">
+          <description>Set default settings.</description>
           <long-description/>
         </docblock>
       </method>
-      <method final="false" abstract="false" static="false" visibility="public" namespace="global" line="548" package="Default">
+      <method final="false" abstract="false" static="false" visibility="public" namespace="global" line="556" package="WordPress\Derk-Jan\Schema-Creator">
         <name>get_default_settings</name>
         <full_name>get_default_settings</full_name>
-        <docblock line="542">
-          <description>Gets the default settings</description>
+        <docblock line="550">
+          <description>Gets the default settings.</description>
           <long-description/>
-          <tag line="542" name="param" description="current defaults" type="mixed[]" variable="$default">
+          <tag line="550" name="param" description="current defaults" type="mixed[]" variable="$default">
             <type by_reference="false">mixed[]</type>
           </tag>
-          <tag line="542" name="return" description="new defaults" type="mixed[]">
+          <tag line="550" name="return" description="new defaults" type="mixed[]">
             <type by_reference="false">mixed[]</type>
           </tag>
         </docblock>
-        <argument line="548">
+        <argument line="556">
           <name>$default</name>
           <default>array()</default>
           <type/>
         </argument>
       </method>
-      <method final="false" abstract="false" static="false" visibility="public" namespace="global" line="563" package="Default">
+      <method final="false" abstract="false" static="false" visibility="public" namespace="global" line="571" package="WordPress\Derk-Jan\Schema-Creator">
         <name>get_tooltips</name>
         <full_name>get_tooltips</full_name>
-        <docblock line="557">
-          <description>Content for pop-up tooltips</description>
+        <docblock line="565">
+          <description>Content for pop-up tooltips.</description>
           <long-description/>
-          <tag line="557" name="param" description="current tooltips" type="string[]" variable="$tooltip">
+          <tag line="565" name="param" description="current tooltips" type="string[]" variable="$tooltip">
             <type by_reference="false">string[]</type>
           </tag>
-          <tag line="557" name="return" description="new tooltips" type="string[]">
+          <tag line="565" name="return" description="new tooltips" type="string[]">
             <type by_reference="false">string[]</type>
           </tag>
         </docblock>
-        <argument line="563">
+        <argument line="571">
           <name>$tooltip</name>
           <default>array()</default>
           <type/>
         </argument>
       </method>
-      <method final="false" abstract="false" static="false" visibility="public" namespace="global" line="580" package="Default">
+      <method final="false" abstract="false" static="false" visibility="public" namespace="global" line="588" package="WordPress\Derk-Jan\Schema-Creator">
         <name>do_ajax</name>
         <full_name>do_ajax</full_name>
-        <docblock line="577">
-          <description>Adds ajax headers</description>
+        <docblock line="585">
+          <description>Adds ajax headers.</description>
           <long-description/>
         </docblock>
       </method>
-      <method final="false" abstract="false" static="false" visibility="public" namespace="global" line="589" package="Default">
+      <method final="false" abstract="false" static="false" visibility="public" namespace="global" line="597" package="WordPress\Derk-Jan\Schema-Creator">
         <name>do_page</name>
         <full_name>do_page</full_name>
-        <docblock line="586">
-          <description>Display main options page structure</description>
+        <docblock line="594">
+          <description>Display main options page structure.</description>
           <long-description/>
         </docblock>
       </method>
-      <method final="false" abstract="false" static="false" visibility="public" namespace="global" line="619" package="Default">
+      <method final="false" abstract="false" static="false" visibility="public" namespace="global" line="627" package="WordPress\Derk-Jan\Schema-Creator">
         <name>admin_scripts</name>
         <full_name>admin_scripts</full_name>
-        <docblock line="614">
-          <description>Load scripts and style for admin settings page</description>
+        <docblock line="622">
+          <description>Load scripts and style for admin settings page.</description>
           <long-description/>
-          <tag line="614" name="param" description="the current page hook" type="string" variable="$hook">
+          <tag line="622" name="param" description="the current page hook" type="string" variable="$hook">
             <type by_reference="false">string</type>
           </tag>
         </docblock>
-        <argument line="619">
+        <argument line="627">
           <name>$hook</name>
           <default/>
           <type/>
         </argument>
       </method>
-      <method final="false" abstract="false" static="false" visibility="public" namespace="global" line="661" package="Default">
+      <method final="false" abstract="false" static="false" visibility="public" namespace="global" line="669" package="WordPress\Derk-Jan\Schema-Creator">
         <name>mce_plugin</name>
         <full_name>mce_plugin</full_name>
-        <docblock line="655">
-          <description>Loads the TinyMCE plugin</description>
+        <docblock line="663">
+          <description>Loads the TinyMCE plugin.</description>
           <long-description/>
-          <tag line="655" name="param" description="paths of plugins array" type="string[]" variable="$plugins_array">
+          <tag line="663" name="param" description="paths of plugins array" type="string[]" variable="$plugins_array">
             <type by_reference="false">string[]</type>
           </tag>
-          <tag line="655" name="returns" description="string[] the new paths of plugins array"/>
+          <tag line="663" name="return" description="the new paths of plugins array" type="string[]">
+            <type by_reference="false">string[]</type>
+          </tag>
         </docblock>
-        <argument line="661">
+        <argument line="669">
           <name>$plugins_array</name>
           <default/>
           <type/>
         </argument>
       </method>
-      <method final="false" abstract="false" static="false" visibility="public" namespace="global" line="672" package="Default">
+      <method final="false" abstract="false" static="false" visibility="public" namespace="global" line="680" package="WordPress\Derk-Jan\Schema-Creator">
         <name>admin_footer_attribution</name>
         <full_name>admin_footer_attribution</full_name>
-        <docblock line="666">
-          <description>Add attribution link to settings page</description>
+        <docblock line="674">
+          <description>Add attribution link to settings page.</description>
           <long-description/>
-          <tag line="666" name="param" description="the current footer text" type="string" variable="$text">
+          <tag line="674" name="param" description="the current footer text" type="string" variable="$text">
             <type by_reference="false">string</type>
           </tag>
-          <tag line="666" name="return" description="the new footer text" type="string">
+          <tag line="674" name="return" description="the new footer text" type="string">
             <type by_reference="false">string</type>
           </tag>
         </docblock>
-        <argument line="672">
+        <argument line="680">
           <name>$text</name>
           <default/>
           <type/>
         </argument>
       </method>
-      <method final="false" abstract="false" static="false" visibility="public" namespace="global" line="706" package="Default">
+      <method final="false" abstract="false" static="false" visibility="public" namespace="global" line="714" package="WordPress\Derk-Jan\Schema-Creator">
         <name>body_class</name>
         <full_name>body_class</full_name>
-        <docblock line="698">
-          <description>Load body classes</description>
+        <docblock line="706">
+          <description>Load body classes.</description>
           <long-description>&lt;p&gt;Outputs itemtype and itemscope when body classes are generated.&lt;/p&gt;</long-description>
-          <tag line="698" name="param" description="current body classes" type="string[]" variable="$classes">
+          <tag line="706" name="param" description="current body classes" type="string[]" variable="$classes">
             <type by_reference="false">string[]</type>
           </tag>
-          <tag line="698" name="return" description="new body classes" type="string[]">
+          <tag line="706" name="return" description="new body classes" type="string[]">
             <type by_reference="false">string[]</type>
           </tag>
         </docblock>
-        <argument line="706">
+        <argument line="714">
           <name>$classes</name>
           <default/>
           <type/>
         </argument>
       </method>
-      <method final="false" abstract="false" static="false" visibility="public" namespace="global" line="741" package="Default">
+      <method final="false" abstract="false" static="false" visibility="public" namespace="global" line="749" package="WordPress\Derk-Jan\Schema-Creator">
         <name>schema_loader</name>
         <full_name>schema_loader</full_name>
-        <docblock line="735">
-          <description>Load front-end CSS if shortcode is present</description>
+        <docblock line="743">
+          <description>Load front-end CSS if shortcode is present.</description>
           <long-description/>
-          <tag line="735" name="param" description="the posts to display" type="object[]" variable="$posts">
+          <tag line="743" name="param" description="the posts to display" type="object[]" variable="$posts">
             <type by_reference="false">object[]</type>
           </tag>
-          <tag line="735" name="return" description="the posts to display" type="object[]">
+          <tag line="743" name="return" description="the posts to display" type="object[]">
             <type by_reference="false">object[]</type>
           </tag>
         </docblock>
-        <argument line="741">
+        <argument line="749">
           <name>$posts</name>
           <default/>
           <type/>
         </argument>
       </method>
-      <method final="false" abstract="false" static="false" visibility="public" namespace="global" line="798" package="Default">
+      <method final="false" abstract="false" static="false" visibility="public" namespace="global" line="806" package="WordPress\Derk-Jan\Schema-Creator">
         <name>schema_wrapper</name>
         <full_name>schema_wrapper</full_name>
-        <docblock line="792">
-          <description>wrap content in markup</description>
+        <docblock line="800">
+          <description>wrap content in markup.</description>
           <long-description/>
-          <tag line="792" name="param" description="the post content" type="string" variable="$content">
+          <tag line="800" name="param" description="the post content" type="string" variable="$content">
             <type by_reference="false">string</type>
           </tag>
-          <tag line="792" name="return" description="the proccesed post content" type="string">
+          <tag line="800" name="return" description="the proccesed post content" type="string">
             <type by_reference="false">string</type>
           </tag>
         </docblock>
-        <argument line="798">
+        <argument line="806">
           <name>$content</name>
           <default/>
           <type/>
         </argument>
       </method>
-      <method final="false" abstract="false" static="false" visibility="public" namespace="global" line="827" package="Default">
+      <method final="false" abstract="false" static="false" visibility="public" namespace="global" line="835" package="WordPress\Derk-Jan\Schema-Creator">
         <name>get_i18n</name>
         <full_name>get_i18n</full_name>
-        <docblock line="821">
-          <description>Gets the i18n translation of the string</description>
+        <docblock line="829">
+          <description>Gets the i18n translation of the string.</description>
           <long-description/>
-          <tag line="821" name="param" description="string to translate" type="string" variable="$string">
+          <tag line="829" name="param" description="string to translate" type="string" variable="$string">
             <type by_reference="false">string</type>
           </tag>
-          <tag line="821" name="returns" description="string the translated string"/>
+          <tag line="829" name="return" description="the translated string" type="string">
+            <type by_reference="false">string</type>
+          </tag>
         </docblock>
-        <argument line="827">
+        <argument line="835">
           <name>$string</name>
           <default/>
           <type/>
         </argument>
       </method>
-      <method final="false" abstract="false" static="false" visibility="public" namespace="global" line="840" package="Default">
+      <method final="false" abstract="false" static="false" visibility="public" namespace="global" line="848" package="WordPress\Derk-Jan\Schema-Creator">
         <name>get_countries</name>
         <full_name>get_countries</full_name>
-        <docblock line="836">
-          <description>Gets the countries and their translated counterparts</description>
+        <docblock line="844">
+          <description>Gets the countries and their translated counterparts.</description>
           <long-description/>
-          <tag line="836" name="returns" description="string[] the countries"/>
+          <tag line="844" name="return" description="the countries" type="string[]">
+            <type by_reference="false">string[]</type>
+          </tag>
         </docblock>
       </method>
-      <method final="false" abstract="false" static="false" visibility="public" namespace="global" line="1128" package="Default">
+      <method final="false" abstract="false" static="false" visibility="public" namespace="global" line="1136" package="WordPress\Derk-Jan\Schema-Creator">
         <name>get_schema_datatypes</name>
         <full_name>get_schema_datatypes</full_name>
-        <docblock line="1121">
-          <description>Gets the schema datatypes</description>
+        <docblock line="1129">
+          <description>Gets the schema datatypes.</description>
           <long-description/>
-          <tag line="1121" name="param" description="the ajax argument" type="mixed" variable="$_argument">
+          <tag line="1129" name="param" description="the ajax argument" type="mixed" variable="$_argument">
             <type by_reference="false">mixed</type>
           </tag>
-          <tag line="1121" name="param" description="using ajax" type="boolean" variable="$ajax">
+          <tag line="1129" name="param" description="using ajax" type="boolean" variable="$ajax">
             <type by_reference="false">boolean</type>
           </tag>
-          <tag line="1121" name="returns" description="JSON encoded array datatypes"/>
+          <tag line="1129" name="return" description="encoded array datatypes" type="\JSON">
+            <type by_reference="false">\JSON</type>
+          </tag>
         </docblock>
-        <argument line="1128">
+        <argument line="1136">
           <name>$_argument</name>
           <default>''</default>
           <type/>
         </argument>
-        <argument line="1128">
+        <argument line="1136">
           <name>$ajax</name>
           <default>true</default>
           <type/>
         </argument>
       </method>
-      <method final="false" abstract="false" static="false" visibility="public" namespace="global" line="1167" package="Default">
+      <method final="false" abstract="false" static="false" visibility="public" namespace="global" line="1175" package="WordPress\Derk-Jan\Schema-Creator">
         <name>get_schema_types</name>
         <full_name>get_schema_types</full_name>
-        <docblock line="1160">
-          <description>Gets the schema types</description>
+        <docblock line="1168">
+          <description>Gets the schema types.</description>
           <long-description/>
-          <tag line="1160" name="param" description="the ajax argument" type="mixed" variable="$_argument">
+          <tag line="1168" name="param" description="the ajax argument" type="mixed" variable="$_argument">
             <type by_reference="false">mixed</type>
           </tag>
-          <tag line="1160" name="param" description="using ajax" type="boolean" variable="$ajax">
+          <tag line="1168" name="param" description="using ajax" type="boolean" variable="$ajax">
             <type by_reference="false">boolean</type>
           </tag>
-          <tag line="1160" name="returns" description="JSON encoded array of siblings, parents, children and select type of a type"/>
+          <tag line="1168" name="return" description="encoded array of siblings, parents, children and select type of a type" type="\JSON">
+            <type by_reference="false">\JSON</type>
+          </tag>
         </docblock>
-        <argument line="1167">
+        <argument line="1175">
           <name>$_argument</name>
           <default>''</default>
           <type/>
         </argument>
-        <argument line="1167">
+        <argument line="1175">
           <name>$ajax</name>
           <default>true</default>
           <type/>
         </argument>
       </method>
-      <method final="false" abstract="false" static="false" visibility="public" namespace="global" line="1248" package="Default">
+      <method final="false" abstract="false" static="false" visibility="public" namespace="global" line="1256" package="WordPress\Derk-Jan\Schema-Creator">
         <name>get_schema_properties</name>
         <full_name>get_schema_properties</full_name>
-        <docblock line="1241">
-          <description>Gets the properties of a schema</description>
+        <docblock line="1249">
+          <description>Gets the properties of a schema.</description>
           <long-description/>
-          <tag line="1241" name="param" description="the ajax argument" type="mixed" variable="$_argument">
+          <tag line="1249" name="param" description="the ajax argument" type="mixed" variable="$_argument">
             <type by_reference="false">mixed</type>
           </tag>
-          <tag line="1241" name="param" description="using ajax" type="boolean" variable="$ajax">
+          <tag line="1249" name="param" description="using ajax" type="boolean" variable="$ajax">
             <type by_reference="false">boolean</type>
           </tag>
-          <tag line="1241" name="returns" description="encoded json or array"/>
+          <tag line="1249" name="return" description="json or array" type="\encoded">
+            <type by_reference="false">\encoded</type>
+          </tag>
         </docblock>
-        <argument line="1248">
+        <argument line="1256">
           <name>$_argument</name>
           <default>''</default>
           <type/>
         </argument>
-        <argument line="1248">
+        <argument line="1256">
           <name>$ajax</name>
           <default>true</default>
           <type/>
         </argument>
       </method>
-      <method final="false" abstract="false" static="false" visibility="public" namespace="global" line="1304" package="Default">
+      <method final="false" abstract="false" static="false" visibility="public" namespace="global" line="1312" package="WordPress\Derk-Jan\Schema-Creator">
         <name>is_root_disabled</name>
         <full_name>is_root_disabled</full_name>
-        <docblock line="1297">
-          <description>Checks if property is root disabled</description>
+        <docblock line="1305">
+          <description>Checks if property is root disabled.</description>
           <long-description/>
-          <tag line="1297" name="param" description="the schema type to check for" type="string" variable="$type">
+          <tag line="1305" name="param" description="the schema type to check for" type="string" variable="$type">
             <type by_reference="false">string</type>
           </tag>
-          <tag line="1297" name="param" description="the property to check for" type="string" variable="$property">
+          <tag line="1305" name="param" description="the property to check for" type="string" variable="$property">
             <type by_reference="false">string</type>
           </tag>
-          <tag line="1297" name="returns" description="boolean true if schema::property is root disabled"/>
+          <tag line="1305" name="return" description="true if schema::property is root disabled" type="boolean">
+            <type by_reference="false">boolean</type>
+          </tag>
         </docblock>
-        <argument line="1304">
+        <argument line="1312">
           <name>$type</name>
           <default/>
           <type/>
         </argument>
-        <argument line="1304">
+        <argument line="1312">
           <name>$property</name>
           <default/>
           <type/>
         </argument>
       </method>
-      <method final="false" abstract="false" static="false" visibility="public" namespace="global" line="1322" package="Default">
+      <method final="false" abstract="false" static="false" visibility="public" namespace="global" line="1330" package="WordPress\Derk-Jan\Schema-Creator">
         <name>is_embed_disabled</name>
         <full_name>is_embed_disabled</full_name>
-        <docblock line="1315">
-          <description>Checks if property is embed disabled</description>
+        <docblock line="1323">
+          <description>Checks if property is embed disabled.</description>
           <long-description/>
-          <tag line="1315" name="param" description="the schema type to check for" type="string" variable="$type">
+          <tag line="1323" name="param" description="the schema type to check for" type="string" variable="$type">
             <type by_reference="false">string</type>
           </tag>
-          <tag line="1315" name="param" description="the property to check for" type="string" variable="$property">
+          <tag line="1323" name="param" description="the property to check for" type="string" variable="$property">
             <type by_reference="false">string</type>
           </tag>
-          <tag line="1315" name="returns" description="boolean true if schema::property is embed disabled"/>
+          <tag line="1323" name="return" description="true if schema::property is embed disabled" type="boolean">
+            <type by_reference="false">boolean</type>
+          </tag>
         </docblock>
-        <argument line="1322">
+        <argument line="1330">
           <name>$type</name>
           <default/>
           <type/>
         </argument>
-        <argument line="1322">
+        <argument line="1330">
           <name>$property</name>
           <default/>
           <type/>
         </argument>
       </method>
-      <method final="false" abstract="false" static="false" visibility="public" namespace="global" line="1340" package="Default">
+      <method final="false" abstract="false" static="false" visibility="public" namespace="global" line="1348" package="WordPress\Derk-Jan\Schema-Creator">
         <name>get_scraper</name>
         <full_name>get_scraper</full_name>
-        <docblock line="1335">
-          <description>Gets the scraper class</description>
+        <docblock line="1343">
+          <description>Gets the scraper class.</description>
           <long-description/>
-          <tag line="1335" name="return" description="the scraper singleton instance" type="self">
+          <tag line="1343" name="return" description="the scraper singleton instance" type="self">
             <type by_reference="false">self</type>
           </tag>
         </docblock>
       </method>
-      <method final="false" abstract="false" static="false" visibility="public" namespace="global" line="1351" package="Default">
+      <method final="false" abstract="false" static="false" visibility="public" namespace="global" line="1359" package="WordPress\Derk-Jan\Schema-Creator">
         <name>shortcode</name>
         <full_name>shortcode</full_name>
-        <docblock line="1344">
-          <description>Build out shortcode with variable array of options</description>
+        <docblock line="1352">
+          <description>Build out shortcode with variable array of options.</description>
           <long-description/>
-          <tag line="1344" name="param" description="shortcode attributes" type="string" variable="$atts">
+          <tag line="1352" name="param" description="shortcode attributes" type="string" variable="$atts">
             <type by_reference="false">string</type>
           </tag>
-          <tag line="1344" name="param" description="the inner shortcode content" type="string|null" variable="$content">
+          <tag line="1352" name="param" description="the inner shortcode content" type="string|null" variable="$content">
             <type by_reference="false">string</type>
             <type by_reference="false">null</type>
           </tag>
-          <tag line="1344" name="return" description="the replacement" type="string">
+          <tag line="1352" name="return" description="the replacement" type="string">
             <type by_reference="false">string</type>
           </tag>
         </docblock>
-        <argument line="1351">
+        <argument line="1359">
           <name>$atts</name>
           <default/>
           <type/>
         </argument>
-        <argument line="1351">
+        <argument line="1359">
           <name>$content</name>
           <default>NULL</default>
           <type/>
         </argument>
       </method>
-      <method final="false" abstract="false" static="false" visibility="public" namespace="global" line="1389" package="Default">
+      <method final="false" abstract="false" static="false" visibility="public" namespace="global" line="1397" package="WordPress\Derk-Jan\Schema-Creator">
         <name>shortcode_recursive</name>
         <full_name>shortcode_recursive</full_name>
-        <docblock line="1382">
-          <description>Outputs shortcode recursively</description>
+        <docblock line="1390">
+          <description>Outputs shortcode recursively.</description>
           <long-description/>
-          <tag line="1382" name="param" description="content to process" type="string" variable="$content">
+          <tag line="1390" name="param" description="content to process" type="string" variable="$content">
             <type by_reference="false">string</type>
           </tag>
-          <tag line="1382" name="param" description="class to style embeds with" type="string" variable="$embed_class">
+          <tag line="1390" name="param" description="class to style embeds with" type="string" variable="$embed_class">
             <type by_reference="false">string</type>
           </tag>
-          <tag line="1382" name="return" description="processed content" type="string">
+          <tag line="1390" name="return" description="processed content" type="string">
             <type by_reference="false">string</type>
           </tag>
         </docblock>
-        <argument line="1389">
+        <argument line="1397">
           <name>$content</name>
           <default/>
           <type/>
         </argument>
-        <argument line="1389">
+        <argument line="1397">
           <name>$embed_class</name>
           <default>''</default>
           <type/>
         </argument>
       </method>
-      <method final="false" abstract="false" static="false" visibility="public" namespace="global" line="1782" package="Default">
+      <method final="false" abstract="false" static="false" visibility="public" namespace="global" line="1790" package="WordPress\Derk-Jan\Schema-Creator">
         <name>shortcode_build_attributes</name>
         <full_name>shortcode_build_attributes</full_name>
-        <docblock line="1776">
-          <description>Builds attributes for the shortcode processing</description>
+        <docblock line="1784">
+          <description>Builds attributes for the shortcode processing.</description>
           <long-description/>
-          <tag line="1776" name="param" description="key value array with attributes" type="string[]" variable="$insulate">
+          <tag line="1784" name="param" description="key value array with attributes" type="string[]" variable="$insulate">
             <type by_reference="false">string[]</type>
           </tag>
-          <tag line="1776" name="return" description="attributes string" type="string">
+          <tag line="1784" name="return" description="attributes string" type="string">
             <type by_reference="false">string</type>
           </tag>
         </docblock>
-        <argument line="1782">
+        <argument line="1790">
           <name>$insulate</name>
           <default/>
           <type/>
         </argument>
       </method>
-      <method final="false" abstract="false" static="false" visibility="public" namespace="global" line="1791" package="Default">
+      <method final="false" abstract="false" static="false" visibility="public" namespace="global" line="1799" package="WordPress\Derk-Jan\Schema-Creator">
         <name>schema_media_button</name>
         <full_name>schema_media_button</full_name>
-        <docblock line="1788">
-          <description>Add button to top level media row</description>
+        <docblock line="1796">
+          <description>Add button to top level media row.</description>
           <long-description/>
         </docblock>
       </method>
-      <method final="false" abstract="false" static="false" visibility="public" namespace="global" line="1824" package="Default">
+      <method final="false" abstract="false" static="false" visibility="public" namespace="global" line="1832" package="WordPress\Derk-Jan\Schema-Creator">
         <name>schema_media_form</name>
         <full_name>schema_media_form</full_name>
-        <docblock line="1821">
-          <description>Build form and add into footer</description>
+        <docblock line="1829">
+          <description>Build form and add into footer.</description>
           <long-description/>
         </docblock>
       </method>
-      <method final="false" abstract="false" static="false" visibility="public" namespace="global" line="1892" package="Default">
+      <method final="false" abstract="false" static="false" visibility="public" namespace="global" line="1900" package="WordPress\Derk-Jan\Schema-Creator">
         <name>my_refresh_mce</name>
         <full_name>my_refresh_mce</full_name>
-        <docblock line="1883">
-          <description>Update TinyMCE version</description>
+        <docblock line="1891">
+          <description>Update TinyMCE version.</description>
           <long-description>&lt;p&gt;This will intercept the version check and increment the current version number by 3.
 It's the quick and dirty way to do it without messing with the settings directly...&lt;/p&gt;</long-description>
-          <tag line="1883" name="param" description="current version" type="int" variable="$ver">
+          <tag line="1891" name="param" description="current version" type="int" variable="$ver">
             <type by_reference="false">int</type>
           </tag>
-          <tag line="1883" name="returns" description="int new version"/>
+          <tag line="1891" name="return" description="new version" type="int">
+            <type by_reference="false">int</type>
+          </tag>
         </docblock>
-        <argument line="1892">
+        <argument line="1900">
           <name>$ver</name>
           <default/>
           <type/>
@@ -806,1148 +828,1197 @@ It's the quick and dirty way to do it without messing with the settings directly
       <error line="0" code="50007">No page-level DocBlock was found in file lib\res\schema-scraper-i18n-strings.php</error>
     </parse_markers>
   </file>
-  <file path="lib\schema-scraper-i18n.php" hash="9d2de6a58b091a605fa5c0f68e22a9e8" package="WordPress/Derk-Jan/Schema-Creator/I18n">
+  <file path="lib\schema-scraper-i18n.php" hash="4b97086bacf4e9e4443c21b1bc7c3e32" package="WordPress\Derk-Jan\Schema-Creator\I18n">
     <docblock line="11">
-      <description>Schema Scraper Internationalization add-in for schema creator</description>
+      <description>Schema Scraper Internationalization add-in for schema creator.</description>
       <long-description>&lt;p&gt;This add in will try to internationalize the scrapped strings
 by the Scraper. It simply creates a huge library of i18n-enabled
 strings so the pot/po/mo files can be updated.&lt;/p&gt;</long-description>
       <tag line="11" name="author" description="Derk-Jan Karrenbeld &lt;derk-jan+schema@karrenbeld.info&gt;"/>
       <tag line="11" name="version" description="1.0"/>
-      <tag line="11" name="package" description="WordPress/Derk-Jan/Schema-Creator/I18n"/>
+      <tag line="11" name="package" description="WordPress\Derk-Jan\Schema-Creator\I18n"/>
     </docblock>
-    <include line="168" type="Include Once" package="Default">
+    <include line="181" type="Include Once" package="Default">
       <name/>
     </include>
-    <include line="173" type="Include Once" package="Default">
+    <include line="186" type="Include Once" package="Default">
       <name/>
     </include>
-    <constant namespace="global" line="28" package="WordPress/Derk-Jan/Schema-Creator/I18n">
+    <constant namespace="global" line="28" package="WordPress\Derk-Jan\Schema-Creator\I18n">
       <name>DJ_SCHEMASCRAPEI18N_BASE</name>
       <full_name>\DJ_SCHEMASCRAPEI18N_BASE</full_name>
       <value>plugin_basename(__FILE__)</value>
     </constant>
-    <constant namespace="global" line="33" package="WordPress/Derk-Jan/Schema-Creator/I18n">
+    <constant namespace="global" line="33" package="WordPress\Derk-Jan\Schema-Creator\I18n">
       <name>DJ_SCHEMASCRAPEI18N_VERSION</name>
       <full_name>\DJ_SCHEMASCRAPEI18N_VERSION</full_name>
       <value>'1.0'</value>
     </constant>
-    <class final="false" abstract="false" namespace="global" line="38" package="Default">
+    <class final="false" abstract="false" namespace="global" line="46" package="WordPress\Derk-Jan\Schema-Creator\I18n">
       <extends/>
       <name>DJ_SchemaScraperI18n</name>
       <full_name>\DJ_SchemaScraperI18n</full_name>
       <docblock line="35">
-        <description>The Shema Scraper class</description>
-        <long-description/>
+        <description>The Shema Scraper class.</description>
+        <long-description>&lt;p&gt;This add in will try to internationalize the scrapped strings
+by the Scraper. It simply creates a huge library of i18n-enabled
+strings so the pot/po/mo files can be updated.&lt;/p&gt;</long-description>
+        <tag line="35" name="author" description="Derk-Jan Karrenbeld &lt;derk-jan+schema@karrenbeld.info&gt;"/>
+        <tag line="35" name="version" description="1.0"/>
+        <tag line="35" name="package" description="WordPress\Derk-Jan\Schema-Creator\I18n"/>
       </docblock>
-      <property final="false" static="true" visibility="private" line="43" namespace="global" package="Default">
+      <property final="false" static="true" visibility="private" line="51" namespace="global" package="Default">
         <name>$singleton</name>
         <default/>
-        <docblock line="40">
-          <description>Holds the singleton</description>
+        <docblock line="48">
+          <description>Holds the singleton.</description>
           <long-description/>
         </docblock>
       </property>
-      <method final="false" abstract="false" static="true" visibility="public" namespace="global" line="55" package="Default">
+      <method final="false" abstract="false" static="true" visibility="public" namespace="global" line="63" package="WordPress\Derk-Jan\Schema-Creator\I18n">
         <name>singleton</name>
         <full_name>singleton</full_name>
-        <docblock line="45">
-          <description>Gets a singleton of this class</description>
+        <docblock line="53">
+          <description>Gets a singleton of this class.</description>
           <long-description>&lt;p&gt;DJ_SchemaScraperI18n::singleton() will always return the same instance during a
 PHP processing stack. This way actions will not be queued duplicately and
 caching of processed values is not neccesary.&lt;/p&gt;</long-description>
-          <tag line="45" name="api" description=""/>
-          <tag line="45" name="return" description="the singleton instance" type="\DJ_SchemaScraperI18n">
+          <tag line="53" name="api" description=""/>
+          <tag line="53" name="return" description="the singleton instance" type="\DJ_SchemaScraperI18n">
             <type by_reference="false">\DJ_SchemaScraperI18n</type>
           </tag>
         </docblock>
       </method>
-      <method final="false" abstract="false" static="false" visibility="protected" namespace="global" line="65" package="Default">
+      <method final="false" abstract="false" static="false" visibility="protected" namespace="global" line="74" package="WordPress\Derk-Jan\Schema-Creator\I18n">
         <name>__construct</name>
         <full_name>__construct</full_name>
-        <docblock line="61">
+        <docblock line="69">
           <description>Creates a new instance of the class.</description>
-          <long-description>&lt;p&gt;Use self::singleton() to get
-the actual instance outside of this (sub)class.&lt;/p&gt;</long-description>
+          <long-description/>
+          <tag line="69" name="remarks" description="use DJ_SchemaScraperI18n::singleton() to get the actual instance outside of this (sub)class."/>
         </docblock>
       </method>
-      <method final="false" abstract="false" static="false" visibility="public" namespace="global" line="76" package="Default">
+      <method final="false" abstract="false" static="false" visibility="public" namespace="global" line="85" package="WordPress\Derk-Jan\Schema-Creator\I18n">
         <name>on_activated</name>
         <full_name>on_activated</full_name>
-        <docblock line="73">
-          <description>Runs when the plugin is activated</description>
+        <docblock line="82">
+          <description>Runs when the plugin is activated.</description>
           <long-description/>
         </docblock>
       </method>
-      <method final="false" abstract="false" static="false" visibility="public" namespace="global" line="92" package="Default">
+      <method final="false" abstract="false" static="false" visibility="public" namespace="global" line="103" package="WordPress\Derk-Jan\Schema-Creator\I18n">
         <name>get_path</name>
         <full_name>get_path</full_name>
-        <docblock line="88">
-          <description>Get caching path</description>
-          <long-description/>
-          <tag line="88" name="return" description="path" type="\$string">
+        <docblock line="97">
+          <description>Get caching path.</description>
+          <long-description>&lt;p&gt;@todo add a filter&lt;/p&gt;</long-description>
+          <tag line="97" name="return" description="path" type="\$string">
             <type by_reference="false">\$string</type>
           </tag>
         </docblock>
       </method>
-      <method final="false" abstract="false" static="false" visibility="public" namespace="global" line="100" package="Default">
+      <method final="false" abstract="false" static="false" visibility="public" namespace="global" line="113" package="WordPress\Derk-Jan\Schema-Creator\I18n">
         <name>get_filename</name>
         <full_name>get_filename</full_name>
-        <docblock line="96">
-          <description>Get caching filename</description>
-          <long-description/>
-          <tag line="96" name="return" description="filename" type="\$string">
+        <docblock line="107">
+          <description>Get caching filename.</description>
+          <long-description>&lt;p&gt;@todo add a filter&lt;/p&gt;</long-description>
+          <tag line="107" name="return" description="filename" type="\$string">
             <type by_reference="false">\$string</type>
           </tag>
         </docblock>
       </method>
-      <method final="false" abstract="false" static="false" visibility="public" namespace="global" line="108" package="Default">
+      <method final="false" abstract="false" static="false" visibility="public" namespace="global" line="121" package="WordPress\Derk-Jan\Schema-Creator\I18n">
         <name>on_fetch</name>
         <full_name>on_fetch</full_name>
-        <docblock line="104">
-          <description>On fetched schema data from scraper</description>
+        <docblock line="117">
+          <description>On fetched schema data from scraper.</description>
           <long-description/>
-          <tag line="104" name="param" description="fetched schema" type="object" variable="$schema_data">
+          <tag line="117" name="param" description="fetched schema" type="object" variable="$schema_data">
             <type by_reference="false">object</type>
           </tag>
         </docblock>
-        <argument line="108">
+        <argument line="121">
           <name>$schema_data</name>
           <default/>
           <type/>
         </argument>
       </method>
-      <method final="false" abstract="false" static="false" visibility="public" namespace="global" line="134" package="Default">
+      <method final="false" abstract="false" static="false" visibility="public" namespace="global" line="147" package="WordPress\Derk-Jan\Schema-Creator\I18n">
         <name>walk_object_for_strings</name>
         <full_name>walk_object_for_strings</full_name>
-        <docblock line="128">
-          <description>Walks the object and looks for strings</description>
+        <docblock line="141">
+          <description>Walks the object and looks for strings.</description>
           <long-description/>
-          <tag line="128" name="param" description="the walked object" type="object" variable="$object">
+          <tag line="141" name="param" description="the walked object" type="object" variable="$object">
             <type by_reference="false">object</type>
           </tag>
-          <tag line="128" name="param" description="filestream" type="resource" variable="$stream">
+          <tag line="141" name="param" description="filestream" type="resource" variable="$stream">
             <type by_reference="false">resource</type>
           </tag>
         </docblock>
-        <argument line="134">
+        <argument line="147">
           <name>$object</name>
           <default/>
           <type/>
         </argument>
-        <argument line="134">
+        <argument line="147">
           <name>$stream</name>
           <default/>
           <type/>
         </argument>
       </method>
-      <method final="false" abstract="false" static="false" visibility="public" namespace="global" line="161" package="Default">
+      <method final="false" abstract="false" static="false" visibility="public" namespace="global" line="174" package="WordPress\Derk-Jan\Schema-Creator\I18n">
         <name>on_plugins_loaded</name>
         <full_name>on_plugins_loaded</full_name>
-        <docblock line="158">
-          <description>Runs when plugins are loaded and loads the strings</description>
+        <docblock line="171">
+          <description>Runs when plugins are loaded and loads the strings.</description>
           <long-description/>
         </docblock>
       </method>
     </class>
   </file>
-  <file path="lib\schema-scraper.php" hash="acab07ea826d616233996101618bcc05" package="WordPress/Derk-Jan/Schema-Creator/I18n">
+  <file path="lib\schema-scraper.php" hash="9acfe09295bf0c336d4d6123b35c94e2" package="WordPress\Derk-Jan\Schema-Creator\Scraper">
     <docblock line="18">
-      <description>Schema Scraper add-in for schema creator</description>
+      <description>Schema Scraper add-in for schema creator.</description>
       <long-description>&lt;p&gt;This add in will scrape all the schema's from a predifined URL that
 provides schema's in a certain JSON format. It enables the schema-
 creator base file to dynamically built the schema's. A base file is
 provided if there is no internet on the active machine.&lt;/p&gt;</long-description>
       <tag line="18" name="author" description="Derk-Jan Karrenbeld &lt;derk-jan+schema@karrenbeld.info&gt;"/>
       <tag line="18" name="version" description="1.0"/>
-      <tag line="18" name="package" description="WordPress/Derk-Jan/Schema-Creator/I18n"/>
+      <tag line="18" name="package" description="WordPress\Derk-Jan\Schema-Creator\Scraper"/>
     </docblock>
     <include line="44" type="Include Once" package="Default">
       <name/>
     </include>
-    <constant namespace="global" line="36" package="WordPress/Derk-Jan/Schema-Creator/I18n">
+    <constant namespace="global" line="36" package="WordPress\Derk-Jan\Schema-Creator\Scraper">
       <name>DJ_SCHEMASCRAPE_BASE</name>
       <full_name>\DJ_SCHEMASCRAPE_BASE</full_name>
       <value>plugin_basename(__FILE__)</value>
     </constant>
-    <constant namespace="global" line="41" package="WordPress/Derk-Jan/Schema-Creator/I18n">
+    <constant namespace="global" line="41" package="WordPress\Derk-Jan\Schema-Creator\Scraper">
       <name>DJ_SCHEMASCRAPE_VERSION</name>
       <full_name>\DJ_SCHEMASCRAPE_VERSION</full_name>
       <value>'1.0'</value>
     </constant>
-    <class final="false" abstract="false" namespace="global" line="51" package="Default">
+    <class final="false" abstract="false" namespace="global" line="57" package="WordPress\Derk-Jan\Schema-Creator\Scraper">
       <extends/>
       <name>DJ_SchemaScraper</name>
       <full_name>\DJ_SchemaScraper</full_name>
       <docblock line="46">
-        <description>The Schema Scraper class fetches and processes all the
+        <description>The Schema Scraper class.</description>
+        <long-description>&lt;p&gt;The Schema Scraper class fetches and processes all the
 schema's from a given URL and is used to provide all the
-schema's available instead of an hardcoded subsection.</description>
-        <long-description></long-description>
+schema's available instead of an hardcoded subsection.&lt;/p&gt;</long-description>
+        <tag line="46" name="author" description="Derk-Jan Karrenbeld &lt;derk-jan+schema@karrenbeld.info&gt;"/>
+        <tag line="46" name="version" description="1.0"/>
+        <tag line="46" name="package" description="WordPress\Derk-Jan\Schema-Creator\Scraper"/>
       </docblock>
-      <property final="false" static="true" visibility="private" line="56" namespace="global" package="Default">
+      <property final="false" static="true" visibility="private" line="62" namespace="global" package="Default">
         <name>$singleton</name>
-        <default></default>
-        <docblock line="53">
-          <description>Holds the singleton instance</description>
-          <long-description></long-description>
+        <default/>
+        <docblock line="59">
+          <description>Holds the singleton instance.</description>
+          <long-description/>
         </docblock>
       </property>
-      <property final="false" static="false" visibility="private" line="61" namespace="global" package="Default">
+      <property final="false" static="false" visibility="private" line="67" namespace="global" package="Default">
         <name>$options</name>
-        <default></default>
-        <docblock line="58">
-          <description>Holds the values of the options</description>
-          <long-description></long-description>
+        <default/>
+        <docblock line="64">
+          <description>Holds the values of the options.</description>
+          <long-description/>
         </docblock>
       </property>
-      <property final="false" static="false" visibility="private" line="68" namespace="global" package="Default">
+      <property final="false" static="false" visibility="private" line="76" namespace="global" package="Default">
         <name>$schema_data</name>
-        <default></default>
-        <docblock line="63">
-          <description>The fetched schema data from which the schema's are
-generated.</description>
-          <long-description>&lt;p&gt;Is populated with the cached file if the
+        <default/>
+        <docblock line="69">
+          <description>The fetched schema data.</description>
+          <long-description>&lt;p&gt;The fetched schema data from which the schema's are
+generated. Is populated with the cached file if the
 URL retrieval generates errors&lt;/p&gt;</long-description>
         </docblock>
       </property>
-      <property final="false" static="false" visibility="private" line="73" namespace="global" package="Default">
+      <property final="false" static="false" visibility="private" line="81" namespace="global" package="Default">
         <name>$timestamp</name>
-        <default></default>
-        <docblock line="70">
-          <description>The timestamp of the @link $schema_data;</description>
-          <long-description></long-description>
+        <default/>
+        <docblock line="78">
+          <description>The timestamp of the @link $schema_data.</description>
+          <long-description/>
         </docblock>
       </property>
-      <property final="false" static="false" visibility="private" line="79" namespace="global" package="Default">
+      <property final="false" static="false" visibility="private" line="87" namespace="global" package="Default">
         <name>$last_error</name>
-        <default></default>
-        <docblock line="75">
+        <default/>
+        <docblock line="83">
           <description>The last error that occured since the last HTTP request
 that loaded this class.</description>
-          <long-description></long-description>
+          <long-description/>
         </docblock>
       </property>
-      <method final="false" abstract="false" static="true" visibility="public" namespace="global" line="90" package="Default">
+      <method final="false" abstract="false" static="true" visibility="public" namespace="global" line="99" package="WordPress\Derk-Jan\Schema-Creator\Scraper">
         <name>singleton</name>
         <full_name>singleton</full_name>
-        <docblock line="81">
-          <description>Gets a singleton of this class</description>
+        <docblock line="89">
+          <description>Gets a singleton of this class.</description>
           <long-description>&lt;p&gt;DJ_SchemaScraper::singleton() will always return the same instance during a
 PHP processing stack. This way actions will not be queued duplicately and
 caching of processed values is not neccesary.&lt;/p&gt;</long-description>
-          <tag line="81" name="return" description="the singleton instance" type="\DJ_SchemaScraper">
+          <tag line="89" name="api" description=""/>
+          <tag line="89" name="return" description="the singleton instance" type="\DJ_SchemaScraper">
             <type by_reference="false">\DJ_SchemaScraper</type>
           </tag>
         </docblock>
       </method>
-      <method final="false" abstract="false" static="false" visibility="protected" namespace="global" line="101" package="Default">
+      <method final="false" abstract="false" static="false" visibility="protected" namespace="global" line="110" package="WordPress\Derk-Jan\Schema-Creator\Scraper">
         <name>__construct</name>
         <full_name>__construct</full_name>
-        <docblock line="96">
-          <description>Creates a new instance of DJ_SchemaScraper</description>
-          <long-description></long-description>
-          <tag line="96" name="link" description="use outside the class hieracrchy" link="DJ_SchemaScraper::singleton()"/>
+        <docblock line="105">
+          <description>Creates a new instance of DJ_SchemaScraper.</description>
+          <long-description/>
+          <tag line="105" name="remarks" description="use DJ_SchemaScraper::singleton() outside the class hieracrchy"/>
         </docblock>
       </method>
-      <method final="false" abstract="false" static="false" visibility="public" namespace="global" line="120" package="Default">
+      <method final="false" abstract="false" static="false" visibility="public" namespace="global" line="130" package="WordPress\Derk-Jan\Schema-Creator\Scraper">
         <name>get_option</name>
         <full_name>get_option</full_name>
-        <docblock line="114">
-          <description>Gets an option value by key</description>
-          <long-description></long-description>
-          <tag line="114" name="param" description="the option key" type="string" variable="$key">
+        <docblock line="123">
+          <description>Gets an option value by key.</description>
+          <long-description/>
+          <tag line="123" name="api" description="get options for the scraper"/>
+          <tag line="123" name="param" description="the option key" type="string" variable="$key">
             <type by_reference="false">string</type>
           </tag>
-          <tag line="114" name="return" description="the option value" type="mixed">
+          <tag line="123" name="return" description="the option value" type="mixed">
             <type by_reference="false">mixed</type>
           </tag>
         </docblock>
-        <argument line="120">
+        <argument line="130">
           <name>$key</name>
-          <default></default>
+          <default/>
           <type/>
         </argument>
       </method>
-      <method final="false" abstract="false" static="false" visibility="public" namespace="global" line="135" package="Default">
+      <method final="false" abstract="false" static="false" visibility="public" namespace="global" line="147" package="WordPress\Derk-Jan\Schema-Creator\Scraper">
         <name>get_schema_data</name>
         <full_name>get_schema_data</full_name>
-        <docblock line="126">
-          <description>Runs when the admin initializes</description>
-          <long-description></long-description>
-          <tag line="126" name="param" description="the url where the JSON resides or null to use the default" type="string|null" variable="$url">
+        <docblock line="136">
+          <description>Gets the schema data.</description>
+          <long-description/>
+          <tag line="136" name="api" description="hook"/>
+          <tag line="136" name="hook" description="dj_schemascraper_fetched when schema is fetched"/>
+          <tag line="136" name="param" description="the url where the JSON resides or null to use the default" type="string|null" variable="$url">
             <type by_reference="false">string</type>
             <type by_reference="false">null</type>
           </tag>
-          <tag line="126" name="param" description="where the file is cached or null to use the default" type="string|null" variable="$path">
+          <tag line="136" name="param" description="where the file is cached or null to use the default" type="string|null" variable="$path">
             <type by_reference="false">string</type>
             <type by_reference="false">null</type>
           </tag>
-          <tag line="126" name="param" description="name of the file or null to use the default" type="string|null" variable="$file">
+          <tag line="136" name="param" description="name of the file or null to use the default" type="string|null" variable="$file">
             <type by_reference="false">string</type>
             <type by_reference="false">null</type>
           </tag>
-          <tag line="126" name="param" description="the flag that if set disabled any subsequent fetches." type="boolean" variable="$fetch_disabled">
+          <tag line="136" name="param" description="the flag that if set disabled any subsequent fetches." type="boolean" variable="$fetch_disabled">
             <type by_reference="false">boolean</type>
           </tag>
-          <tag line="126" name="returns" description="object|null the schema data or null"/>
+          <tag line="136" name="return" description="the schema data or null" type="object|null">
+            <type by_reference="false">object</type>
+            <type by_reference="false">null</type>
+          </tag>
         </docblock>
-        <argument line="135">
+        <argument line="147">
           <name>$url</name>
           <default>NULL</default>
           <type/>
         </argument>
-        <argument line="135">
+        <argument line="147">
           <name>$path</name>
           <default>NULL</default>
           <type/>
         </argument>
-        <argument line="135">
+        <argument line="147">
           <name>$file</name>
           <default>NULL</default>
           <type/>
         </argument>
-        <argument line="135">
+        <argument line="147">
           <name>$fetch_disabled</name>
           <default>false</default>
           <type/>
         </argument>
       </method>
-      <method final="false" abstract="false" static="false" visibility="public" namespace="global" line="228" package="Default">
+      <method final="false" abstract="false" static="false" visibility="public" namespace="global" line="240" package="WordPress\Derk-Jan\Schema-Creator\Scraper">
         <name>notice_fetch</name>
         <full_name>notice_fetch</full_name>
-        <docblock line="225">
-          <description>Fetches notices</description>
-          <long-description></long-description>
+        <docblock line="237">
+          <description>Fetches notices.</description>
+          <long-description/>
         </docblock>
       </method>
-      <method final="false" abstract="false" static="false" visibility="public" namespace="global" line="239" package="Default">
+      <method final="false" abstract="false" static="false" visibility="public" namespace="global" line="251" package="WordPress\Derk-Jan\Schema-Creator\Scraper">
         <name>get_document</name>
         <full_name>get_document</full_name>
-        <docblock line="233">
-          <description>Gets a document over an HTTP request</description>
-          <long-description></long-description>
-          <tag line="233" name="param" description="the url to the scrapped database" type="string" variable="$url">
+        <docblock line="245">
+          <description>Gets a document over an HTTP request.</description>
+          <long-description/>
+          <tag line="245" name="param" description="the url to the scrapped database" type="string" variable="$url">
             <type by_reference="false">string</type>
           </tag>
-          <tag line="233" name="return" description="the body of the document or http error" type="string|object">
+          <tag line="245" name="return" description="the body of the document or http error" type="string|object">
             <type by_reference="false">string</type>
             <type by_reference="false">object</type>
           </tag>
         </docblock>
-        <argument line="239">
+        <argument line="251">
           <name>$url</name>
-          <default></default>
+          <default/>
           <type/>
         </argument>
       </method>
-      <method final="false" abstract="false" static="false" visibility="public" namespace="global" line="252" package="Default">
+      <method final="false" abstract="false" static="false" visibility="public" namespace="global" line="265" package="WordPress\Derk-Jan\Schema-Creator\Scraper">
         <name>get_validation_date</name>
         <full_name>get_validation_date</full_name>
-        <docblock line="247">
-          <description>Gets date till witch this schema is valid</description>
-          <long-description></long-description>
-          <tag line="247" name="return" description="strtotime valid timestamp string" type="string">
+        <docblock line="259">
+          <description>Gets date till witch this schema is valid.</description>
+          <long-description/>
+          <tag line="259" name="api" description=""/>
+          <tag line="259" name="return" description="strtotime valid timestamp string" type="string">
             <type by_reference="false">string</type>
           </tag>
         </docblock>
       </method>
-      <method final="false" abstract="false" static="false" visibility="public" namespace="global" line="261" package="Default">
+      <method final="false" abstract="false" static="false" visibility="public" namespace="global" line="275" package="WordPress\Derk-Jan\Schema-Creator\Scraper">
         <name>get_schemas</name>
         <full_name>get_schemas</full_name>
-        <docblock line="256">
-          <description>Get all the schema types</description>
-          <long-description></long-description>
-          <tag line="256" name="return" description="array of objects by type name" type="object[]">
+        <docblock line="269">
+          <description>Get all the schema types.</description>
+          <long-description/>
+          <tag line="269" name="api" description=""/>
+          <tag line="269" name="return" description="array of objects by type name" type="object[]">
             <type by_reference="false">object[]</type>
           </tag>
         </docblock>
       </method>
-      <method final="false" abstract="false" static="false" visibility="public" namespace="global" line="271" package="Default">
+      <method final="false" abstract="false" static="false" visibility="public" namespace="global" line="286" package="WordPress\Derk-Jan\Schema-Creator\Scraper">
         <name>get_schema</name>
         <full_name>get_schema</full_name>
-        <docblock line="265">
-          <description>Get the schema for a type</description>
-          <long-description></long-description>
-          <tag line="265" name="param" description="either string or type object" type="string|object" variable="$type">
+        <docblock line="279">
+          <description>Get the schema for a type.</description>
+          <long-description/>
+          <tag line="279" name="api" description=""/>
+          <tag line="279" name="param" description="either string or type object" type="string|object" variable="$type">
             <type by_reference="false">string</type>
             <type by_reference="false">object</type>
           </tag>
-          <tag line="265" name="return" description="the type object" type="object">
+          <tag line="279" name="return" description="the type object" type="object">
             <type by_reference="false">object</type>
           </tag>
         </docblock>
-        <argument line="271">
+        <argument line="286">
           <name>$type</name>
-          <default></default>
+          <default/>
           <type/>
         </argument>
       </method>
-      <method final="false" abstract="false" static="false" visibility="public" namespace="global" line="283" package="Default">
+      <method final="false" abstract="false" static="false" visibility="public" namespace="global" line="299" package="WordPress\Derk-Jan\Schema-Creator\Scraper">
         <name>get_schema_id</name>
         <full_name>get_schema_id</full_name>
-        <docblock line="277">
-          <description>Gets the schema's id</description>
-          <long-description></long-description>
-          <tag line="277" name="param" description="either string or type object" type="string|object" variable="$type">
+        <docblock line="292">
+          <description>Gets the schema's id.</description>
+          <long-description/>
+          <tag line="292" name="api" description=""/>
+          <tag line="292" name="param" description="either string or type object" type="string|object" variable="$type">
             <type by_reference="false">string</type>
             <type by_reference="false">object</type>
           </tag>
-          <tag line="277" name="return" description="the type id" type="object">
+          <tag line="292" name="return" description="the type id" type="object">
             <type by_reference="false">object</type>
           </tag>
         </docblock>
-        <argument line="283">
+        <argument line="299">
           <name>$type</name>
-          <default></default>
+          <default/>
           <type/>
         </argument>
       </method>
-      <method final="false" abstract="false" static="false" visibility="public" namespace="global" line="293" package="Default">
+      <method final="false" abstract="false" static="false" visibility="public" namespace="global" line="310" package="WordPress\Derk-Jan\Schema-Creator\Scraper">
         <name>get_top_level_schemas</name>
         <full_name>get_top_level_schemas</full_name>
-        <docblock line="288">
-          <description>Gets the schemas with no parents</description>
-          <long-description></long-description>
-          <tag line="288" name="return" description="the top level schemas" type="string[]">
+        <docblock line="304">
+          <description>Gets the schemas with no parents.</description>
+          <long-description/>
+          <tag line="304" name="api" description=""/>
+          <tag line="304" name="return" description="the top level schemas" type="string[]">
             <type by_reference="false">string[]</type>
           </tag>
         </docblock>
       </method>
-      <method final="false" abstract="false" static="false" visibility="public" namespace="global" line="310" package="Default">
+      <method final="false" abstract="false" static="false" visibility="public" namespace="global" line="328" package="WordPress\Derk-Jan\Schema-Creator\Scraper">
         <name>get_schema_ancestors</name>
         <full_name>get_schema_ancestors</full_name>
-        <docblock line="303">
-          <description>Get all the ancestors of a type</description>
-          <long-description></long-description>
-          <tag line="303" name="param" description="either string or type object" type="string|object" variable="$type">
+        <docblock line="320">
+          <description>Get all the ancestors of a type.</description>
+          <long-description/>
+          <tag line="320" name="api" description=""/>
+          <tag line="320" name="param" description="either string or type object" type="string|object" variable="$type">
             <type by_reference="false">string</type>
             <type by_reference="false">object</type>
           </tag>
-          <tag line="303" name="param" description="grap recursively flag" type="boolean" variable="$recursive">
+          <tag line="320" name="param" description="grap recursively flag" type="boolean" variable="$recursive">
             <type by_reference="false">boolean</type>
           </tag>
-          <tag line="303" name="return" description="type names of the ancestors" type="string[]">
+          <tag line="320" name="return" description="type names of the ancestors" type="string[]">
             <type by_reference="false">string[]</type>
           </tag>
         </docblock>
-        <argument line="310">
+        <argument line="328">
           <name>$type</name>
-          <default></default>
+          <default/>
           <type/>
         </argument>
-        <argument line="310">
+        <argument line="328">
           <name>$recursive</name>
           <default>true</default>
           <type/>
         </argument>
       </method>
-      <method final="false" abstract="false" static="false" visibility="public" namespace="global" line="322" package="Default">
+      <method final="false" abstract="false" static="false" visibility="public" namespace="global" line="341" package="WordPress\Derk-Jan\Schema-Creator\Scraper">
         <name>get_schema_descendants</name>
         <full_name>get_schema_descendants</full_name>
-        <docblock line="315">
-          <description>Get schema descendants</description>
-          <long-description></long-description>
-          <tag line="315" name="param" description="either string or type object" type="string|object" variable="$type">
+        <docblock line="333">
+          <description>Get schema descendants.</description>
+          <long-description/>
+          <tag line="333" name="api" description=""/>
+          <tag line="333" name="param" description="either string or type object" type="string|object" variable="$type">
             <type by_reference="false">string</type>
             <type by_reference="false">object</type>
           </tag>
-          <tag line="315" name="param" description="grap recursively flag" type="boolean" variable="$recursive">
+          <tag line="333" name="param" description="grap recursively flag" type="boolean" variable="$recursive">
             <type by_reference="false">boolean</type>
           </tag>
-          <tag line="315" name="return" description="type names of the descendants" type="string[]|\string[][]">
+          <tag line="333" name="return" description="type names of the descendants" type="string[]|\string[][]">
             <type by_reference="false">string[]</type>
             <type by_reference="false">\string[][]</type>
           </tag>
         </docblock>
-        <argument line="322">
+        <argument line="341">
           <name>$type</name>
-          <default></default>
+          <default/>
           <type/>
         </argument>
-        <argument line="322">
+        <argument line="341">
           <name>$recursive</name>
           <default>true</default>
           <type/>
         </argument>
       </method>
-      <method final="false" abstract="false" static="false" visibility="public" namespace="global" line="342" package="Default">
+      <method final="false" abstract="false" static="false" visibility="public" namespace="global" line="362" package="WordPress\Derk-Jan\Schema-Creator\Scraper">
         <name>get_schema_siblings</name>
         <full_name>get_schema_siblings</full_name>
-        <docblock line="336">
-          <description>Gets schema siblings</description>
-          <long-description></long-description>
-          <tag line="336" name="param" description="either string or type object" type="string|object" variable="$type">
+        <docblock line="355">
+          <description>Gets schema siblings.</description>
+          <long-description/>
+          <tag line="355" name="api" description=""/>
+          <tag line="355" name="param" description="either string or type object" type="string|object" variable="$type">
             <type by_reference="false">string</type>
             <type by_reference="false">object</type>
           </tag>
-          <tag line="336" name="return" description="type names of the siblings" type="string[]">
+          <tag line="355" name="return" description="type names of the siblings" type="string[]">
             <type by_reference="false">string[]</type>
           </tag>
         </docblock>
-        <argument line="342">
+        <argument line="362">
           <name>$type</name>
-          <default></default>
+          <default/>
           <type/>
         </argument>
       </method>
-      <method final="false" abstract="false" static="false" visibility="public" namespace="global" line="362" package="Default">
+      <method final="false" abstract="false" static="false" visibility="public" namespace="global" line="383" package="WordPress\Derk-Jan\Schema-Creator\Scraper">
         <name>get_schema_properties</name>
         <full_name>get_schema_properties</full_name>
-        <docblock line="354">
-          <description>Get all the properties of a type</description>
-          <long-description></long-description>
-          <tag line="354" name="param" description="either string or type object" type="string|object" variable="$type">
+        <docblock line="374">
+          <description>Get all the properties of a type.</description>
+          <long-description/>
+          <tag line="374" name="api" description=""/>
+          <tag line="374" name="param" description="either string or type object" type="string|object" variable="$type">
             <type by_reference="false">string</type>
             <type by_reference="false">object</type>
           </tag>
-          <tag line="354" name="param" description="to grab all the properties of all the ancestors flag" type="boolean" variable="$recursive">
+          <tag line="374" name="param" description="to grab all the properties of all the ancestors flag" type="boolean" variable="$recursive">
             <type by_reference="false">boolean</type>
           </tag>
-          <tag line="354" name="param" description="to flatten the results array or per type" type="boolean" variable="$flat">
+          <tag line="374" name="param" description="to flatten the results array or per type" type="boolean" variable="$flat">
             <type by_reference="false">boolean</type>
           </tag>
-          <tag line="354" name="return" description="property names" type="string[]|\string[][]">
+          <tag line="374" name="return" description="property names" type="string[]|\string[][]">
             <type by_reference="false">string[]</type>
             <type by_reference="false">\string[][]</type>
           </tag>
         </docblock>
-        <argument line="362">
+        <argument line="383">
           <name>$type</name>
-          <default></default>
+          <default/>
           <type/>
         </argument>
-        <argument line="362">
+        <argument line="383">
           <name>$recursive</name>
           <default>true</default>
           <type/>
         </argument>
-        <argument line="362">
+        <argument line="383">
           <name>$flat</name>
           <default>false</default>
           <type/>
         </argument>
       </method>
-      <method final="false" abstract="false" static="false" visibility="public" namespace="global" line="388" package="Default">
+      <method final="false" abstract="false" static="false" visibility="public" namespace="global" line="410" package="WordPress\Derk-Jan\Schema-Creator\Scraper">
         <name>get_schema_comment</name>
         <full_name>get_schema_comment</full_name>
-        <docblock line="381">
-          <description>Get the schema comment for a type</description>
-          <long-description></long-description>
-          <tag line="381" name="param" description="either string or type object" type="string|object" variable="$type">
+        <docblock line="402">
+          <description>Get the schema comment for a type.</description>
+          <long-description/>
+          <tag line="402" name="api" description=""/>
+          <tag line="402" name="param" description="either string or type object" type="string|object" variable="$type">
             <type by_reference="false">string</type>
             <type by_reference="false">object</type>
           </tag>
-          <tag line="381" name="param" description="to output in html flag" type="boolean" variable="$html">
+          <tag line="402" name="param" description="to output in html flag" type="boolean" variable="$html">
             <type by_reference="false">boolean</type>
           </tag>
-          <tag line="381" name="return" description="type comment" type="\the">
+          <tag line="402" name="return" description="type comment" type="\the">
             <type by_reference="false">\the</type>
           </tag>
         </docblock>
-        <argument line="388">
+        <argument line="410">
           <name>$type</name>
-          <default></default>
+          <default/>
           <type/>
         </argument>
-        <argument line="388">
+        <argument line="410">
           <name>$html</name>
           <default>true</default>
           <type/>
         </argument>
       </method>
-      <method final="false" abstract="false" static="false" visibility="public" namespace="global" line="399" package="Default">
+      <method final="false" abstract="false" static="false" visibility="public" namespace="global" line="422" package="WordPress\Derk-Jan\Schema-Creator\Scraper">
         <name>get_schema_url</name>
         <full_name>get_schema_url</full_name>
-        <docblock line="393">
-          <description>Get the URL of the schema</description>
-          <long-description></long-description>
-          <tag line="393" name="param" description="either string or type object" type="string|object" variable="$type">
+        <docblock line="415">
+          <description>Get the URL of the schema.</description>
+          <long-description/>
+          <tag line="415" name="api" description=""/>
+          <tag line="415" name="param" description="either string or type object" type="string|object" variable="$type">
             <type by_reference="false">string</type>
             <type by_reference="false">object</type>
           </tag>
-          <tag line="393" name="return" description="url" type="\schema">
+          <tag line="415" name="return" description="url" type="\schema">
             <type by_reference="false">\schema</type>
           </tag>
         </docblock>
-        <argument line="399">
+        <argument line="422">
           <name>$type</name>
-          <default></default>
+          <default/>
           <type/>
         </argument>
       </method>
-      <method final="false" abstract="false" static="false" visibility="public" namespace="global" line="410" package="Default">
+      <method final="false" abstract="false" static="false" visibility="public" namespace="global" line="434" package="WordPress\Derk-Jan\Schema-Creator\Scraper">
         <name>get_properties</name>
         <full_name>get_properties</full_name>
-        <docblock line="405">
-          <description>Gets the properties data</description>
-          <long-description></long-description>
-          <tag line="405" name="return" description="the properties data" type="object[]">
+        <docblock line="428">
+          <description>Gets the properties data.</description>
+          <long-description/>
+          <tag line="428" name="api" description=""/>
+          <tag line="428" name="return" description="the properties data" type="object[]">
             <type by_reference="false">object[]</type>
           </tag>
         </docblock>
       </method>
-      <method final="false" abstract="false" static="false" visibility="public" namespace="global" line="419" package="Default">
+      <method final="false" abstract="false" static="false" visibility="public" namespace="global" line="444" package="WordPress\Derk-Jan\Schema-Creator\Scraper">
         <name>get_property_keys</name>
         <full_name>get_property_keys</full_name>
-        <docblock line="414">
-          <description>Gets the property keys</description>
-          <long-description></long-description>
-          <tag line="414" name="return" description="the property names" type="string[]">
+        <docblock line="438">
+          <description>Gets the property keys.</description>
+          <long-description/>
+          <tag line="438" name="api" description=""/>
+          <tag line="438" name="return" description="the property names" type="string[]">
             <type by_reference="false">string[]</type>
           </tag>
         </docblock>
       </method>
-      <method final="false" abstract="false" static="false" visibility="public" namespace="global" line="432" package="Default">
+      <method final="false" abstract="false" static="false" visibility="public" namespace="global" line="458" package="WordPress\Derk-Jan\Schema-Creator\Scraper">
         <name>get_property</name>
         <full_name>get_property</full_name>
-        <docblock line="426">
-          <description>Gets a property object</description>
-          <long-description></long-description>
-          <tag line="426" name="param" description="the property id or object" type="string|object" variable="$property">
+        <docblock line="451">
+          <description>Gets a property object.</description>
+          <long-description/>
+          <tag line="451" name="api" description=""/>
+          <tag line="451" name="param" description="the property id or object" type="string|object" variable="$property">
             <type by_reference="false">string</type>
             <type by_reference="false">object</type>
           </tag>
-          <tag line="426" name="return" description="that property" type="object">
+          <tag line="451" name="return" description="that property" type="object">
             <type by_reference="false">object</type>
           </tag>
         </docblock>
-        <argument line="432">
+        <argument line="458">
           <name>$property</name>
-          <default></default>
+          <default/>
           <type/>
         </argument>
       </method>
-      <method final="false" abstract="false" static="false" visibility="public" namespace="global" line="442" package="Default">
+      <method final="false" abstract="false" static="false" visibility="public" namespace="global" line="469" package="WordPress\Derk-Jan\Schema-Creator\Scraper">
         <name>get_property_id</name>
         <full_name>get_property_id</full_name>
-        <docblock line="436">
-          <description>Gets the property id</description>
-          <long-description></long-description>
-          <tag line="436" name="param" description="the property id or object" type="string|object" variable="$property">
+        <docblock line="462">
+          <description>Gets the property id.</description>
+          <long-description/>
+          <tag line="462" name="api" description=""/>
+          <tag line="462" name="param" description="the property id or object" type="string|object" variable="$property">
             <type by_reference="false">string</type>
             <type by_reference="false">object</type>
           </tag>
-          <tag line="436" name="return" description="the property's id" type="string">
+          <tag line="462" name="return" description="the property's id" type="string">
             <type by_reference="false">string</type>
           </tag>
         </docblock>
-        <argument line="442">
+        <argument line="469">
           <name>$property</name>
-          <default></default>
+          <default/>
           <type/>
         </argument>
       </method>
-      <method final="false" abstract="false" static="false" visibility="public" namespace="global" line="454" package="Default">
+      <method final="false" abstract="false" static="false" visibility="public" namespace="global" line="482" package="WordPress\Derk-Jan\Schema-Creator\Scraper">
         <name>get_property_label</name>
         <full_name>get_property_label</full_name>
-        <docblock line="448">
-          <description>Gets a property english display label</description>
-          <long-description></long-description>
-          <tag line="448" name="param" description="the property id or object" type="string|object" variable="$property">
+        <docblock line="475">
+          <description>Gets a property english display label.</description>
+          <long-description/>
+          <tag line="475" name="api" description=""/>
+          <tag line="475" name="param" description="the property id or object" type="string|object" variable="$property">
             <type by_reference="false">string</type>
             <type by_reference="false">object</type>
           </tag>
-          <tag line="448" name="return" description="the property's label" type="string">
+          <tag line="475" name="return" description="the property's label" type="string">
             <type by_reference="false">string</type>
           </tag>
         </docblock>
-        <argument line="454">
+        <argument line="482">
           <name>$property</name>
-          <default></default>
+          <default/>
           <type/>
         </argument>
       </method>
-      <method final="false" abstract="false" static="false" visibility="public" namespace="global" line="467" package="Default">
+      <method final="false" abstract="false" static="false" visibility="public" namespace="global" line="496" package="WordPress\Derk-Jan\Schema-Creator\Scraper">
         <name>get_property_comment</name>
         <full_name>get_property_comment</full_name>
-        <docblock line="460">
-          <description>Gets a property description</description>
-          <long-description></long-description>
-          <tag line="460" name="param" description="the property id or object" type="string|object" variable="$property">
+        <docblock line="488">
+          <description>Gets a property description.</description>
+          <long-description/>
+          <tag line="488" name="api" description=""/>
+          <tag line="488" name="param" description="the property id or object" type="string|object" variable="$property">
             <type by_reference="false">string</type>
             <type by_reference="false">object</type>
           </tag>
-          <tag line="460" name="param" description="to output as html flag" type="boolean" variable="$html">
+          <tag line="488" name="param" description="to output as html flag" type="boolean" variable="$html">
             <type by_reference="false">boolean</type>
           </tag>
-          <tag line="460" name="return" description="the property's comment" type="string">
+          <tag line="488" name="return" description="the property's comment" type="string">
             <type by_reference="false">string</type>
           </tag>
         </docblock>
-        <argument line="467">
+        <argument line="496">
           <name>$property</name>
-          <default></default>
+          <default/>
           <type/>
         </argument>
-        <argument line="467">
+        <argument line="496">
           <name>$html</name>
           <default>true</default>
           <type/>
         </argument>
       </method>
-      <method final="false" abstract="false" static="false" visibility="public" namespace="global" line="478" package="Default">
+      <method final="false" abstract="false" static="false" visibility="public" namespace="global" line="508" package="WordPress\Derk-Jan\Schema-Creator\Scraper">
         <name>get_property_ranges</name>
         <full_name>get_property_ranges</full_name>
-        <docblock line="472">
-          <description>Get property ranges (what is valid contents)</description>
-          <long-description></long-description>
-          <tag line="472" name="param" description="the property id or object" type="string|object" variable="$property">
+        <docblock line="501">
+          <description>Get property ranges (what is valid contents).</description>
+          <long-description/>
+          <tag line="501" name="api" description=""/>
+          <tag line="501" name="param" description="the property id or object" type="string|object" variable="$property">
             <type by_reference="false">string</type>
             <type by_reference="false">object</type>
           </tag>
-          <tag line="472" name="return" description="the types that are valid input" type="string[]">
+          <tag line="501" name="return" description="the types that are valid input" type="string[]">
             <type by_reference="false">string[]</type>
           </tag>
         </docblock>
-        <argument line="478">
+        <argument line="508">
           <name>$property</name>
-          <default></default>
+          <default/>
           <type/>
         </argument>
       </method>
-      <method final="false" abstract="false" static="false" visibility="public" namespace="global" line="490" package="Default">
+      <method final="false" abstract="false" static="false" visibility="public" namespace="global" line="521" package="WordPress\Derk-Jan\Schema-Creator\Scraper">
         <name>get_property_domains</name>
         <full_name>get_property_domains</full_name>
-        <docblock line="484">
-          <description>Get property domains (where is this used)</description>
-          <long-description></long-description>
-          <tag line="484" name="param" description="the property id or object" type="string|object" variable="$property">
+        <docblock line="514">
+          <description>Get property domains (where is this used).</description>
+          <long-description/>
+          <tag line="514" name="api" description=""/>
+          <tag line="514" name="param" description="the property id or object" type="string|object" variable="$property">
             <type by_reference="false">string</type>
             <type by_reference="false">object</type>
           </tag>
-          <tag line="484" name="return" description="the types that have this property" type="string[]">
+          <tag line="514" name="return" description="the types that have this property" type="string[]">
             <type by_reference="false">string[]</type>
-          </tag>
-        </docblock>
-        <argument line="490">
-          <name>$property</name>
-          <default></default>
-          <type/>
-        </argument>
-      </method>
-      <method final="false" abstract="false" static="false" visibility="public" namespace="global" line="502" package="Default">
-        <name>is_property</name>
-        <full_name>is_property</full_name>
-        <docblock line="496">
-          <description>Returns true if property is defined</description>
-          <long-description></long-description>
-          <tag line="496" name="param" description="the property id or object" type="string|object" variable="$property">
-            <type by_reference="false">string</type>
-            <type by_reference="false">object</type>
-          </tag>
-          <tag line="496" name="return" description="exists" type="boolean">
-            <type by_reference="false">boolean</type>
-          </tag>
-        </docblock>
-        <argument line="502">
-          <name>$property</name>
-          <default></default>
-          <type/>
-        </argument>
-      </method>
-      <method final="false" abstract="false" static="false" visibility="public" namespace="global" line="511" package="Default">
-        <name>get_datatypes</name>
-        <full_name>get_datatypes</full_name>
-        <docblock line="506">
-          <description>Get datatypes</description>
-          <long-description></long-description>
-          <tag line="506" name="return" description="the datatypes" type="object[]">
-            <type by_reference="false">object[]</type>
-          </tag>
-        </docblock>
-      </method>
-      <method final="false" abstract="false" static="false" visibility="public" namespace="global" line="521" package="Default">
-        <name>get_datatype</name>
-        <full_name>get_datatype</full_name>
-        <docblock line="515">
-          <description>Gets a single datatype</description>
-          <long-description></long-description>
-          <tag line="515" name="param" description="the datatype id or object" type="string|object" variable="$type">
-            <type by_reference="false">string</type>
-            <type by_reference="false">object</type>
-          </tag>
-          <tag line="515" name="return" description="that datatype" type="object">
-            <type by_reference="false">object</type>
           </tag>
         </docblock>
         <argument line="521">
-          <name>$type</name>
-          <default></default>
+          <name>$property</name>
+          <default/>
           <type/>
         </argument>
       </method>
-      <method final="false" abstract="false" static="false" visibility="public" namespace="global" line="531" package="Default">
+      <method final="false" abstract="false" static="false" visibility="public" namespace="global" line="534" package="WordPress\Derk-Jan\Schema-Creator\Scraper">
+        <name>is_property</name>
+        <full_name>is_property</full_name>
+        <docblock line="527">
+          <description>Returns true if property is defined.</description>
+          <long-description/>
+          <tag line="527" name="api" description=""/>
+          <tag line="527" name="param" description="the property id or object" type="string|object" variable="$property">
+            <type by_reference="false">string</type>
+            <type by_reference="false">object</type>
+          </tag>
+          <tag line="527" name="return" description="exists" type="boolean">
+            <type by_reference="false">boolean</type>
+          </tag>
+        </docblock>
+        <argument line="534">
+          <name>$property</name>
+          <default/>
+          <type/>
+        </argument>
+      </method>
+      <method final="false" abstract="false" static="false" visibility="public" namespace="global" line="544" package="WordPress\Derk-Jan\Schema-Creator\Scraper">
+        <name>get_datatypes</name>
+        <full_name>get_datatypes</full_name>
+        <docblock line="538">
+          <description>Get datatypes.</description>
+          <long-description/>
+          <tag line="538" name="api" description=""/>
+          <tag line="538" name="return" description="the datatypes" type="object[]">
+            <type by_reference="false">object[]</type>
+          </tag>
+        </docblock>
+      </method>
+      <method final="false" abstract="false" static="false" visibility="public" namespace="global" line="555" package="WordPress\Derk-Jan\Schema-Creator\Scraper">
+        <name>get_datatype</name>
+        <full_name>get_datatype</full_name>
+        <docblock line="548">
+          <description>Gets a single datatype.</description>
+          <long-description/>
+          <tag line="548" name="api" description=""/>
+          <tag line="548" name="param" description="the datatype id or object" type="string|object" variable="$type">
+            <type by_reference="false">string</type>
+            <type by_reference="false">object</type>
+          </tag>
+          <tag line="548" name="return" description="that datatype" type="object">
+            <type by_reference="false">object</type>
+          </tag>
+        </docblock>
+        <argument line="555">
+          <name>$type</name>
+          <default/>
+          <type/>
+        </argument>
+      </method>
+      <method final="false" abstract="false" static="false" visibility="public" namespace="global" line="566" package="WordPress\Derk-Jan\Schema-Creator\Scraper">
         <name>get_datatype_id</name>
         <full_name>get_datatype_id</full_name>
-        <docblock line="525">
-          <description>Gets a datatype's id</description>
-          <long-description></long-description>
-          <tag line="525" name="param" description="the datatype id or object" type="string|object" variable="$type">
+        <docblock line="559">
+          <description>Gets a datatype's id.</description>
+          <long-description/>
+          <tag line="559" name="api" description=""/>
+          <tag line="559" name="param" description="the datatype id or object" type="string|object" variable="$type">
             <type by_reference="false">string</type>
             <type by_reference="false">object</type>
           </tag>
-          <tag line="525" name="return" description="the datatype id" type="string">
+          <tag line="559" name="return" description="the datatype id" type="string">
             <type by_reference="false">string</type>
           </tag>
         </docblock>
-        <argument line="531">
+        <argument line="566">
           <name>$type</name>
-          <default></default>
+          <default/>
           <type/>
         </argument>
       </method>
-      <method final="false" abstract="false" static="false" visibility="public" namespace="global" line="543" package="Default">
+      <method final="false" abstract="false" static="false" visibility="public" namespace="global" line="579" package="WordPress\Derk-Jan\Schema-Creator\Scraper">
         <name>get_datatype_label</name>
         <full_name>get_datatype_label</full_name>
-        <docblock line="537">
-          <description>Gets a datatype's label</description>
-          <long-description></long-description>
-          <tag line="537" name="param" description="the datatype id or object" type="string|object" variable="$type">
+        <docblock line="572">
+          <description>Gets a datatype's label.</description>
+          <long-description/>
+          <tag line="572" name="api" description=""/>
+          <tag line="572" name="param" description="the datatype id or object" type="string|object" variable="$type">
             <type by_reference="false">string</type>
             <type by_reference="false">object</type>
           </tag>
-          <tag line="537" name="return" description="the label of the datatype" type="string">
+          <tag line="572" name="return" description="the label of the datatype" type="string">
             <type by_reference="false">string</type>
           </tag>
         </docblock>
-        <argument line="543">
+        <argument line="579">
           <name>$type</name>
-          <default></default>
+          <default/>
           <type/>
         </argument>
       </method>
-      <method final="false" abstract="false" static="false" visibility="public" namespace="global" line="554" package="Default">
+      <method final="false" abstract="false" static="false" visibility="public" namespace="global" line="591" package="WordPress\Derk-Jan\Schema-Creator\Scraper">
         <name>get_top_level_datatypes</name>
         <full_name>get_top_level_datatypes</full_name>
-        <docblock line="549">
-          <description>Gets the datatypes with no parents</description>
-          <long-description></long-description>
-          <tag line="549" name="return" description="toplevel datatypes" type="string[]">
+        <docblock line="585">
+          <description>Gets the datatypes with no parents.</description>
+          <long-description/>
+          <tag line="585" name="api" description=""/>
+          <tag line="585" name="return" description="toplevel datatypes" type="string[]">
             <type by_reference="false">string[]</type>
           </tag>
         </docblock>
       </method>
-      <method final="false" abstract="false" static="false" visibility="public" namespace="global" line="571" package="Default">
+      <method final="false" abstract="false" static="false" visibility="public" namespace="global" line="609" package="WordPress\Derk-Jan\Schema-Creator\Scraper">
         <name>get_datatype_ancestors</name>
         <full_name>get_datatype_ancestors</full_name>
-        <docblock line="564">
-          <description>Get all the ancestors of a datatype</description>
-          <long-description></long-description>
-          <tag line="564" name="param" description="the datatype id or object" type="string|object" variable="$type">
+        <docblock line="601">
+          <description>Get all the ancestors of a datatype.</description>
+          <long-description/>
+          <tag line="601" name="api" description=""/>
+          <tag line="601" name="param" description="the datatype id or object" type="string|object" variable="$type">
             <type by_reference="false">string</type>
             <type by_reference="false">object</type>
           </tag>
-          <tag line="564" name="param" description="grab all the ancestors of datatype" type="boolean" variable="$recursive">
+          <tag line="601" name="param" description="grab all the ancestors of datatype" type="boolean" variable="$recursive">
             <type by_reference="false">boolean</type>
           </tag>
-          <tag line="564" name="return" description="datatype names" type="string[]">
+          <tag line="601" name="return" description="datatype names" type="string[]">
             <type by_reference="false">string[]</type>
           </tag>
         </docblock>
-        <argument line="571">
+        <argument line="609">
           <name>$type</name>
-          <default></default>
+          <default/>
           <type/>
         </argument>
-        <argument line="571">
+        <argument line="609">
           <name>$recursive</name>
           <default>true</default>
           <type/>
         </argument>
       </method>
-      <method final="false" abstract="false" static="false" visibility="public" namespace="global" line="583" package="Default">
+      <method final="false" abstract="false" static="false" visibility="public" namespace="global" line="623" package="WordPress\Derk-Jan\Schema-Creator\Scraper">
         <name>get_datatype_descendants</name>
         <full_name>get_datatype_descendants</full_name>
-        <docblock line="576">
-          <description>Get datatype descendants</description>
-          <long-description></long-description>
-          <tag line="576" name="param" description="the datatype id or object" type="string|object" variable="$type">
+        <docblock line="614">
+          <description>Get datatype descendants.</description>
+          <long-description/>
+          <tag line="614" name="api" description=""/>
+          <tag line="614" name="param" description="the datatype id or object" type="string|object" variable="$type">
             <type by_reference="false">string</type>
             <type by_reference="false">object</type>
           </tag>
-          <tag line="576" name="param" description="to grab all the descendant datatypes of all the descendants flag" type="boolean" variable="$recursive">
+          <tag line="614" name="param" description="to grab all the descendant datatypes of all the descendants flag" type="boolean" variable="$recursive">
             <type by_reference="false">boolean</type>
           </tag>
-          <tag line="576" name="param" description="to flatten the results array or per type" type="boolean" variable="$flat">
+          <tag line="614" name="param" description="to flatten the results array or per type" type="boolean" variable="$flat">
             <type by_reference="false">boolean</type>
           </tag>
-          <tag line="576" name="return" description="datatype names" type="string[]|\string[][]">
+          <tag line="614" name="return" description="datatype names" type="string[]|\string[][]">
             <type by_reference="false">string[]</type>
             <type by_reference="false">\string[][]</type>
           </tag>
         </docblock>
-        <argument line="583">
+        <argument line="623">
           <name>$type</name>
-          <default></default>
+          <default/>
           <type/>
         </argument>
-        <argument line="583">
+        <argument line="623">
           <name>$recursive</name>
           <default>true</default>
           <type/>
         </argument>
-        <argument line="583">
+        <argument line="623">
           <name>$flat</name>
           <default>false</default>
           <type/>
         </argument>
       </method>
-      <method final="false" abstract="false" static="false" visibility="public" namespace="global" line="610" package="Default">
+      <method final="false" abstract="false" static="false" visibility="public" namespace="global" line="651" package="WordPress\Derk-Jan\Schema-Creator\Scraper">
         <name>get_datatype_siblings</name>
         <full_name>get_datatype_siblings</full_name>
-        <docblock line="604">
-          <description>Gets datatype siblings</description>
-          <long-description></long-description>
-          <tag line="604" name="param" description="the datatype id or object" type="string|object" variable="$type">
+        <docblock line="644">
+          <description>Gets datatype siblings.</description>
+          <long-description/>
+          <tag line="644" name="api" description=""/>
+          <tag line="644" name="param" description="the datatype id or object" type="string|object" variable="$type">
             <type by_reference="false">string</type>
             <type by_reference="false">object</type>
           </tag>
-          <tag line="604" name="return" description="the siblings" type="string[]">
+          <tag line="644" name="return" description="the siblings" type="string[]">
             <type by_reference="false">string[]</type>
           </tag>
         </docblock>
-        <argument line="610">
+        <argument line="651">
           <name>$type</name>
-          <default></default>
+          <default/>
           <type/>
         </argument>
       </method>
-      <method final="false" abstract="false" static="false" visibility="public" namespace="global" line="630" package="Default">
+      <method final="false" abstract="false" static="false" visibility="public" namespace="global" line="672" package="WordPress\Derk-Jan\Schema-Creator\Scraper">
         <name>get_datatype_properties</name>
         <full_name>get_datatype_properties</full_name>
-        <docblock line="622">
-          <description>Get all the properties of a datatype</description>
-          <long-description></long-description>
-          <tag line="622" name="param" description="either string or datatype object" type="string|object" variable="$type">
+        <docblock line="663">
+          <description>Get all the properties of a datatype.</description>
+          <long-description/>
+          <tag line="663" name="api" description=""/>
+          <tag line="663" name="param" description="either string or datatype object" type="string|object" variable="$type">
             <type by_reference="false">string</type>
             <type by_reference="false">object</type>
           </tag>
-          <tag line="622" name="param" description="to grab all the properties of all the ancestors flag" type="boolean" variable="$recursive">
+          <tag line="663" name="param" description="to grab all the properties of all the ancestors flag" type="boolean" variable="$recursive">
             <type by_reference="false">boolean</type>
           </tag>
-          <tag line="622" name="param" description="to flatten the results array or per type" type="boolean" variable="$flat">
+          <tag line="663" name="param" description="to flatten the results array or per type" type="boolean" variable="$flat">
             <type by_reference="false">boolean</type>
           </tag>
-          <tag line="622" name="return" description="property names" type="string[]|\string[][]">
+          <tag line="663" name="return" description="property names" type="string[]|\string[][]">
             <type by_reference="false">string[]</type>
             <type by_reference="false">\string[][]</type>
           </tag>
         </docblock>
-        <argument line="630">
+        <argument line="672">
           <name>$type</name>
-          <default></default>
+          <default/>
           <type/>
         </argument>
-        <argument line="630">
+        <argument line="672">
           <name>$recursive</name>
           <default>true</default>
           <type/>
         </argument>
-        <argument line="630">
+        <argument line="672">
           <name>$flat</name>
           <default>false</default>
           <type/>
         </argument>
       </method>
-      <method final="false" abstract="false" static="false" visibility="public" namespace="global" line="656" package="Default">
+      <method final="false" abstract="false" static="false" visibility="public" namespace="global" line="699" package="WordPress\Derk-Jan\Schema-Creator\Scraper">
         <name>get_datatype_comment</name>
         <full_name>get_datatype_comment</full_name>
-        <docblock line="649">
-          <description>Gets a datatype comment</description>
-          <long-description></long-description>
-          <tag line="649" name="param" description="the datatype id or object" type="string|object" variable="$type">
+        <docblock line="691">
+          <description>Gets a datatype comment.</description>
+          <long-description/>
+          <tag line="691" name="api" description=""/>
+          <tag line="691" name="param" description="the datatype id or object" type="string|object" variable="$type">
             <type by_reference="false">string</type>
             <type by_reference="false">object</type>
           </tag>
-          <tag line="649" name="param" description="output as html flag" type="boolean" variable="$html">
+          <tag line="691" name="param" description="output as html flag" type="boolean" variable="$html">
             <type by_reference="false">boolean</type>
           </tag>
-          <tag line="649" name="return" description="the comment" type="string">
+          <tag line="691" name="return" description="the comment" type="string">
             <type by_reference="false">string</type>
           </tag>
         </docblock>
-        <argument line="656">
+        <argument line="699">
           <name>$type</name>
-          <default></default>
+          <default/>
           <type/>
         </argument>
-        <argument line="656">
+        <argument line="699">
           <name>$html</name>
           <default>true</default>
           <type/>
         </argument>
       </method>
-      <method final="false" abstract="false" static="false" visibility="public" namespace="global" line="667" package="Default">
+      <method final="false" abstract="false" static="false" visibility="public" namespace="global" line="711" package="WordPress\Derk-Jan\Schema-Creator\Scraper">
         <name>get_datatype_url</name>
         <full_name>get_datatype_url</full_name>
-        <docblock line="661">
-          <description>Gets the datatype url</description>
-          <long-description></long-description>
-          <tag line="661" name="param" description="the datatype id or object" type="string|object" variable="$type">
+        <docblock line="704">
+          <description>Gets the datatype url.</description>
+          <long-description/>
+          <tag line="704" name="api" description=""/>
+          <tag line="704" name="param" description="the datatype id or object" type="string|object" variable="$type">
             <type by_reference="false">string</type>
             <type by_reference="false">object</type>
           </tag>
-          <tag line="661" name="return" description="the url to the datatype" type="string">
+          <tag line="704" name="return" description="the url to the datatype" type="string">
             <type by_reference="false">string</type>
           </tag>
         </docblock>
-        <argument line="667">
+        <argument line="711">
           <name>$type</name>
-          <default></default>
+          <default/>
           <type/>
         </argument>
       </method>
-      <method final="false" abstract="false" static="false" visibility="public" namespace="global" line="679" package="Default">
+      <method final="false" abstract="false" static="false" visibility="public" namespace="global" line="724" package="WordPress\Derk-Jan\Schema-Creator\Scraper">
         <name>is_datatype</name>
         <full_name>is_datatype</full_name>
-        <docblock line="673">
-          <description>Returns true if type is defined</description>
-          <long-description></long-description>
-          <tag line="673" name="param" description="the datatype id or object" type="string|object" variable="$type">
+        <docblock line="717">
+          <description>Returns true if type is defined.</description>
+          <long-description/>
+          <tag line="717" name="api" description=""/>
+          <tag line="717" name="param" description="the datatype id or object" type="string|object" variable="$type">
             <type by_reference="false">string</type>
             <type by_reference="false">object</type>
           </tag>
-          <tag line="673" name="return" description="datatype exists" type="boolean">
+          <tag line="717" name="return" description="datatype exists" type="boolean">
             <type by_reference="false">boolean</type>
           </tag>
         </docblock>
-        <argument line="679">
+        <argument line="724">
           <name>$type</name>
-          <default></default>
+          <default/>
           <type/>
         </argument>
       </method>
-      <method final="false" abstract="false" static="false" visibility="public" namespace="global" line="686" package="Default">
+      <method final="false" abstract="false" static="false" visibility="public" namespace="global" line="731" package="WordPress\Derk-Jan\Schema-Creator\Scraper">
         <name>register_settings</name>
         <full_name>register_settings</full_name>
-        <docblock line="683">
-          <description>Registers new option group</description>
-          <long-description></long-description>
+        <docblock line="728">
+          <description>Registers new option group.</description>
+          <long-description/>
         </docblock>
       </method>
-      <method final="false" abstract="false" static="false" visibility="public" namespace="global" line="705" package="Default">
+      <method final="false" abstract="false" static="false" visibility="public" namespace="global" line="750" package="WordPress\Derk-Jan\Schema-Creator\Scraper">
         <name>options_scraper_section</name>
         <full_name>options_scraper_section</full_name>
-        <docblock line="702">
-          <description>Outputs the scraper section HTML</description>
-          <long-description></long-description>
+        <docblock line="747">
+          <description>Outputs the scraper section HTML.</description>
+          <long-description/>
         </docblock>
       </method>
-      <method final="false" abstract="false" static="false" visibility="public" namespace="global" line="714" package="Default">
+      <method final="false" abstract="false" static="false" visibility="public" namespace="global" line="759" package="WordPress\Derk-Jan\Schema-Creator\Scraper">
         <name>options_scraper_scrapeurl</name>
         <full_name>options_scraper_scrapeurl</full_name>
-        <docblock line="711">
-          <description>Outputs the scraper url field</description>
-          <long-description></long-description>
+        <docblock line="756">
+          <description>Outputs the scraper url field.</description>
+          <long-description/>
         </docblock>
       </method>
-      <method final="false" abstract="false" static="false" visibility="public" namespace="global" line="722" package="Default">
+      <method final="false" abstract="false" static="false" visibility="public" namespace="global" line="767" package="WordPress\Derk-Jan\Schema-Creator\Scraper">
         <name>options_scraper_cachepath</name>
         <full_name>options_scraper_cachepath</full_name>
-        <docblock line="719">
-          <description>Outputs the scraper cache path field</description>
-          <long-description></long-description>
+        <docblock line="764">
+          <description>Outputs the scraper cache path field.</description>
+          <long-description/>
         </docblock>
       </method>
-      <method final="false" abstract="false" static="false" visibility="public" namespace="global" line="731" package="Default">
+      <method final="false" abstract="false" static="false" visibility="public" namespace="global" line="776" package="WordPress\Derk-Jan\Schema-Creator\Scraper">
         <name>options_scraper_cachetime</name>
         <full_name>options_scraper_cachetime</full_name>
-        <docblock line="728">
-          <description>Outputs the scraper cache time field</description>
-          <long-description></long-description>
+        <docblock line="773">
+          <description>Outputs the scraper cache time field.</description>
+          <long-description/>
         </docblock>
       </method>
-      <method final="false" abstract="false" static="false" visibility="public" namespace="global" line="739" package="Default">
+      <method final="false" abstract="false" static="false" visibility="public" namespace="global" line="784" package="WordPress\Derk-Jan\Schema-Creator\Scraper">
         <name>options_scraper_current_timestamp</name>
         <full_name>options_scraper_current_timestamp</full_name>
-        <docblock line="736">
-          <description>Outputs the scraper current timestamp information field</description>
-          <long-description></long-description>
+        <docblock line="781">
+          <description>Outputs the scraper current timestamp information field.</description>
+          <long-description/>
         </docblock>
       </method>
-      <method final="false" abstract="false" static="false" visibility="public" namespace="global" line="756" package="Default">
+      <method final="false" abstract="false" static="false" visibility="public" namespace="global" line="801" package="WordPress\Derk-Jan\Schema-Creator\Scraper">
         <name>options_creator_section</name>
         <full_name>options_creator_section</full_name>
-        <docblock line="753">
-          <description>Outputs the scraper creator section paragraph</description>
-          <long-description></long-description>
+        <docblock line="798">
+          <description>Outputs the scraper creator section paragraph.</description>
+          <long-description/>
         </docblock>
       </method>
-      <method final="false" abstract="false" static="false" visibility="public" namespace="global" line="763" package="Default">
+      <method final="false" abstract="false" static="false" visibility="public" namespace="global" line="808" package="WordPress\Derk-Jan\Schema-Creator\Scraper">
         <name>options_creator_starred</name>
         <full_name>options_creator_starred</full_name>
-        <docblock line="760">
-          <description>Outputs the starred schema's</description>
-          <long-description></long-description>
+        <docblock line="805">
+          <description>Outputs the starred schema's.</description>
+          <long-description/>
         </docblock>
       </method>
-      <method final="false" abstract="false" static="false" visibility="protected" namespace="global" line="784" package="Default">
+      <method final="false" abstract="false" static="false" visibility="protected" namespace="global" line="829" package="WordPress\Derk-Jan\Schema-Creator\Scraper">
         <name>__subsection_creator_starred</name>
         <full_name>__subsection_creator_starred</full_name>
-        <docblock line="777">
-          <description>Subfunction used to see if subtree has starred schema's</description>
-          <long-description></long-description>
-          <tag line="777" name="param" description="the schema" type="string" variable="$schema">
+        <docblock line="822">
+          <description>Subfunction used to see if subtree has starred schema's.</description>
+          <long-description/>
+          <tag line="822" name="param" description="the schema" type="string" variable="$schema">
             <type by_reference="false">string</type>
           </tag>
-          <tag line="777" name="param" description="the starred ids" type="string[]" variable="$starred">
+          <tag line="822" name="param" description="the starred ids" type="string[]" variable="$starred">
             <type by_reference="false">string[]</type>
           </tag>
-          <tag line="777" name="returns" description="string the starred subsection"/>
+          <tag line="822" name="return" description="the starred subsection" type="string">
+            <type by_reference="false">string</type>
+          </tag>
         </docblock>
-        <argument line="784">
+        <argument line="829">
           <name>$schema</name>
-          <default></default>
+          <default/>
           <type/>
         </argument>
-        <argument line="784">
+        <argument line="829">
           <name>$starred</name>
-          <default></default>
+          <default/>
           <type/>
         </argument>
       </method>
-      <method final="false" abstract="false" static="false" visibility="public" namespace="global" line="816" package="Default">
+      <method final="false" abstract="false" static="false" visibility="public" namespace="global" line="861" package="WordPress\Derk-Jan\Schema-Creator\Scraper">
         <name>options_validate</name>
         <full_name>options_validate</full_name>
-        <docblock line="810">
-          <description>Validates the options</description>
-          <long-description></long-description>
-          <tag line="810" name="param" description="the to be processed option values" type="mixed[]" variable="$input">
+        <docblock line="855">
+          <description>Validates the options.</description>
+          <long-description/>
+          <tag line="855" name="param" description="the to be processed option values" type="mixed[]" variable="$input">
             <type by_reference="false">mixed[]</type>
           </tag>
-          <tag line="810" name="return" description="the processed option values" type="mixed[]">
+          <tag line="855" name="return" description="the processed option values" type="mixed[]">
             <type by_reference="false">mixed[]</type>
           </tag>
         </docblock>
-        <argument line="816">
+        <argument line="861">
           <name>$input</name>
-          <default></default>
+          <default/>
           <type/>
         </argument>
       </method>
-      <method final="false" abstract="false" static="false" visibility="public" namespace="global" line="826" package="Default">
+      <method final="false" abstract="false" static="false" visibility="public" namespace="global" line="871" package="WordPress\Derk-Jan\Schema-Creator\Scraper">
         <name>default_settings</name>
         <full_name>default_settings</full_name>
-        <docblock line="823">
-          <description>Sets default settings</description>
-          <long-description></long-description>
+        <docblock line="868">
+          <description>Sets default settings.</description>
+          <long-description/>
         </docblock>
       </method>
-      <method final="false" abstract="false" static="false" visibility="public" namespace="global" line="846" package="Default">
+      <method final="false" abstract="false" static="false" visibility="public" namespace="global" line="891" package="WordPress\Derk-Jan\Schema-Creator\Scraper">
         <name>get_default_settings</name>
         <full_name>get_default_settings</full_name>
-        <docblock line="840">
-          <description>Gets the default settings</description>
-          <long-description></long-description>
-          <tag line="840" name="param" description="the current defaults" type="mixed[]" variable="$default">
+        <docblock line="885">
+          <description>Gets the default settings.</description>
+          <long-description/>
+          <tag line="885" name="param" description="the current defaults" type="mixed[]" variable="$default">
             <type by_reference="false">mixed[]</type>
           </tag>
-          <tag line="840" name="return" description="the defaults" type="mixed[]">
+          <tag line="885" name="return" description="the defaults" type="mixed[]">
             <type by_reference="false">mixed[]</type>
           </tag>
         </docblock>
-        <argument line="846">
+        <argument line="891">
           <name>$default</name>
           <default>array()</default>
           <type/>
@@ -1955,304 +2026,401 @@ caching of processed values is not neccesary.&lt;/p&gt;</long-description>
       </method>
     </class>
   </file>
-  <file path="lib\schema-viewer.php" hash="7700a3ed08ef6f921e6da035c19ce873" package="Default">
-    <constant namespace="global" line="16" package="Default">
+  <file path="lib\schema-viewer.php" hash="841f0c707cc79cf31aaa5d066bfa49c3" package="WordPress\Derk-Jan\Schema-Creator\Viewer">
+    <docblock line="11">
+      <description>Schema Viewer add-in for schema creator.</description>
+      <long-description>&lt;p&gt;This add in builds a schema.org copy of the website from the
+schema data provided from cache or the Scraper. It also provided
+quick access for starring and enabling/disabling properties for
+certain classes.&lt;/p&gt;</long-description>
+      <tag line="11" name="author" description="Derk-Jan Karrenbeld &lt;derk-jan+schema@karrenbeld.info&gt;"/>
+      <tag line="11" name="version" description="1.0"/>
+      <tag line="11" name="package" description="WordPress\Derk-Jan\Schema-Creator\Viewer"/>
+    </docblock>
+    <constant namespace="global" line="29" package="WordPress\Derk-Jan\Schema-Creator\Viewer">
       <name>DJ_SCHEMAVIEWER_BASE</name>
       <full_name>\DJ_SCHEMAVIEWER_BASE</full_name>
       <value>plugin_basename(__FILE__)</value>
     </constant>
-    <constant namespace="global" line="17" package="Default">
+    <constant namespace="global" line="34" package="WordPress\Derk-Jan\Schema-Creator\Viewer">
       <name>DJ_SCHEMAVIEWER_VERSION</name>
       <full_name>\DJ_SCHEMAVIEWER_VERSION</full_name>
       <value>'1.0'</value>
     </constant>
-    <class final="false" abstract="false" namespace="global" line="19" package="Default">
+    <class final="false" abstract="false" namespace="global" line="48" package="WordPress\Derk-Jan\Schema-Creator\Viewer">
       <extends/>
       <name>DJ_SchemaViewer</name>
       <full_name>\DJ_SchemaViewer</full_name>
-      <property final="false" static="true" visibility="private" line="21" namespace="global" package="Default">
+      <docblock line="36">
+        <description>The schema viewer class.</description>
+        <long-description>&lt;p&gt;This add in builds a schema.org copy of the website from the
+schema data provided from cache or the Scraper. It also provided
+quick access for starring and enabling/disabling properties for
+certain classes.&lt;/p&gt;</long-description>
+        <tag line="36" name="author" description="Derk-Jan Karrenbeld &lt;derk-jan+schema@karrenbeld.info&gt;"/>
+        <tag line="36" name="version" description="1.0"/>
+        <tag line="36" name="package" description="WordPress\Derk-Jan\Schema-Creator\Viewer"/>
+      </docblock>
+      <property final="false" static="true" visibility="private" line="53" namespace="global" package="Default">
         <name>$singleton</name>
         <default/>
+        <docblock line="50">
+          <description>Holds the singleton instance.</description>
+          <long-description/>
+        </docblock>
       </property>
-      <method final="false" abstract="false" static="true" visibility="public" namespace="global" line="32" package="Default">
+      <method final="false" abstract="false" static="true" visibility="public" namespace="global" line="65" package="WordPress\Derk-Jan\Schema-Creator\Viewer">
         <name>singleton</name>
         <full_name>singleton</full_name>
-        <docblock line="23">
-          <description>Gets a singleton of this class</description>
+        <docblock line="55">
+          <description>Gets a singleton of this class.</description>
           <long-description>&lt;p&gt;DJ_SchemaViewer::singleton() will always return the same instance during a
 PHP processing stack. This way actions will not be queued duplicately and
 caching of processed values is not neccesary.&lt;/p&gt;</long-description>
-          <tag line="23" name="returns" description="the singleton instance"/>
+          <tag line="55" name="api" description=""/>
+          <tag line="55" name="return" description="singleton instance" type="\the">
+            <type by_reference="false">\the</type>
+          </tag>
         </docblock>
       </method>
-      <method final="false" abstract="false" static="false" visibility="protected" namespace="global" line="43" package="Default">
+      <method final="false" abstract="false" static="false" visibility="protected" namespace="global" line="76" package="WordPress\Derk-Jan\Schema-Creator\Viewer">
         <name>__construct</name>
         <full_name>__construct</full_name>
-        <docblock line="38">
-          <description>Creates a new instance of DJ_SchemaScraper</description>
+        <docblock line="71">
+          <description>Creates a new instance of DJ_SchemaScraper.</description>
           <long-description/>
-          <tag line="38" name="remarks" description="use DJ_SchemaViewer::singleton() outside the class hieracrchy"/>
+          <tag line="71" name="remarks" description="use DJ_SchemaViewer::singleton() outside the class hieracrchy"/>
         </docblock>
       </method>
-      <method final="false" abstract="false" static="false" visibility="public" namespace="global" line="52" package="Default">
+      <method final="false" abstract="false" static="false" visibility="public" namespace="global" line="86" package="WordPress\Derk-Jan\Schema-Creator\Viewer">
         <name>page_slug</name>
         <full_name>page_slug</full_name>
-        <docblock line="49">
-          <description>Gets the page slug name</description>
+        <docblock line="82">
+          <description>Gets the page slug name.</description>
           <long-description/>
+          <tag line="82" name="return" description="the page slug name" type="\$string">
+            <type by_reference="false">\$string</type>
+          </tag>
         </docblock>
       </method>
-      <method final="false" abstract="false" static="false" visibility="public" namespace="global" line="59" package="Default">
+      <method final="false" abstract="false" static="false" visibility="public" namespace="global" line="96" package="WordPress\Derk-Jan\Schema-Creator\Viewer">
         <name>get_url</name>
         <full_name>get_url</full_name>
-        <docblock line="56">
-          <description/>
+        <docblock line="90">
+          <description>Gets the url for a certain type.</description>
           <long-description/>
+          <tag line="90" name="param" description="the type to generate for" type="string|null" variable="$type">
+            <type by_reference="false">string</type>
+            <type by_reference="false">null</type>
+          </tag>
+          <tag line="90" name="return" description="the url generated" type="string">
+            <type by_reference="false">string</type>
+          </tag>
         </docblock>
-        <argument line="59">
+        <argument line="96">
           <name>$type</name>
           <default>NULL</default>
           <type/>
         </argument>
       </method>
-      <method final="false" abstract="false" static="false" visibility="public" namespace="global" line="74" package="Default">
+      <method final="false" abstract="false" static="false" visibility="public" namespace="global" line="116" package="WordPress\Derk-Jan\Schema-Creator\Viewer">
         <name>get_link</name>
         <full_name>get_link</full_name>
-        <docblock line="71">
-          <description/>
+        <docblock line="108">
+          <description>Gets the link to a certain type.</description>
           <long-description/>
-        </docblock>
-        <argument line="74">
-          <name>$type</name>
-          <default/>
-          <type/>
-        </argument>
-        <argument line="74">
-          <name>$format</name>
-          <default>'%s'</default>
-          <type/>
-        </argument>
-        <argument line="74">
-          <name>$classes</name>
-          <default>'schema'</default>
-          <type/>
-        </argument>
-      </method>
-      <method final="false" abstract="false" static="false" visibility="public" namespace="global" line="83" package="Default">
-        <name>get_starring_link</name>
-        <full_name>get_starring_link</full_name>
-        <docblock line="80">
-          <description/>
-          <long-description/>
-        </docblock>
-        <argument line="83">
-          <name>$type</name>
-          <default/>
-          <type/>
-        </argument>
-        <argument line="83">
-          <name>$format</name>
-          <default>'%s %s'</default>
-          <type/>
-        </argument>
-        <argument line="83">
-          <name>$linkdo_text</name>
-          <default>NULL</default>
-          <type/>
-        </argument>
-        <argument line="83">
-          <name>$linkdont_text</name>
-          <default>NULL</default>
-          <type/>
-        </argument>
-        <argument line="84">
-          <name>$is_text</name>
-          <default>NULL</default>
-          <type/>
-        </argument>
-        <argument line="84">
-          <name>$isnt_text</name>
-          <default>NULL</default>
-          <type/>
-        </argument>
-        <argument line="84">
-          <name>$title_format</name>
-          <default>NULL</default>
-          <type/>
-        </argument>
-        <argument line="84">
-          <name>$classes</name>
-          <default>'action'</default>
-          <type/>
-        </argument>
-      </method>
-      <method final="false" abstract="false" static="false" visibility="public" namespace="global" line="116" package="Default">
-        <name>is_starred</name>
-        <full_name>is_starred</full_name>
-        <docblock line="113">
-          <description/>
-          <long-description/>
+          <tag line="108" name="param" description="the type to generate for" type="string" variable="$type">
+            <type by_reference="false">string</type>
+          </tag>
+          <tag line="108" name="param" description="the format for the readable link" type="string" variable="$format">
+            <type by_reference="false">string</type>
+          </tag>
+          <tag line="108" name="param" description="the link classes" type="string" variable="$classes">
+            <type by_reference="false">string</type>
+          </tag>
+          <tag line="108" name="return" description="the generated link" type="string">
+            <type by_reference="false">string</type>
+          </tag>
         </docblock>
         <argument line="116">
           <name>$type</name>
           <default/>
           <type/>
         </argument>
+        <argument line="116">
+          <name>$format</name>
+          <default>'%s'</default>
+          <type/>
+        </argument>
+        <argument line="116">
+          <name>$classes</name>
+          <default>'schema'</default>
+          <type/>
+        </argument>
       </method>
-      <method final="false" abstract="false" static="false" visibility="public" namespace="global" line="125" package="Default">
+      <method final="false" abstract="false" static="false" visibility="public" namespace="global" line="135" package="WordPress\Derk-Jan\Schema-Creator\Viewer">
+        <name>get_starring_link</name>
+        <full_name>get_starring_link</full_name>
+        <docblock line="122">
+          <description>Gets the link to star/unstar a certain type.</description>
+          <long-description/>
+          <tag line="122" name="param" description="the type to generate for" type="string" variable="$type">
+            <type by_reference="false">string</type>
+          </tag>
+          <tag line="122" name="param" description="the format for the readable link" type="string" variable="$format">
+            <type by_reference="false">string</type>
+          </tag>
+          <tag line="122" name="param" description="the text to show when doing" type="string|NULL" variable="$linkdo_text">
+            <type by_reference="false">string</type>
+            <type by_reference="false">NULL</type>
+          </tag>
+          <tag line="122" name="param" description="the text to show when undoing" type="string|NULL" variable="$linkdont_text">
+            <type by_reference="false">string</type>
+            <type by_reference="false">NULL</type>
+          </tag>
+          <tag line="122" name="param" description="the starred part when is starred" type="string|NULL" variable="$is_text">
+            <type by_reference="false">string</type>
+            <type by_reference="false">NULL</type>
+          </tag>
+          <tag line="122" name="param" description="the unstarred part when it isn't starred" type="string|NULL" variable="$isnt_text">
+            <type by_reference="false">string</type>
+            <type by_reference="false">NULL</type>
+          </tag>
+          <tag line="122" name="param" description="the format for the title" type="string|NULL" variable="$title_format">
+            <type by_reference="false">string</type>
+            <type by_reference="false">NULL</type>
+          </tag>
+          <tag line="122" name="param" description="the classes for the link" type="string" variable="$classes">
+            <type by_reference="false">string</type>
+          </tag>
+          <tag line="122" name="return" description="the generated link" type="string">
+            <type by_reference="false">string</type>
+          </tag>
+        </docblock>
+        <argument line="135">
+          <name>$type</name>
+          <default/>
+          <type/>
+        </argument>
+        <argument line="135">
+          <name>$format</name>
+          <default>'%s %s'</default>
+          <type/>
+        </argument>
+        <argument line="135">
+          <name>$linkdo_text</name>
+          <default>NULL</default>
+          <type/>
+        </argument>
+        <argument line="135">
+          <name>$linkdont_text</name>
+          <default>NULL</default>
+          <type/>
+        </argument>
+        <argument line="136">
+          <name>$is_text</name>
+          <default>NULL</default>
+          <type/>
+        </argument>
+        <argument line="136">
+          <name>$isnt_text</name>
+          <default>NULL</default>
+          <type/>
+        </argument>
+        <argument line="136">
+          <name>$title_format</name>
+          <default>NULL</default>
+          <type/>
+        </argument>
+        <argument line="136">
+          <name>$classes</name>
+          <default>'action'</default>
+          <type/>
+        </argument>
+      </method>
+      <method final="false" abstract="false" static="false" visibility="public" namespace="global" line="171" package="WordPress\Derk-Jan\Schema-Creator\Viewer">
+        <name>is_starred</name>
+        <full_name>is_starred</full_name>
+        <docblock line="165">
+          <description>Gets the starred state of the type.</description>
+          <long-description/>
+          <tag line="165" name="param" description="the type to check" type="string" variable="$type">
+            <type by_reference="false">string</type>
+          </tag>
+          <tag line="165" name="return" description="the is starred state of that type" type="boolean">
+            <type by_reference="false">boolean</type>
+          </tag>
+        </docblock>
+        <argument line="171">
+          <name>$type</name>
+          <default/>
+          <type/>
+        </argument>
+      </method>
+      <method final="false" abstract="false" static="false" visibility="public" namespace="global" line="188" package="WordPress\Derk-Jan\Schema-Creator\Viewer">
         <name>get_property_root_toggle</name>
         <full_name>get_property_root_toggle</full_name>
-        <docblock line="122">
-          <description/>
-          <long-description/>
+        <docblock line="177">
+          <description>Gets the toggle link for a property in a root schema.</description>
+          <long-description>&lt;p&gt;The property can be disabled and enabled to be displayed
+when a schema is used as a top-level schema (root). This
+function generates the toggler.&lt;/p&gt;</long-description>
+          <tag line="177" name="param" description="the type to create for" type="string" variable="$type">
+            <type by_reference="false">string</type>
+          </tag>
+          <tag line="177" name="param" description="the property to create for" type="string" variable="$prop">
+            <type by_reference="false">string</type>
+          </tag>
+          <tag line="177" name="return" description="the link" type="string">
+            <type by_reference="false">string</type>
+          </tag>
         </docblock>
-        <argument line="125">
+        <argument line="188">
           <name>$type</name>
           <default/>
           <type/>
         </argument>
-        <argument line="125">
+        <argument line="188">
           <name>$prop</name>
           <default/>
           <type/>
         </argument>
       </method>
-      <method final="false" abstract="false" static="false" visibility="public" namespace="global" line="146" package="Default">
+      <method final="false" abstract="false" static="false" visibility="public" namespace="global" line="217" package="WordPress\Derk-Jan\Schema-Creator\Viewer">
         <name>get_property_embed_toggle</name>
         <full_name>get_property_embed_toggle</full_name>
-        <docblock line="143">
-          <description/>
-          <long-description/>
+        <docblock line="206">
+          <description>Gets the toggle link for a property in an embedded schema.</description>
+          <long-description>&lt;p&gt;The property can be disabled and enabled to be displayed
+when a schema is used as a sub-level schema (embedded). This
+function generates the toggler.&lt;/p&gt;</long-description>
+          <tag line="206" name="param" description="the type to create for" type="string" variable="$type">
+            <type by_reference="false">string</type>
+          </tag>
+          <tag line="206" name="param" description="the property to create for" type="string" variable="$prop">
+            <type by_reference="false">string</type>
+          </tag>
+          <tag line="206" name="return" description="the link" type="string">
+            <type by_reference="false">string</type>
+          </tag>
         </docblock>
-        <argument line="146">
+        <argument line="217">
           <name>$type</name>
           <default/>
           <type/>
         </argument>
-        <argument line="146">
+        <argument line="217">
           <name>$prop</name>
           <default/>
           <type/>
         </argument>
       </method>
-      <method final="false" abstract="false" static="false" visibility="public" namespace="global" line="167" package="Default">
+      <method final="false" abstract="false" static="false" visibility="public" namespace="global" line="242" package="WordPress\Derk-Jan\Schema-Creator\Viewer">
         <name>is_root_disabled</name>
         <full_name>is_root_disabled</full_name>
-        <docblock line="164">
-          <description/>
+        <docblock line="235">
+          <description>Checks if the type:property is root disabled.</description>
           <long-description/>
+          <tag line="235" name="param" description="the type to check for" type="string" variable="$type">
+            <type by_reference="false">string</type>
+          </tag>
+          <tag line="235" name="param" description="the property to check for" type="string" variable="$property">
+            <type by_reference="false">string</type>
+          </tag>
+          <tag line="235" name="return" description="true if disabled" type="boolean">
+            <type by_reference="false">boolean</type>
+          </tag>
         </docblock>
-        <argument line="167">
+        <argument line="242">
           <name>$type</name>
           <default/>
           <type/>
         </argument>
-        <argument line="167">
+        <argument line="242">
           <name>$property</name>
           <default/>
           <type/>
         </argument>
       </method>
-      <method final="false" abstract="false" static="false" visibility="public" namespace="global" line="175" package="Default">
+      <method final="false" abstract="false" static="false" visibility="public" namespace="global" line="254" package="WordPress\Derk-Jan\Schema-Creator\Viewer">
         <name>is_embed_disabled</name>
         <full_name>is_embed_disabled</full_name>
-        <docblock line="172">
-          <description/>
+        <docblock line="247">
+          <description>Checks if the type:property is embed disabled.</description>
           <long-description/>
+          <tag line="247" name="param" description="the type to check for" type="string" variable="$type">
+            <type by_reference="false">string</type>
+          </tag>
+          <tag line="247" name="param" description="the property to check for" type="string" variable="$property">
+            <type by_reference="false">string</type>
+          </tag>
+          <tag line="247" name="return" description="true if disabled" type="boolean">
+            <type by_reference="false">boolean</type>
+          </tag>
         </docblock>
-        <argument line="175">
+        <argument line="254">
           <name>$type</name>
           <default/>
           <type/>
         </argument>
-        <argument line="175">
+        <argument line="254">
           <name>$property</name>
           <default/>
           <type/>
         </argument>
       </method>
-      <method final="false" abstract="false" static="false" visibility="public" namespace="global" line="183" package="Default">
+      <method final="false" abstract="false" static="false" visibility="public" namespace="global" line="263" package="WordPress\Derk-Jan\Schema-Creator\Viewer">
         <name>admin_scripts</name>
         <full_name>admin_scripts</full_name>
-        <docblock line="180">
-          <description/>
+        <docblock line="259">
+          <description>Loads the scripts to be used when is_admin().</description>
           <long-description/>
+          <tag line="259" name="param" description="the current page hook" type="string" variable="$hook">
+            <type by_reference="false">string</type>
+          </tag>
         </docblock>
-        <argument line="183">
+        <argument line="263">
           <name>$hook</name>
           <default/>
           <type/>
         </argument>
       </method>
-      <method final="false" abstract="false" static="false" visibility="public" namespace="global" line="193" package="Default">
+      <method final="false" abstract="false" static="false" visibility="public" namespace="global" line="273" package="WordPress\Derk-Jan\Schema-Creator\Viewer">
         <name>add_pages</name>
         <full_name>add_pages</full_name>
-        <docblock line="190">
-          <description>build out settings page</description>
+        <docblock line="270">
+          <description>Build our settings page.</description>
           <long-description/>
         </docblock>
       </method>
-      <method final="false" abstract="false" static="false" visibility="public" namespace="global" line="208" package="Default">
+      <method final="false" abstract="false" static="false" visibility="public" namespace="global" line="292" package="WordPress\Derk-Jan\Schema-Creator\Viewer">
         <name>do_actions</name>
         <full_name>do_actions</full_name>
-        <docblock line="205">
-          <description/>
-          <long-description/>
+        <docblock line="285">
+          <description>Processes actions if needed.</description>
+          <long-description>&lt;p&gt;The action and schema parameters are checked. If both are
+set on either POST or GET, they will be processed to execute
+their respective function.&lt;/p&gt;</long-description>
         </docblock>
       </method>
-      <method final="false" abstract="false" static="false" visibility="public" namespace="global" line="261" package="Default">
+      <method final="false" abstract="false" static="false" visibility="public" namespace="global" line="345" package="WordPress\Derk-Jan\Schema-Creator\Viewer">
         <name>do_page</name>
         <full_name>do_page</full_name>
-        <docblock line="258">
-          <description/>
+        <docblock line="342">
+          <description>Output the settings page.</description>
           <long-description/>
         </docblock>
       </method>
     </class>
-    <parse_markers>
-      <error line="0" code="50007">No page-level DocBlock was found in file lib\schema-viewer.php</error>
-      <error line="19" code="50000">No DocBlock was found for \DJ_SchemaViewer</error>
-      <error line="21" code="50018">No DocBlock was found for property $singleton</error>
-      <error line="56" code="50012">No short description for method get_url()</error>
-      <error line="56" code="50015">Argument $type is missing from the Docblock of get_url()</error>
-      <error line="71" code="50012">No short description for method get_link()</error>
-      <error line="71" code="50015">Argument $type is missing from the Docblock of get_link()</error>
-      <error line="71" code="50015">Argument $format is missing from the Docblock of get_link()</error>
-      <error line="71" code="50015">Argument $classes is missing from the Docblock of get_link()</error>
-      <error line="80" code="50012">No short description for method get_starring_link()</error>
-      <error line="80" code="50015">Argument $type is missing from the Docblock of get_starring_link()</error>
-      <error line="80" code="50015">Argument $format is missing from the Docblock of get_starring_link()</error>
-      <error line="80" code="50015">Argument $linkdo_text is missing from the Docblock of get_starring_link()</error>
-      <error line="80" code="50015">Argument $linkdont_text is missing from the Docblock of get_starring_link()</error>
-      <error line="80" code="50015">Argument $is_text is missing from the Docblock of get_starring_link()</error>
-      <error line="80" code="50015">Argument $isnt_text is missing from the Docblock of get_starring_link()</error>
-      <error line="80" code="50015">Argument $title_format is missing from the Docblock of get_starring_link()</error>
-      <error line="80" code="50015">Argument $classes is missing from the Docblock of get_starring_link()</error>
-      <error line="113" code="50012">No short description for method is_starred()</error>
-      <error line="113" code="50015">Argument $type is missing from the Docblock of is_starred()</error>
-      <error line="122" code="50012">No short description for method get_property_root_toggle()</error>
-      <error line="122" code="50015">Argument $type is missing from the Docblock of get_property_root_toggle()</error>
-      <error line="122" code="50015">Argument $prop is missing from the Docblock of get_property_root_toggle()</error>
-      <error line="143" code="50012">No short description for method get_property_embed_toggle()</error>
-      <error line="143" code="50015">Argument $type is missing from the Docblock of get_property_embed_toggle()</error>
-      <error line="143" code="50015">Argument $prop is missing from the Docblock of get_property_embed_toggle()</error>
-      <error line="164" code="50012">No short description for method is_root_disabled()</error>
-      <error line="164" code="50015">Argument $type is missing from the Docblock of is_root_disabled()</error>
-      <error line="164" code="50015">Argument $property is missing from the Docblock of is_root_disabled()</error>
-      <error line="172" code="50012">No short description for method is_embed_disabled()</error>
-      <error line="172" code="50015">Argument $type is missing from the Docblock of is_embed_disabled()</error>
-      <error line="172" code="50015">Argument $property is missing from the Docblock of is_embed_disabled()</error>
-      <error line="180" code="50012">No short description for method admin_scripts()</error>
-      <error line="180" code="50015">Argument $hook is missing from the Docblock of admin_scripts()</error>
-      <error line="205" code="50012">No short description for method do_actions()</error>
-      <error line="258" code="50012">No short description for method do_page()</error>
-    </parse_markers>
   </file>
   <package name="Default" full_name="Default"/>
-  <package name="WordPress/Derk-Jan/Schema-Creator/I18n" full_name="WordPress/Derk-Jan/Schema-Creator/I18n"/>
   <package name="WordPress" full_name="WordPress">
     <package name="Derk-Jan" full_name="WordPress\Derk-Jan">
-      <package name="Schema-Creator" full_name="WordPress\Derk-Jan\Schema-Creator"/>
+      <package name="Schema-Creator" full_name="WordPress\Derk-Jan\Schema-Creator">
+        <package name="I18n" full_name="WordPress\Derk-Jan\Schema-Creator\I18n"/>
+        <package name="Scraper" full_name="WordPress\Derk-Jan\Schema-Creator\Scraper"/>
+        <package name="Viewer" full_name="WordPress\Derk-Jan\Schema-Creator\Viewer"/>
+      </package>
     </package>
   </package>
   <namespace name="global" full_name="global"/>

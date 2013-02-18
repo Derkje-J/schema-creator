@@ -16,7 +16,7 @@
 */
 
 /**
- * Schema Scraper add-in for schema creator
+ * Schema Scraper add-in for schema creator. 
  * 
  * This add in will scrape all the schema's from a predifined URL that
  * provides schema's in a certain JSON format. It enables the schema-
@@ -25,18 +25,18 @@
  * 
  * @author Derk-Jan Karrenbeld <derk-jan+schema@karrenbeld.info>
  * @version 1.0
- * @package WordPress/Derk-Jan/Schema-Creator/I18n
+ * @package WordPress\Derk-Jan\Schema-Creator\Scraper
  */
 
 if (!class_exists("DJ_SchemaScraper")) 
 {
 	/**
-	 * The basename of the schema scraper add-in
+	 * The basename of the schema scraper add-in. 
 	 */
 	define("DJ_SCHEMASCRAPE_BASE", plugin_basename(__FILE__));
 	
 	/**
-	 * The version number of the schema scraper add-in
+	 * The version number of the schema scraper add-in. 
 	 */
 	define("DJ_SCHEMASCRAPE_VERSION", '1.0');
 	
@@ -44,23 +44,31 @@ if (!class_exists("DJ_SchemaScraper"))
         include_once( ABSPATH . WPINC. '/class-http.php' );
 	
 	/**
+	 * The Schema Scraper class. 
+	 *
 	 * The Schema Scraper class fetches and processes all the
 	 * schema's from a given URL and is used to provide all the 
 	 * schema's available instead of an hardcoded subsection.
+	 *
+	 * @author Derk-Jan Karrenbeld <derk-jan+schema@karrenbeld.info>
+     * @version 1.0
+     * @package WordPress\Derk-Jan\Schema-Creator\Scraper
 	 */
 	class DJ_SchemaScraper {
 		
 		/**
-		 * Holds the singleton instance
+		 * Holds the singleton instance. 
 		 */
 		private static $singleton;
 		
 		/**
-		 * Holds the values of the options
+		 * Holds the values of the options. 
 		 */
 		private $options;
 		
 		/**
+		 * The fetched schema data. 
+		 *
 		 * The fetched schema data from which the schema's are
 		 * generated. Is populated with the cached file if the
 		 * URL retrieval generates errors
@@ -68,23 +76,24 @@ if (!class_exists("DJ_SchemaScraper"))
 		private $schema_data;
 		
 		/**
-		 * The timestamp of the @link $schema_data;
+		 * The timestamp of the @link $schema_data. 
 		 */
 		private $timestamp;
 		
 		/**
 		 * The last error that occured since the last HTTP request
-		 * that loaded this class.
+		 * that loaded this class. 
 		 */
 		private $last_error;
 		
 		/**
-		 * Gets a singleton of this class
+		 * Gets a singleton of this class. 
 		 *
 		 * DJ_SchemaScraper::singleton() will always return the same instance during a
 		 * PHP processing stack. This way actions will not be queued duplicately and 
 		 * caching of processed values is not neccesary.
 		 *
+		 * @api
 		 * @return DJ_SchemaScraper the singleton instance
 		 */
 		public static function singleton() {
@@ -94,9 +103,9 @@ if (!class_exists("DJ_SchemaScraper"))
 		}
 		
 		/**
-		 * Creates a new instance of DJ_SchemaScraper
+		 * Creates a new instance of DJ_SchemaScraper. 
 		 *
-		 * @link DJ_SchemaScraper::singleton() use outside the class hieracrchy
+		 * @remarks use DJ_SchemaScraper::singleton() outside the class hieracrchy
 		 */
 		protected function __construct() 
 		{	
@@ -112,8 +121,9 @@ if (!class_exists("DJ_SchemaScraper"))
 		}
 		
 		/**
-		 * Gets an option value by key
+		 * Gets an option value by key. 
 		 *
+		 * @api get options for the scraper
 		 * @param string $key the option key
 		 * @return mixed the option value
 		 */
@@ -124,13 +134,15 @@ if (!class_exists("DJ_SchemaScraper"))
 		}
 		
 		/**
-		 * Runs when the admin initializes
+		 * Gets the schema data. 
 		 * 
+		 * @api hook
+		 * @hook dj_schemascraper_fetched when schema is fetched
 		 * @param string|null $url the url where the JSON resides or null to use the default
 		 * @param string|null $path where the file is cached or null to use the default
 		 * @param string|null $file name of the file or null to use the default
 		 * @param boolean $fetch_disabled the flag that if set disabled any subsequent fetches.
-		 * @returns object|null the schema data or null
+		 * @return object|null the schema data or null
 		 */
 		public function get_schema_data( $url = NULL, $path = NULL, $file = NULL, $fetch_disabled = false ) 
 		{
@@ -223,7 +235,7 @@ if (!class_exists("DJ_SchemaScraper"))
 		}
 		
 		/**
-		 * Fetches notices
+		 * Fetches notices. 
 		 */
 		public function notice_fetch( ) {
 			echo $this->last_error;
@@ -231,7 +243,7 @@ if (!class_exists("DJ_SchemaScraper"))
 		}
 		
 		/**
-		 * Gets a document over an HTTP request
+		 * Gets a document over an HTTP request. 
 		 *
 		 * @param string $url the url to the scrapped database
 		 * @return string|object the body of the document or http error
@@ -245,8 +257,9 @@ if (!class_exists("DJ_SchemaScraper"))
 		}
 		
 		/**
-		 * Gets date till witch this schema is valid
+		 * Gets date till witch this schema is valid. 
 		 *
+		 * @api
 		 * @return string strtotime valid timestamp string
 		 */
 		public function get_validation_date() {
@@ -254,8 +267,9 @@ if (!class_exists("DJ_SchemaScraper"))
 		}
 		
 		/**
-		 * Get all the schema types
+		 * Get all the schema types. 
 		 *
+		 * @api
 		 * @return object[] array of objects by type name
 		 */
 		public function get_schemas() {
@@ -263,8 +277,9 @@ if (!class_exists("DJ_SchemaScraper"))
 		}
 				
 		/**
-		 * Get the schema for a type
+		 * Get the schema for a type. 
 		 *
+		 * @api
 		 * @param string|object $type either string or type object
 		 * @return object the type object
 		 */
@@ -275,8 +290,9 @@ if (!class_exists("DJ_SchemaScraper"))
 		}
 		
 		/**
-		 * Gets the schema's id
+		 * Gets the schema's id. 
 		 *
+		 * @api
 		 * @param string|object $type either string or type object
 		 * @return object the type id	
 		 */
@@ -286,8 +302,9 @@ if (!class_exists("DJ_SchemaScraper"))
 		}
 		
 		/**
-		 * Gets the schemas with no parents
-		 * 
+		 * Gets the schemas with no parents. 
+		 *
+		 * @api 
 		 * @return string[] the top level schemas
 		 */
 		public function get_top_level_schemas() {
@@ -301,8 +318,9 @@ if (!class_exists("DJ_SchemaScraper"))
 		}
 		
 		/**
-		 * Get all the ancestors of a type
+		 * Get all the ancestors of a type. 
 		 *
+		 * @api
 		 * @param string|object $type either string or type object
 		 * @param boolean $recursive grap recursively flag
 		 * @return string[] type names of the ancestors
@@ -313,8 +331,9 @@ if (!class_exists("DJ_SchemaScraper"))
 		}
 		
 		/**
-		 * Get schema descendants
+		 * Get schema descendants. 
 		 *
+		 * @api
 		 * @param string|object $type either string or type object
 		 * @param boolean $recursive grap recursively flag
 		 * @return string[]|string[][] type names of the descendants
@@ -334,8 +353,9 @@ if (!class_exists("DJ_SchemaScraper"))
 		}
 		
 		/**
-		 * Gets schema siblings
+		 * Gets schema siblings. 
 		 *
+		 * @api
 		 * @param string|object $type either string or type object
 		 * @return string[] type names of the siblings
 		 */
@@ -352,8 +372,9 @@ if (!class_exists("DJ_SchemaScraper"))
 		}
 		
 		/**
-		 * Get all the properties of a type
+		 * Get all the properties of a type. 
 		 *
+		 * @api
 		 * @param string|object $type either string or type object
 		 * @param boolean $recursive to grab all the properties of all the ancestors flag
 		 * @param boolean $flat to flatten the results array or per type
@@ -379,8 +400,9 @@ if (!class_exists("DJ_SchemaScraper"))
 		}
 				
 		/**
-		 * Get the schema comment for a type
+		 * Get the schema comment for a type. 
 		 *
+		 * @api
 		 * @param string|object $type either string or type object
 		 * @param boolean $html to output in html flag
 		 * @return the type comment
@@ -391,8 +413,9 @@ if (!class_exists("DJ_SchemaScraper"))
 		}
 		
 		/**
-		 * Get the URL of the schema
-		 * 
+		 * Get the URL of the schema. 
+		 *
+		 * @api
 		 * @param string|object $type either string or type object
 		 * @return schema url
 		 */
@@ -403,8 +426,9 @@ if (!class_exists("DJ_SchemaScraper"))
 		}
 		
 		/**
-		 * Gets the properties data
+		 * Gets the properties data. 
 		 *
+		 * @api
 		 * @return object[] the properties data
 		 */
 		public function get_properties( ) {
@@ -412,8 +436,9 @@ if (!class_exists("DJ_SchemaScraper"))
 		}
 		
 		/**
-		 * Gets the property keys
-		 * 
+		 * Gets the property keys. 
+		 *
+		 * @api
 		 * @return string[] the property names
 		 */
 		public function get_property_keys( ) {
@@ -424,8 +449,9 @@ if (!class_exists("DJ_SchemaScraper"))
 		}
 		
 		/**
-		 * Gets a property object
+		 * Gets a property object. 
 		 *
+		 * @api
 		 * @param string|object $property the property id or object
 		 * @return object that property
 		 */
@@ -434,8 +460,9 @@ if (!class_exists("DJ_SchemaScraper"))
 		}
 		
 		/**
-		 * Gets the property id
+		 * Gets the property id. 
 		 *
+		 * @api
 		 * @param string|object $property the property id or object
 		 * @return string the property's id
 		 */
@@ -446,8 +473,9 @@ if (!class_exists("DJ_SchemaScraper"))
 		}
 		
 		/**
-		 * Gets a property english display label
+		 * Gets a property english display label. 
 		 *
+		 * @api
 		 * @param string|object $property the property id or object
 		 * @return string the property's label
 		 */
@@ -458,8 +486,9 @@ if (!class_exists("DJ_SchemaScraper"))
 		}
 		
 		/**
-		 * Gets a property description
+		 * Gets a property description. 
 		 *
+		 * @api
 		 * @param string|object $property the property id or object
 		 * @param boolean $html to output as html flag
 		 * @return string the property's comment
@@ -470,8 +499,9 @@ if (!class_exists("DJ_SchemaScraper"))
 		}
 		
 		/**
-		 * Get property ranges (what is valid contents)
+		 * Get property ranges (what is valid contents). 
 		 *
+		 * @api
 		 * @param string|object $property the property id or object
 		 * @return string[] the types that are valid input
 		 */
@@ -482,8 +512,9 @@ if (!class_exists("DJ_SchemaScraper"))
 		}
 		
 		/**
-		 * Get property domains (where is this used)
+		 * Get property domains (where is this used). 
 		 *
+		 * @api
 		 * @param string|object $property the property id or object
 		 * @return string[] the types that have this property
 		 */
@@ -494,8 +525,9 @@ if (!class_exists("DJ_SchemaScraper"))
 		}
 		
 		/**
-		 * Returns true if property is defined
+		 * Returns true if property is defined. 
 		 *
+		 * @api
 		 * @param string|object $property the property id or object
 		 * @return boolean exists
 		 */
@@ -504,8 +536,9 @@ if (!class_exists("DJ_SchemaScraper"))
 		}
 		
 		/**
-		 * Get datatypes
+		 * Get datatypes. 
 		 *
+		 * @api
 		 * @return object[] the datatypes
 		 */
 		public function get_datatypes() {
@@ -513,8 +546,9 @@ if (!class_exists("DJ_SchemaScraper"))
 		}
 		
 		/**
-		 * Gets a single datatype
+		 * Gets a single datatype. 
 		 *
+		 * @api
 		 * @param string|object $type the datatype id or object
 		 * @return object that datatype
 		 */
@@ -523,8 +557,9 @@ if (!class_exists("DJ_SchemaScraper"))
 		}
 		
 		/**
-		 * Gets a datatype's id
-		 *		 
+		 * Gets a datatype's id. 
+		 *
+		 * @api	 
 		 * @param string|object $type the datatype id or object
 		 * @return string the datatype id
 		 */
@@ -535,8 +570,9 @@ if (!class_exists("DJ_SchemaScraper"))
 		}
 		
 		/**
-		 * Gets a datatype's label
-		 * 
+		 * Gets a datatype's label. 
+		 *
+		 * @api
 		 * @param string|object $type the datatype id or object
 		 * @return string the label of the datatype
 		 */
@@ -547,8 +583,9 @@ if (!class_exists("DJ_SchemaScraper"))
 		}
 		
 		/**
-		 * Gets the datatypes with no parents
-		 * 
+		 * Gets the datatypes with no parents. 
+		 *
+		 * @api
 		 * @return string[] toplevel datatypes
 		 */
 		public function get_top_level_datatypes() {
@@ -562,8 +599,9 @@ if (!class_exists("DJ_SchemaScraper"))
 		}
 		
 		/**
-		 * Get all the ancestors of a datatype
+		 * Get all the ancestors of a datatype. 
 		 *
+		 * @api
 		 * @param string|object $type the datatype id or object
 		 * @param boolean $recursive grab all the ancestors of datatype
 		 * @return string[] datatype names
@@ -574,7 +612,9 @@ if (!class_exists("DJ_SchemaScraper"))
 		}
 		
 		/**
-		 * Get datatype descendants
+		 * Get datatype descendants. 
+		 *
+		 * @api
 		 * @param string|object $type the datatype id or object
 		 * @param boolean $recursive to grab all the descendant datatypes of all the descendants flag
 		 * @param boolean $flat to flatten the results array or per type
@@ -602,8 +642,9 @@ if (!class_exists("DJ_SchemaScraper"))
 		}
 		
 		/**
-		 * Gets datatype siblings
-		 * 
+		 * Gets datatype siblings. 
+		 *
+		 * @api
 		 * @param string|object $type the datatype id or object
 		 * @return string[] the siblings
 		 */
@@ -620,8 +661,9 @@ if (!class_exists("DJ_SchemaScraper"))
 		}
 		
 		/**
-		 * Get all the properties of a datatype
+		 * Get all the properties of a datatype. 
 		 *
+		 * @api
 		 * @param string|object $type either string or datatype object
 		 * @param boolean $recursive to grab all the properties of all the ancestors flag
 		 * @param boolean $flat to flatten the results array or per type
@@ -647,8 +689,9 @@ if (!class_exists("DJ_SchemaScraper"))
 		}
 		
 		/**
-		 * Gets a datatype comment
-		 * 
+		 * Gets a datatype comment. 
+		 *
+		 * @api
 		 * @param string|object $type the datatype id or object
 		 * @param boolean $html output as html flag
 		 * @return string the comment
@@ -659,8 +702,9 @@ if (!class_exists("DJ_SchemaScraper"))
 		}
 		
 		/**
-		 * Gets the datatype url
-		 * 
+		 * Gets the datatype url. 
+		 *
+		 * @api
 		 * @param string|object $type the datatype id or object
 		 * @return string the url to the datatype
 		 */
@@ -671,8 +715,9 @@ if (!class_exists("DJ_SchemaScraper"))
 		}
 		
 		/**
-		 * Returns true if type is defined
-		 * 
+		 * Returns true if type is defined. 
+		 *
+		 * @api
 		 * @param string|object $type the datatype id or object
 		 * @return boolean datatype exists
 		 */
@@ -681,7 +726,7 @@ if (!class_exists("DJ_SchemaScraper"))
 		}
 		
 		/**
-		 * Registers new option group
+		 * Registers new option group. 
 		 */
 		function register_settings() {
 			//register_setting( 'dj_schemascraper', 'dj_schemascraper', array($this, 'options_validate' ) );	
@@ -700,7 +745,7 @@ if (!class_exists("DJ_SchemaScraper"))
 		}
 		
 		/**
-		 * Outputs the scraper section HTML
+		 * Outputs the scraper section HTML. 
 		 */
 		function options_scraper_section() {
 			echo '<p id="scraper_section">';
@@ -709,7 +754,7 @@ if (!class_exists("DJ_SchemaScraper"))
 		}
 		
 		/**
-		 * Outputs the scraper url field
+		 * Outputs the scraper url field. 
 		 */
 		function options_scraper_scrapeurl() {
 			echo '<input type="textfield" size="60" id="scraper_scrape_url" name="dj_schema_options[scrape_url]" class="schema_textfield options-big"
@@ -717,7 +762,7 @@ if (!class_exists("DJ_SchemaScraper"))
 		}
 		
 		/**
-		 * Outputs the scraper cache path field
+		 * Outputs the scraper cache path field. 
 		 */
 		function options_scraper_cachepath() {
 			echo '<label for="scraper_cache_path">WP_CONTENT_DIR</label> <input type="textfield" size="60" id="scraper_cache_path" 
@@ -726,7 +771,7 @@ if (!class_exists("DJ_SchemaScraper"))
 		}
 		
 		/**
-		 * Outputs the scraper cache time field
+		 * Outputs the scraper cache time field. 
 		 */
 		function options_scraper_cachetime() {
 			echo '<input type="textfield" size="5" id="scraper_cache_time" name="dj_schema_options[cache_time]" class="schema_textfield options-big" 
@@ -734,7 +779,7 @@ if (!class_exists("DJ_SchemaScraper"))
 		}
 		
 		/**
-		 * Outputs the scraper current timestamp information field
+		 * Outputs the scraper current timestamp information field. 
 		 */
 		function options_scraper_current_timestamp() {
 			
@@ -751,14 +796,14 @@ if (!class_exists("DJ_SchemaScraper"))
 		}
 		
 		/**
-		 * Outputs the scraper creator section paragraph
+		 * Outputs the scraper creator section paragraph. 
 		 */
 		function options_creator_section() {
 			
 		}
 		
 		/**
-		 * Outputs the starred schema's
+		 * Outputs the starred schema's. 
 		 */
 		function options_creator_starred() {
 			$starred = $this->get_option( 'starred_schemas' ) ?: array();
@@ -775,11 +820,11 @@ if (!class_exists("DJ_SchemaScraper"))
 		}
 		
 		/**
-		 * Subfunction used to see if subtree has starred schema's
+		 * Subfunction used to see if subtree has starred schema's. 
 		 *
 		 * @param string $schema the schema
 		 * @param string[] $starred the starred ids
-		 * @returns string the starred subsection
+		 * @return string the starred subsection
 		 */
 		protected function __subsection_creator_starred( $schema, $starred ) {
 			$children = $this->get_schema_descendants( $schema, false );
@@ -808,7 +853,7 @@ if (!class_exists("DJ_SchemaScraper"))
 		}
 		
 		/**
-		 * Validates the options
+		 * Validates the options. 
 		 *
 		 * @param mixed[] $input the to be processed option values
 		 * @return mixed[] the processed option values
@@ -821,7 +866,7 @@ if (!class_exists("DJ_SchemaScraper"))
 		}
 		
 		/**
-		 * Sets default settings
+		 * Sets default settings. 
 		 */
 		public function default_settings( ) {
 			
@@ -838,7 +883,7 @@ if (!class_exists("DJ_SchemaScraper"))
 		}
 		
 		/**
-		 * Gets the default settings
+		 * Gets the default settings. 
 		 *
 		 * @param mixed[] $default the current defaults
 		 * @return mixed[] the defaults
