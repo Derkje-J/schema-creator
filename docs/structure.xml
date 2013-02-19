@@ -2413,6 +2413,242 @@ their respective function.&lt;/p&gt;</long-description>
       </method>
     </class>
   </file>
+  <file path="tests\bootstrap.template.php" hash="a704c0b587e3b909a04c24cd45640ca8" package="Default">
+    <include line="9" type="Require Once" package="Default">
+      <name/>
+    </include>
+    <parse_markers>
+      <error line="0" code="50007">No page-level DocBlock was found in file tests\bootstrap.template.php</error>
+    </parse_markers>
+  </file>
+  <file path="tests\SchemaCreator\BasicTest.php" hash="642e2f71ea2e4c08f561d0022c9aafb2" package="WordPress\SchemaCreator\Tests">
+    <docblock line="3">
+      <description>Basic tests for Schema Creator by Raven plugin.</description>
+      <long-description>&lt;p&gt;Runs on PHPUnit and Wordpress-Tests.&lt;/p&gt;</long-description>
+      <tag line="3" name="author" description="Derk-Jan Karrenbeld &lt;derk-jan+github@karrenbeld.info&gt;"/>
+      <tag line="3" name="version" description="1.0"/>
+      <tag line="3" name="package" description="WordPress\SchemaCreator\Tests"/>
+    </docblock>
+    <function namespace="global" line="18" package="WordPress\SchemaCreator\Tests">
+      <name>get_current_screen</name>
+      <full_name>\get_current_screen</full_name>
+      <docblock line="13">
+        <description>Stub for get_current_screen();</description>
+        <long-description></long-description>
+        <tag line="13" name="returns" description="object stub"/>
+      </docblock>
+    </function>
+    <function namespace="global" line="28" package="WordPress\SchemaCreator\Tests">
+      <name>add_meta_box</name>
+      <full_name>\add_meta_box</full_name>
+      <docblock line="23">
+        <description>Stub method for adding meta boxes</description>
+        <long-description></long-description>
+        <tag line="23" name="param" description="id the metabox id" type="mixed" variable="$id">
+          <type by_reference="false">mixed</type>
+        </tag>
+      </docblock>
+      <argument line="28">
+        <name>$id</name>
+        <default></default>
+        <type/>
+      </argument>
+    </function>
+    <class final="false" abstract="false" namespace="global" line="43" package="WordPress\SchemaCreator\Tests">
+      <extends>\WP_UnitTestCase</extends>
+      <name>BasicTest</name>
+      <full_name>\BasicTest</full_name>
+      <docblock line="33">
+        <description>Basic Test class for Schema Creator Plugin.</description>
+        <long-description></long-description>
+        <tag line="33" name="author" description="Derk-Jan Karrenbeld &lt;derk-jan+github@karrenbeld.info&gt;"/>
+        <tag line="33" name="version" description="1.0"/>
+        <tag line="33" name="link" description="uses this testcase" link="http://plugins.svn.wordpress.org/advanced-excerpt/tests/wp-test/lib/testcase.php"/>
+        <tag line="33" name="remarks" description="plugin path has to be [...]/$plugin_slug/$plugin_slug.php"/>
+        <tag line="33" name="package" description="WordPress\SchemaCreator\Tests"/>
+      </docblock>
+      <property final="false" static="false" visibility="public" line="48" namespace="global" package="Default">
+        <name>$plugin_slug</name>
+        <default>'schema-creator'</default>
+        <docblock line="45">
+          <description>This is the name of the folder and file.</description>
+          <long-description></long-description>
+        </docblock>
+      </property>
+      <method final="false" abstract="false" static="false" visibility="public" namespace="global" line="53" package="WordPress\SchemaCreator\Tests">
+        <name>setUp</name>
+        <full_name>setUp</full_name>
+        <docblock line="50">
+          <description>Setups this test</description>
+          <long-description></long-description>
+        </docblock>
+      </method>
+      <method final="false" abstract="false" static="false" visibility="public" namespace="global" line="65" package="WordPress\SchemaCreator\Tests">
+        <name>testQuickLink</name>
+        <full_name>testQuickLink</full_name>
+        <docblock line="62">
+          <description>Tests if a quick link is added to the links array.</description>
+          <long-description></long-description>
+        </docblock>
+      </method>
+      <method final="false" abstract="false" static="false" visibility="public" namespace="global" line="75" package="WordPress\SchemaCreator\Tests">
+        <name>testSchemaTest</name>
+        <full_name>testSchemaTest</full_name>
+        <docblock line="72">
+          <description>Tests if a schema test link is added to the admin bar</description>
+          <long-description></long-description>
+        </docblock>
+      </method>
+      <method final="false" abstract="false" static="false" visibility="public" namespace="global" line="103" package="WordPress\SchemaCreator\Tests">
+        <name>testMetaBox</name>
+        <full_name>testMetaBox</full_name>
+        <docblock line="97">
+          <description>Tests if the metabox is conditionally hidden.</description>
+          <long-description>&lt;p&gt;Tests if the metabox is only hidden when both post and body
+are empty values in the option variable.&lt;/p&gt;</long-description>
+        </docblock>
+      </method>
+      <method final="false" abstract="false" static="false" visibility="public" namespace="global" line="122" package="WordPress\SchemaCreator\Tests">
+        <name>metaBoxTests</name>
+        <full_name>metaBoxTests</full_name>
+        <docblock line="110">
+          <description>Tests the metabox adding with certain option values.</description>
+          <long-description></long-description>
+          <tag line="110" name="assert" description="(true, true) == false"/>
+          <tag line="110" name="assert" description="(NULL, true) == true"/>
+          <tag line="110" name="assert" description="(true, NULL) == true"/>
+          <tag line="110" name="assert" description="(NULL, NULL) == false"/>
+          <tag line="110" name="param" description="body option value" type="mixed" variable="$a">
+            <type by_reference="false">mixed</type>
+          </tag>
+          <tag line="110" name="param" description="post option value" type="mixed" variable="$b">
+            <type by_reference="false">mixed</type>
+          </tag>
+          <tag line="110" name="returns" description="boolean true if metabox was added"/>
+        </docblock>
+        <argument line="122">
+          <name>$a</name>
+          <default></default>
+          <type/>
+        </argument>
+        <argument line="122">
+          <name>$b</name>
+          <default></default>
+          <type/>
+        </argument>
+      </method>
+      <method final="false" abstract="false" static="false" visibility="public" namespace="global" line="147" package="WordPress\SchemaCreator\Tests">
+        <name>metaBoxContextTests</name>
+        <full_name>metaBoxContextTests</full_name>
+        <docblock line="139">
+          <description>Tests if the metabox is conditionally hidden.</description>
+          <long-description>&lt;p&gt;Tests if the metabox is only shown when context is side
+are empty values in the option variable.&lt;/p&gt;</long-description>
+          <tag line="139" name="depends" description="testMetaBox"/>
+        </docblock>
+      </method>
+      <method final="false" abstract="false" static="false" visibility="public" namespace="global" line="170" package="WordPress\SchemaCreator\Tests">
+        <name>testStoreSettings</name>
+        <full_name>testStoreSettings</full_name>
+        <docblock line="167">
+          <description>Tests the default options</description>
+          <long-description></long-description>
+        </docblock>
+      </method>
+      <method final="false" abstract="false" static="false" visibility="public" namespace="global" line="190" package="WordPress\SchemaCreator\Tests">
+        <name>testAdminScriptsPost</name>
+        <full_name>testAdminScriptsPost</full_name>
+        <docblock line="187">
+          <description>Tests if style and script are loaded when editing a post.</description>
+          <long-description></long-description>
+        </docblock>
+      </method>
+      <method final="false" abstract="false" static="false" visibility="public" namespace="global" line="206" package="WordPress\SchemaCreator\Tests">
+        <name>testAdminScriptsPostNew</name>
+        <full_name>testAdminScriptsPostNew</full_name>
+        <docblock line="203">
+          <description>Tests if style and script are loaded when creating a post.</description>
+          <long-description></long-description>
+        </docblock>
+      </method>
+      <method final="false" abstract="false" static="false" visibility="public" namespace="global" line="222" package="WordPress\SchemaCreator\Tests">
+        <name>testAdminScriptsSettingsPage</name>
+        <full_name>testAdminScriptsSettingsPage</full_name>
+        <docblock line="219">
+          <description>Tests if style and script are loaded when on the settings page.</description>
+          <long-description></long-description>
+        </docblock>
+      </method>
+      <method final="false" abstract="false" static="false" visibility="public" namespace="global" line="239" package="WordPress\SchemaCreator\Tests">
+        <name>testSchemaFooter</name>
+        <full_name>testSchemaFooter</full_name>
+        <docblock line="236">
+          <description>Tests the attribution link</description>
+          <long-description></long-description>
+        </docblock>
+      </method>
+      <method final="false" abstract="false" static="false" visibility="public" namespace="global" line="254" package="WordPress\SchemaCreator\Tests">
+        <name>testBodyClass</name>
+        <full_name>testBodyClass</full_name>
+        <docblock line="251">
+          <description>Tests if the body class is added if set to true</description>
+          <long-description></long-description>
+        </docblock>
+      </method>
+      <method final="false" abstract="false" static="false" visibility="public" namespace="global" line="275" package="WordPress\SchemaCreator\Tests">
+        <name>testBodyClassNot</name>
+        <full_name>testBodyClassNot</full_name>
+        <docblock line="272">
+          <description>Tests if the body class is not added if set to false</description>
+          <long-description></long-description>
+        </docblock>
+      </method>
+      <method final="false" abstract="false" static="false" visibility="public" namespace="global" line="296" package="WordPress\SchemaCreator\Tests">
+        <name>testSchemaLoader</name>
+        <full_name>testSchemaLoader</full_name>
+        <docblock line="293">
+          <description>Tests if the schema css is loaded for schema posts</description>
+          <long-description></long-description>
+        </docblock>
+      </method>
+      <method final="false" abstract="false" static="false" visibility="public" namespace="global" line="321" package="WordPress\SchemaCreator\Tests">
+        <name>testSchemaLoaderNot</name>
+        <full_name>testSchemaLoaderNot</full_name>
+        <docblock line="318">
+          <description>Tests if the schema css is not loaded for non schema posts</description>
+          <long-description></long-description>
+        </docblock>
+      </method>
+      <method final="false" abstract="false" static="false" visibility="public" namespace="global" line="348" package="WordPress\SchemaCreator\Tests">
+        <name>testSchemaLoaderNotOptions</name>
+        <full_name>testSchemaLoaderNotOptions</full_name>
+        <docblock line="343">
+          <description>Tests if the schema css is not loaded for schema posts but option set</description>
+          <long-description></long-description>
+          <tag line="343" name="depends" description="testSchemaLoaderNot"/>
+          <tag line="343" name="depends" description="testSchemaLoader"/>
+        </docblock>
+      </method>
+      <method final="false" abstract="false" static="false" visibility="public" namespace="global" line="374" package="WordPress\SchemaCreator\Tests">
+        <name>testSchemaWrapper</name>
+        <full_name>testSchemaWrapper</full_name>
+        <docblock line="370">
+          <description>Tests if the post is wrapped</description>
+          <long-description></long-description>
+          <tag line="370" name="depends" description="testSchemaLoader"/>
+        </docblock>
+      </method>
+      <method final="false" abstract="false" static="false" visibility="public" namespace="global" line="400" package="WordPress\SchemaCreator\Tests">
+        <name>testSchemaWrapperNot</name>
+        <full_name>testSchemaWrapperNot</full_name>
+        <docblock line="396">
+          <description>Tests if the post is not wrapped when option indicates that</description>
+          <long-description></long-description>
+          <tag line="396" name="depends" description="testSchemaLoader"/>
+        </docblock>
+      </method>
+    </class>
+  </file>
   <package name="Default" full_name="Default"/>
   <package name="WordPress" full_name="WordPress">
     <package name="Derk-Jan" full_name="WordPress\Derk-Jan">
@@ -2421,6 +2657,9 @@ their respective function.&lt;/p&gt;</long-description>
         <package name="Scraper" full_name="WordPress\Derk-Jan\Schema-Creator\Scraper"/>
         <package name="Viewer" full_name="WordPress\Derk-Jan\Schema-Creator\Viewer"/>
       </package>
+    </package>
+    <package name="SchemaCreator" full_name="WordPress\SchemaCreator">
+      <package name="Tests" full_name="WordPress\SchemaCreator\Tests"/>
     </package>
   </package>
   <namespace name="global" full_name="global"/>
