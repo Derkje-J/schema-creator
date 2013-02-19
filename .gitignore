@@ -16,3 +16,4 @@ _stuff
 
 #potmaker
 makepot.bat
+/tests/bootstrap.php
